@@ -171,3 +171,101 @@ export const getStatusVariant = (status) => {
       return 'neutral';
   }
 };
+
+// Equipment (devices)
+export const equipment = [
+  {
+    id: 'eq-1',
+    name: 'Canon ImageRunner C3525i',
+    model: 'C3525i',
+    serialNumber: 'CN-2847-A1',
+    location: 'Main Office – 2nd Floor',
+    status: 'active',
+    needsAttention: false,
+    lastMeterRead: '2025-03-01',
+    lastMeterValue: 12450,
+    meterType: 'B&W / Color',
+  },
+  {
+    id: 'eq-2',
+    name: 'HP LaserJet MFP M428',
+    model: 'M428',
+    serialNumber: 'HP-8821-B2',
+    location: 'Reception',
+    status: 'active',
+    needsAttention: true,
+    lastMeterRead: '2025-02-15',
+    lastMeterValue: 8920,
+    meterType: 'B&W',
+  },
+  {
+    id: 'eq-3',
+    name: 'Canon imageCLASS MF445dw',
+    model: 'MF445dw',
+    serialNumber: 'CN-9102-C3',
+    location: 'Legal – 3rd Floor',
+    status: 'active',
+    needsAttention: false,
+    lastMeterRead: '2025-03-05',
+    lastMeterValue: 3420,
+    meterType: 'B&W',
+  },
+];
+
+// Service tickets
+export const serviceTickets = [
+  {
+    id: 'ST-9012',
+    subject: 'Paper jam – C3525i',
+    deviceName: 'Canon ImageRunner C3525i',
+    status: 'scheduled',
+    statusLabel: 'Technician scheduled',
+    createdAt: '2025-03-06',
+    scheduledDate: '2025-03-10',
+    description: 'Frequent paper jams in tray 2.',
+  },
+  {
+    id: 'ST-9010',
+    subject: 'Toner low – M428',
+    deviceName: 'HP LaserJet MFP M428',
+    status: 'in_progress',
+    statusLabel: 'In progress',
+    createdAt: '2025-03-04',
+    scheduledDate: null,
+    description: 'Black toner replacement requested.',
+  },
+  {
+    id: 'ST-9008',
+    subject: 'Preventive maintenance – MF445dw',
+    deviceName: 'Canon imageCLASS MF445dw',
+    status: 'completed',
+    statusLabel: 'Completed',
+    createdAt: '2025-02-28',
+    completedDate: '2025-03-02',
+    description: 'Quarterly PM completed.',
+  },
+];
+
+// Supplies (products / recommended)
+export const supplies = [
+  { id: 'sup-1', name: 'Canon Genuine Toner – Black', sku: '125', forDevice: 'Canon ImageRunner C3525i', lastOrdered: '2025-03-05', recommended: true },
+  { id: 'sup-2', name: 'Canon Genuine Toner – Cyan', sku: '126', forDevice: 'Canon ImageRunner C3525i', lastOrdered: '2025-03-05', recommended: true },
+  { id: 'sup-3', name: 'HP 414A Black Toner', sku: 'HP-414A', forDevice: 'HP LaserJet MFP M428', lastOrdered: '2025-02-10', recommended: true },
+  { id: 'sup-4', name: 'Canon Drum Unit', sku: 'DR-3525', forDevice: 'Canon ImageRunner C3525i', lastOrdered: null, recommended: false },
+];
+
+// Supply orders history
+export const supplyOrders = [
+  { id: 'ord-1', date: '2025-03-05', items: ['Canon Genuine Toner – Black (x4)', 'Canon Genuine Toner – Cyan (x2)'], total: 892.0, status: 'delivered' },
+  { id: 'ord-2', date: '2025-02-10', items: ['HP 414A Black Toner (x2)'], total: 296.0, status: 'delivered' },
+  { id: 'ord-3', date: '2025-01-15', items: ['Canon Genuine Toner – Black (x2)'], total: 296.0, status: 'delivered' },
+];
+
+// Recent activity (for dashboard)
+export const recentActivity = [
+  { id: 'act-1', type: 'payment', title: 'Payment received', detail: '$325.50 – Invoice #84220', time: 'Mar 8', link: '/payments' },
+  { id: 'act-2', type: 'invoice', title: 'New invoice', detail: 'Invoice #84221 – Toner Supply Order', time: 'Mar 5', link: '/billing' },
+  { id: 'act-3', type: 'service', title: 'Service update', detail: 'Ticket #ST-9012 – Technician scheduled Mar 10', time: 'Mar 6', link: '/service' },
+  { id: 'act-4', type: 'supplies', title: 'Supply order shipped', detail: 'Order #ord-1 delivered', time: 'Mar 7', link: '/supplies' },
+  { id: 'act-5', type: 'payment', title: 'AutoPay processed', detail: '$1,240.00 – Invoice #84215', time: 'Mar 5', link: '/payments' },
+];

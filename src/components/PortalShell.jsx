@@ -1,102 +1,327 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 import { dealer, customer, notifications } from '../data/fakeData';
 import './PortalShell.css';
 
+const navSections = [
+  {
+    label: 'Home',
+    path: '/',
+    icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6',
+  },
+  {
+    label: 'Equipment',
+    path: '/equipment',
+    icon: 'M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 0H3m2 0h2m2 0h2M5 15H3m2 0H3m2 0h2m2 0h2M17 9h-2m2 0h2m2 0h2m2 0h2M17 15h-2m2 0h2m2 0h2m2 0h2',
+    sub: [
+      { label: 'View equipment list', path: '/equipment' },
+      { label: 'Equipment details', path: '/equipment' },
+      { label: 'Meter readings', path: '/equipment#meter' },
+    ],
+  },
+  {
+    label: 'Service',
+    path: '/service',
+    icon: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z',
+    sub: [
+      { label: 'Create service ticket', path: '/service#create' },
+      { label: 'View service tickets', path: '/service' },
+      { label: 'Track technician', path: '/service' },
+    ],
+  },
+  {
+    label: 'Orders',
+    path: '/supplies',
+    icon: 'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4',
+    sub: [
+      { label: 'Order supplies', path: '/supplies' },
+      { label: 'Previous orders', path: '/supplies#orders' },
+    ],
+  },
+  {
+    label: 'Billing',
+    path: '/billing',
+    icon: 'M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z',
+    sub: [
+      { label: 'View invoices', path: '/billing' },
+      { label: 'Invoice history', path: '/billing' },
+      { label: 'Account balance', path: '/billing' },
+    ],
+  },
+  {
+    label: 'Payments',
+    path: '/payments',
+    icon: 'M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z',
+    sub: [
+      { label: 'Pay invoices', path: '/pay' },
+      { label: 'Payment history', path: '/payments' },
+      { label: 'AutoPay settings', path: '/settings/autopay' },
+    ],
+  },
+  {
+    label: 'Account',
+    path: '/account',
+    icon: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z',
+    sub: [
+      { label: 'Company details', path: '/account' },
+      { label: 'Saved payment methods', path: '/account#payment-methods' },
+      { label: 'Notification settings', path: '/settings/notifications' },
+      { label: 'User preferences', path: '/account#preferences' },
+    ],
+  },
+];
+
+const accountLinks = [
+  { label: 'Company details', path: '/account' },
+  { label: 'Saved payment methods', path: '/account#payment-methods' },
+  { label: 'Notification settings', path: '/settings/notifications' },
+  { label: 'User preferences', path: '/account#preferences' },
+];
+
 function PortalShell({ children }) {
   const [notificationOpen, setNotificationOpen] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [expandedSection, setExpandedSection] = useState(null);
+  const [accountDropdownOpen, setAccountDropdownOpen] = useState(false);
+  const location = useLocation();
   const unreadCount = notifications.filter((n) => !n.read).length;
+
+  const isActiveSection = (path) => {
+    if (path === '/') return location.pathname === '/';
+    return location.pathname.startsWith(path);
+  };
+
+  const toggleSection = (path) => {
+    setExpandedSection((prev) => (prev === path ? null : path));
+  };
 
   return (
     <div className="portal-shell">
-      <header className="portal-header">
-        <div className="portal-header-left">
-          <button
-            type="button"
-            className="portal-menu-trigger"
-            onClick={() => setMenuOpen((o) => !o)}
-            aria-label="Open menu"
-            aria-expanded={menuOpen}
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <line x1="3" y1="12" x2="21" y2="12" />
-              <line x1="3" y1="18" x2="21" y2="18" />
-            </svg>
-          </button>
-          {menuOpen && (
-            <>
-              <div className="portal-menu-backdrop" aria-hidden onClick={() => setMenuOpen(false)} />
-              <nav className="portal-menu-dropdown" aria-label="Main navigation">
-                <Link to="/payments" onClick={() => setMenuOpen(false)} className="portal-menu-link">Payments</Link>
-                <Link to="/pay" onClick={() => setMenuOpen(false)} className="portal-menu-link">Pay Invoices</Link>
-                <Link to="/settings/notifications" onClick={() => setMenuOpen(false)} className="portal-menu-link">Notification Settings</Link>
-                <Link to="/settings/autopay" onClick={() => setMenuOpen(false)} className="portal-menu-link">AutoPay</Link>
-              </nav>
-            </>
-          )}
-          <Link to="/pay" className="portal-header-logo-link" style={{ textDecoration: 'none', color: 'inherit' }} onClick={() => setMenuOpen(false)}>
-            <img src="/summit-logo-header.png" alt={dealer.name} className="portal-header-logo" />
+      <aside className={`portal-sidebar ${sidebarCollapsed ? 'portal-sidebar-collapsed' : ''} ${mobileMenuOpen ? 'portal-sidebar-mobile-open' : ''}`}>
+        <div className="portal-sidebar-header">
+          <Link to="/" className="portal-sidebar-logo" onClick={() => setMobileMenuOpen(false)}>
+            <img src="/summit-logo-header.png" alt={dealer.name} className="portal-sidebar-logo-img" />
           </Link>
+          <div className="portal-sidebar-header-actions">
+            <button
+              type="button"
+              className="portal-sidebar-close-mobile"
+              onClick={() => setMobileMenuOpen(false)}
+              aria-label="Close menu"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+          </div>
         </div>
-        <div className="portal-header-right">
+        <nav className="portal-sidebar-nav" aria-label="Main navigation">
+          {navSections.map((section) => (
+            <div key={section.path} className="portal-nav-section">
+              {section.sub && !sidebarCollapsed ? (
+                <>
+                  <div className="portal-nav-item-wrapper">
+                    <NavLink
+                      to={section.path}
+                      end={section.path === '/'}
+                      className={({ isActive }) =>
+                        `portal-nav-item ${isActive ? 'portal-nav-item-active' : ''} ${isActiveSection(section.path) ? 'portal-nav-item-active' : ''}`
+                      }
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      <span className="portal-nav-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d={section.icon} />
+                        </svg>
+                      </span>
+                      <span className="portal-nav-label">{section.label}</span>
+                    </NavLink>
+                    <button
+                      type="button"
+                      className="portal-nav-dropdown-trigger"
+                      onClick={() => toggleSection(section.path)}
+                      aria-expanded={expandedSection === section.path}
+                      aria-label={expandedSection === section.path ? 'Collapse submenu' : 'Expand submenu'}
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={expandedSection === section.path ? 'portal-nav-chevron-open' : ''}>
+                        <path d="M6 9l6 6 6-6" />
+                      </svg>
+                    </button>
+                  </div>
+                  <div className={`portal-nav-dropdown ${expandedSection === section.path ? 'portal-nav-dropdown-open' : ''}`}>
+                    <ul className="portal-nav-sub">
+                      {section.sub.map((sub) => (
+                        <li key={sub.path + sub.label}>
+                          <Link
+                            to={sub.path}
+                            className="portal-nav-sub-link"
+                            onClick={() => {
+                              setMobileMenuOpen(false);
+                              setExpandedSection(null);
+                            }}
+                          >
+                            {sub.label}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </>
+              ) : (
+                <NavLink
+                  to={section.path}
+                  end={section.path === '/'}
+                  className={({ isActive }) =>
+                    `portal-nav-item ${isActive ? 'portal-nav-item-active' : ''} ${isActiveSection(section.path) ? 'portal-nav-item-active' : ''}`
+                  }
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <span className="portal-nav-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d={section.icon} />
+                    </svg>
+                  </span>
+                  {!sidebarCollapsed && <span className="portal-nav-label">{section.label}</span>}
+                </NavLink>
+              )}
+            </div>
+          ))}
+        </nav>
+        <div className="portal-sidebar-notifications">
           <button
             type="button"
-            className="notification-trigger"
+            className={`portal-notifications-trigger ${notificationOpen ? 'portal-notifications-trigger-open' : ''}`}
             onClick={() => setNotificationOpen((o) => !o)}
-            aria-label="Notifications"
             aria-expanded={notificationOpen}
+            aria-label={notificationOpen ? 'Close notifications' : 'Open notifications'}
           >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-              <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-            </svg>
-            {unreadCount > 0 && <span className="notification-badge">{unreadCount}</span>}
+            <span className="portal-notifications-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+              </svg>
+              {unreadCount > 0 && <span className="portal-notifications-badge">{unreadCount}</span>}
+            </span>
+            {!sidebarCollapsed && <span className="portal-notifications-label">Notifications</span>}
+            {!sidebarCollapsed && (
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                className={`portal-notifications-chevron ${notificationOpen ? 'portal-notifications-chevron-open' : ''}`}
+              >
+                <path d="M6 9l6 6 6-6" />
+              </svg>
+            )}
           </button>
           {notificationOpen && (
-            <>
-              <div
-                className="notification-dropdown-backdrop"
-                aria-hidden
-                onClick={() => setNotificationOpen(false)}
-              />
-              <div className="notification-dropdown" role="dialog" aria-label="Notifications">
-                <div className="notification-dropdown-header">Notifications</div>
-                <div className="notification-list">
-                  {notifications.map((n) => (
-                    <button
-                      key={n.id}
-                      type="button"
-                      className={`notification-item ${!n.read ? 'notification-item-unread' : ''}`}
-                      onClick={() => setNotificationOpen(false)}
-                    >
-                      <div className="notification-item-title">{n.title}</div>
-                      <div className="notification-item-message">{n.message}</div>
-                      <div className="notification-item-time">{n.time}</div>
-                    </button>
-                  ))}
-                </div>
-                <div className="notification-dropdown-footer">
-                  <Link to="/settings/notifications" onClick={() => setNotificationOpen(false)}>
-                    Manage notification settings
-                  </Link>
-                </div>
-              </div>
-            </>
+            <div className="portal-sidebar-notification-backdrop" aria-hidden onClick={() => setNotificationOpen(false)} />
           )}
-          <div className="user-avatar">
-            <div className="user-avatar-circle">
-              {customer.name.split(' ').map((w) => w[0]).join('').slice(0, 2)}
+          <div className={`portal-sidebar-notification-dropdown ${notificationOpen ? 'portal-sidebar-notification-dropdown-open' : ''}`}>
+            <div className="portal-sidebar-notification-dropdown-header">Notifications</div>
+            <div className="portal-sidebar-notification-list">
+              {notifications.map((n) => (
+                <button
+                  key={n.id}
+                  type="button"
+                  className={`portal-sidebar-notification-item ${!n.read ? 'portal-sidebar-notification-item-unread' : ''}`}
+                  onClick={() => setNotificationOpen(false)}
+                >
+                  <div className="portal-sidebar-notification-item-title">{n.title}</div>
+                  <div className="portal-sidebar-notification-item-message">{n.message}</div>
+                  <div className="portal-sidebar-notification-item-time">{n.time}</div>
+                </button>
+              ))}
             </div>
-            <div className="user-avatar-labels">
-              <span className="user-name">{customer.name}</span>
-              <span className="user-company">{customer.company}</span>
+            <div className="portal-sidebar-notification-dropdown-footer">
+              <Link to="/settings/notifications" onClick={() => setNotificationOpen(false)}>
+                Manage notification settings
+              </Link>
             </div>
           </div>
         </div>
-      </header>
-      <main className="portal-content">{children}</main>
+        <div className="portal-sidebar-account">
+          <button
+            type="button"
+            className="portal-account-trigger"
+            onClick={() => setAccountDropdownOpen((o) => !o)}
+            aria-expanded={accountDropdownOpen}
+            aria-label={accountDropdownOpen ? 'Close account menu' : 'Open account menu'}
+          >
+            <div className="portal-account-avatar">
+              {customer.name.split(' ').map((w) => w[0]).join('').slice(0, 2)}
+            </div>
+            {!sidebarCollapsed && (
+              <div className="portal-account-labels">
+                <span className="portal-account-name">{customer.name}</span>
+                <span className="portal-account-company">{customer.company}</span>
+              </div>
+            )}
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              className={`portal-account-chevron ${accountDropdownOpen ? 'portal-account-chevron-open' : ''}`}
+            >
+              <path d="M6 9l6 6 6-6" />
+            </svg>
+          </button>
+          <div className={`portal-account-dropdown ${accountDropdownOpen ? 'portal-account-dropdown-open' : ''}`}>
+            <ul className="portal-account-links">
+              {accountLinks.map((link) => (
+                <li key={link.path + link.label}>
+                  <Link
+                    to={link.path}
+                    className="portal-account-link"
+                    onClick={() => {
+                      setAccountDropdownOpen(false);
+                      setMobileMenuOpen(false);
+                    }}
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+        <div className="portal-sidebar-collapse-wrap">
+          <button
+            type="button"
+            className="portal-sidebar-toggle"
+            onClick={() => setSidebarCollapsed((c) => !c)}
+            aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              className={sidebarCollapsed ? 'portal-sidebar-collapse-icon-expand' : ''}
+            >
+              <path d="M11 19l-7-7 7-7M18 19l-7-7 7-7" />
+            </svg>
+          </button>
+        </div>
+      </aside>
+
+      <div className="portal-main-wrap">
+        <button
+          type="button"
+          className="portal-mobile-menu-trigger"
+          onClick={() => setMobileMenuOpen(true)}
+          aria-label="Open menu"
+          aria-expanded={mobileMenuOpen}
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <line x1="3" y1="12" x2="21" y2="12" />
+            <line x1="3" y1="18" x2="21" y2="18" />
+          </svg>
+        </button>
+        <main className="portal-content">{children}</main>
+      </div>
     </div>
   );
 }

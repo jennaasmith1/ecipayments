@@ -1,0 +1,169 @@
+.account-page {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.account-header {
+  margin-bottom: 28px;
+}
+
+.account-header h1 {
+  font-size: 1.5rem;
+  margin-bottom: 4px;
+}
+
+.account-subtitle {
+  color: var(--color-text-secondary);
+  font-size: 0.9375rem;
+  margin: 0;
+}
+
+.account-section {
+  margin-bottom: 32px;
+}
+
+.account-section-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 0 0 12px;
+}
+
+.account-card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+.account-dl {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 10px 24px;
+  margin: 0 0 20px;
+  font-size: 0.9375rem;
+}
+
+.account-dl dt {
+  color: var(--color-text-secondary);
+  font-weight: 500;
+  margin: 0;
+}
+
+.account-dl dd {
+  margin: 0;
+}
+
+.account-dl dd code {
+  font-size: 0.875rem;
+  background: var(--color-bg);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.account-card-note {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  margin: 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border-light);
+}
+
+.account-methods-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.account-method-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  box-shadow: var(--shadow-sm);
+}
+
+.account-method-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.account-method-type {
+  font-weight: 500;
+}
+
+.account-method-last4 {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+
+.account-method-badge {
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  background: var(--color-accent-light);
+  color: var(--color-accent-hover);
+  border-radius: var(--radius-sm);
+}
+
+.account-section-link {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+.account-section-link:hover {
+  text-decoration: underline;
+}
+
+.account-link {
+  font-weight: 500;
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+.account-link:hover {
+  text-decoration: underline;
+}
+
+.account-links-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.account-link-card {
+  display: block;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color var(--transition), box-shadow var(--transition);
+  box-shadow: var(--shadow-sm);
+}
+
+.account-link-card:hover {
+  border-color: var(--color-accent);
+  box-shadow: var(--shadow-md);
+}
+
+.account-link-card-title {
+  display: block;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  color: var(--color-text);
+  margin-bottom: 4px;
+}
+
+.account-link-card-desc {
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+}

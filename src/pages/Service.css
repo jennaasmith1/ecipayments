@@ -1,0 +1,188 @@
+.service-page {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.service-header {
+  margin-bottom: 24px;
+}
+
+.service-header h1 {
+  font-size: 1.5rem;
+  margin-bottom: 4px;
+}
+
+.service-subtitle {
+  color: var(--color-text-secondary);
+  font-size: 0.9375rem;
+  margin: 0;
+}
+
+.service-actions-bar {
+  margin-bottom: 24px;
+}
+
+.service-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 18px;
+  border-radius: var(--radius-md);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition);
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-card);
+  color: var(--color-text);
+}
+
+.service-btn:hover {
+  background: var(--color-primary-light);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.service-btn-primary {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: white;
+}
+
+.service-btn-primary:hover {
+  background: var(--color-accent-hover);
+  border-color: var(--color-accent-hover);
+  color: white;
+}
+
+.service-create-card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin-bottom: 32px;
+  box-shadow: var(--shadow-sm);
+}
+
+.service-create-card h2 {
+  font-size: 1.125rem;
+  margin: 0 0 20px;
+}
+
+.service-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.service-form-label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.service-form-input,
+.service-form-select,
+.service-form-textarea {
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: 0.9375rem;
+}
+
+.service-form-textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.service-form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.service-tickets-section {
+  margin-top: 32px;
+}
+
+.service-section-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 0 0 16px;
+}
+
+.service-tickets-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.service-ticket-card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+}
+
+.service-ticket-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.service-ticket-id {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--color-primary);
+}
+
+.service-ticket-status {
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+}
+
+.service-status-scheduled {
+  background: var(--color-accent-light);
+  color: var(--color-accent-hover);
+}
+
+.service-status-progress {
+  background: var(--color-warning-bg);
+  color: var(--color-warning);
+}
+
+.service-status-completed {
+  background: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+.service-ticket-subject {
+  font-size: 1rem;
+  margin: 0 0 4px;
+}
+
+.service-ticket-device {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  margin: 0 0 8px;
+}
+
+.service-ticket-desc {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  margin: 0 0 12px;
+}
+
+.service-ticket-meta {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
