@@ -1,0 +1,416 @@
+.payment-landing {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.payment-landing-header {
+  margin-bottom: 24px;
+}
+.payment-landing-header h1 {
+  font-size: 1.5rem;
+  margin-bottom: 4px;
+}
+.payment-landing-subtitle {
+  margin: 0 0 4px;
+  font-size: 0.9375rem;
+  color: var(--color-text-secondary);
+}
+.payment-landing-header p {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--color-text-secondary);
+}
+.layout-two-col {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 24px;
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .layout-two-col {
+    grid-template-columns: 1fr;
+  }
+}
+
+.invoice-table-card {
+  background: var(--color-bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+  min-width: 0;
+}
+
+.invoice-table-card h2 {
+  padding: 20px 24px;
+  margin: 0;
+  border-bottom: 1px solid var(--color-border-light);
+  font-size: 1.125rem;
+}
+
+.invoice-list-empty {
+  padding: 40px 24px;
+  text-align: center;
+}
+.invoice-list-empty-title {
+  margin: 0 0 4px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--color-text);
+}
+.invoice-list-empty-subtitle {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}
+
+.invoice-list-header {
+  display: flex;
+  align-items: center;
+  padding: 16px 24px 16px 12px;
+  border-bottom: 1px solid var(--color-border-light);
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  gap: 12px;
+}
+.invoice-list-header-check {
+  width: 40px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.invoice-list-header-check input {
+  margin: 0;
+  accent-color: var(--color-primary);
+}
+.invoice-list-header-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.invoice-list-select-all {
+  font-weight: 500;
+  color: var(--color-text);
+  cursor: pointer;
+}
+.invoice-list-select-all--muted {
+  color: var(--color-text-muted);
+  font-weight: 400;
+}
+.invoice-list-count {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+}
+
+.invoice-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.invoice-list-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 16px 24px 16px 12px;
+  border-bottom: 1px solid var(--color-border-light);
+  gap: 12px;
+  transition: background var(--transition);
+}
+.invoice-list-item:last-child {
+  border-bottom: none;
+}
+.invoice-list-item:hover {
+  background: var(--color-bg);
+}
+
+.invoice-item-check-col {
+  width: 40px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.invoice-item-checkbox {
+  margin: 0;
+  accent-color: var(--color-primary);
+}
+.invoice-item-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+.invoice-item-left {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  flex: 1;
+}
+.invoice-item-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.invoice-item-number {
+  font-weight: 600;
+  font-size: 0.9375rem;
+  color: var(--color-primary);
+}
+.invoice-item-description {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+}
+.invoice-item-left .view-invoice-link {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  align-self: flex-start;
+}
+
+.invoice-item-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.invoice-item-amount {
+  font-weight: 700;
+  font-size: 1.0625rem;
+  color: var(--color-primary);
+}
+.invoice-item-due {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+.invoice-item-due--overdue {
+  color: var(--color-danger);
+}
+.invoice-item-due-icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+.status-tag {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.status-tag--danger {
+  background: var(--color-danger-bg);
+  color: var(--color-danger);
+}
+.status-tag--warning {
+  background: var(--color-warning-bg);
+  color: var(--color-warning);
+}
+.status-tag--neutral {
+  background: var(--color-border-light);
+  color: var(--color-text-secondary);
+}
+
+/* Summary sidebar */
+.summary-card {
+  background: var(--color-bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-border);
+  padding: 24px;
+  position: sticky;
+  top: 24px;
+}
+
+.summary-card h2 {
+  margin: 0 0 20px;
+  font-size: 1.125rem;
+  padding: 0;
+  border: none;
+}
+
+.summary-total {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: 6px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-border-light);
+}
+.summary-invoice-count {
+  margin: 0 0 4px;
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+}
+.summary-zero-hint {
+  margin: 0 0 20px;
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+}
+.summary-earliest-due {
+  margin: 0 0 20px;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.payment-methods-section {
+  margin-bottom: 20px;
+}
+.payment-methods-section h3 {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  margin-bottom: 10px;
+}
+
+.payment-method-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px;
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-md);
+  margin-bottom: 8px;
+  transition: border-color var(--transition), background var(--transition);
+  background: var(--color-bg-card);
+  width: 100%;
+  text-align: left;
+}
+.payment-method-option:hover {
+  border-color: var(--color-accent);
+  background: var(--color-bg);
+}
+.payment-method-option.selected {
+  border-color: var(--color-accent);
+  background: var(--color-accent-light);
+}
+.payment-method-option-inner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+  cursor: pointer;
+}
+.payment-method-option input {
+  margin: 0;
+  accent-color: var(--color-accent);
+  flex-shrink: 0;
+}
+.payment-method-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  color: var(--color-text-secondary);
+}
+.payment-method-option.selected .payment-method-icon {
+  color: var(--color-accent);
+}
+.payment-method-option .label {
+  flex: 1;
+  min-width: 0;
+  font-weight: 500;
+  font-size: 0.8125rem;
+  color: var(--color-text);
+}
+.payment-method-option .note {
+  font-size: 0.6875rem;
+  color: var(--color-accent);
+  margin-top: 2px;
+}
+.payment-method-edit {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: color var(--transition), background var(--transition);
+}
+.payment-method-edit:hover {
+  color: var(--color-primary);
+  background: var(--color-border-light);
+}
+.payment-method-edit svg {
+  width: 16px;
+  height: 16px;
+}
+
+.add-payment-link {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  margin-top: 8px;
+  display: inline-block;
+}
+.add-payment-link:hover {
+  text-decoration: underline;
+}
+
+.pay-button-trust {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: 12px 0 0;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+.pay-button-trust-icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+.pay-button {
+  width: 100%;
+  padding: 16px 24px;
+  background: var(--color-primary);
+  color: white;
+  font-weight: 600;
+  font-size: 1.0625rem;
+  border: none;
+  border-radius: var(--radius-md);
+  margin-top: 8px;
+  transition: background var(--transition);
+}
+.pay-button:hover {
+  background: var(--color-primary-hover);
+}
+.pay-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.link-style {
+  background: none;
+  border: none;
+  color: var(--color-accent);
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  text-decoration: none;
+}
+.link-style:hover {
+  color: var(--color-accent-hover);
+  text-decoration: underline;
+}

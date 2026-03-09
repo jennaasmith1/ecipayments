@@ -1,0 +1,5 @@
+/* App-level overrides and layout */
+
+.app-content {
+  min-height: 100%;
+}
