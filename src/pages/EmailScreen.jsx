@@ -1,5 +1,6 @@
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { dealer, customer, invoices, formatCurrency, formatDate } from '../data/fakeData';
+import { dealer, customer, invoices, formatCurrency, formatDate, getStatusLabel, getStatusVariant } from '../data/fakeData';
 import './EmailScreen.css';
 
 // Show invoices sorted by due date (earliest first), then take first 5
@@ -13,15 +14,23 @@ function isOverdue(dueDate) {
   return dueDate < today;
 }
 
+const BODY_CLASS = 'email-screen-page';
+
 export default function EmailScreen() {
+  useEffect(() => {
+    document.body.classList.add(BODY_CLASS);
+    return () => document.body.classList.remove(BODY_CLASS);
+  }, []);
+
   return (
     <div className="email-screen">
-      <div className="email-envelope">
-        <div className="email-envelope-row"><span className="email-envelope-label">From:</span> <span className="email-envelope-value">{dealer.name} &lt;{dealer.billingEmail}&gt;</span></div>
-        <div className="email-envelope-row"><span className="email-envelope-label">To:</span> <span className="email-envelope-value">{customer.name} &lt;{customer.email}&gt;</span></div>
-        <div className="email-envelope-row"><span className="email-envelope-label">Subject:</span> <span className="email-envelope-value">Payment reminder: {emailInvoices.length} invoices due</span></div>
-      </div>
-      <div className="email-mockup">
+      <div className="email-card">
+        <div className="email-envelope">
+          <div className="email-envelope-row"><span className="email-envelope-label">From:</span> <span className="email-envelope-value">{dealer.name} &lt;{dealer.billingEmail}&gt;</span></div>
+          <div className="email-envelope-row"><span className="email-envelope-label">To:</span> <span className="email-envelope-value">{customer.name} &lt;{customer.email}&gt;</span></div>
+          <div className="email-envelope-row"><span className="email-envelope-label">Subject:</span> <span className="email-envelope-value">Payment reminder: {emailInvoices.length} invoices due</span></div>
+        </div>
+        <div className="email-mockup">
         <div className="email-mockup-header">
           <img src="/summit-logo.png" alt="Summit Office Solutions" className="email-mockup-logo" />
         </div>
@@ -37,33 +46,45 @@ export default function EmailScreen() {
               Earliest due {formatDate(emailInvoices.reduce((min, inv) => (inv.dueDate < min ? inv.dueDate : min), emailInvoices[0].dueDate))}.
             </p>
           )}
-          <table className="email-invoice-table">
-            <caption className="sr-only">Outstanding invoices</caption>
-            <thead>
-              <tr>
-                <th>Invoice #</th>
-                <th>Description</th>
-                <th>Due date</th>
-                <th>Amount</th>
-              </tr>
-            </thead>
-            <tbody>
+          <div className="email-invoice-card">
+            <h2 className="email-invoice-list-heading">Outstanding invoices</h2>
+            <div className="email-invoice-list">
               {emailInvoices.map((inv) => (
-                <tr key={inv.id}>
-                  <td>{inv.number}</td>
-                  <td>{inv.description}</td>
-                  <td className={isOverdue(inv.dueDate) ? 'email-due-overdue' : undefined}>
-                    {formatDate(inv.dueDate)}
-                  </td>
-                  <td className="amount">{formatCurrency(inv.amount)}</td>
-                </tr>
+                <div key={inv.id} className="email-invoice-list-item">
+                  <div className="email-invoice-item-content">
+                    <div className="email-invoice-item-left">
+                      <div className="email-invoice-item-meta">
+                        <span className="email-invoice-item-number">#{inv.number}</span>
+                        <span className={`email-status-tag email-status-tag--${getStatusVariant(inv.status)}`}>
+                          {getStatusLabel(inv.status)}
+                        </span>
+                      </div>
+                      <p className="email-invoice-item-description">{inv.description}</p>
+                      <Link to="/pay" className="email-view-invoice-link">View Invoice</Link>
+                    </div>
+                    <div className="email-invoice-item-right">
+                      <span className="email-invoice-item-amount">{formatCurrency(inv.amount)}</span>
+                      <span className={`email-invoice-item-due ${isOverdue(inv.dueDate) ? 'email-invoice-item-due--overdue' : ''}`}>
+                        <svg className="email-invoice-item-due-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                          <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                          <line x1="16" y1="2" x2="16" y2="6" />
+                          <line x1="8" y1="2" x2="8" y2="6" />
+                          <line x1="3" y1="10" x2="21" y2="10" />
+                        </svg>
+                        Due {formatDate(inv.dueDate)}
+                      </span>
+                    </div>
+                  </div>
+                </div>
               ))}
-              <tr className="email-total-row">
-                <td colSpan={3}>Total outstanding</td>
-                <td>{formatCurrency(totalOutstanding)}</td>
-              </tr>
-            </tbody>
-          </table>
+              <div className="email-invoice-list-item email-invoice-total-row">
+                <div className="email-invoice-item-content">
+                  <span className="email-invoice-total-label">Total outstanding</span>
+                  <span className="email-invoice-total-amount">{formatCurrency(totalOutstanding)}</span>
+                </div>
+              </div>
+            </div>
+          </div>
           <div className="email-cta-row">
             <Link to="/pay" className="email-cta-primary">
               Pay Now
@@ -100,6 +121,7 @@ export default function EmailScreen() {
           </div>
           <p className="email-footer-line">You're receiving this because you have an active account with {dealer.name}.</p>
         </div>
+      </div>
       </div>
     </div>
   );

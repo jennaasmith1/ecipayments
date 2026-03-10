@@ -1,3 +1,11 @@
+/* Slightly darker gray for the entire email page (body + content area) */
+body.email-screen-page {
+  background: #e8ecf1;
+}
+body.email-screen-page #root {
+  background: #e8ecf1;
+}
+
 .email-screen {
   max-width: 720px;
   margin: 0 auto;
@@ -6,32 +14,34 @@
   background: #e8ecf1;
 }
 
+.email-card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-md);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
 .email-mockup {
   background: var(--color-bg-card);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
-  border: 1px solid var(--color-border);
-  overflow: hidden;
-  margin-top: 4px;
 }
 
 .email-mockup-header {
   background: #fff;
-  padding: 24px 32px;
+  padding: 24px 32px 12px;
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  border-bottom: 1px solid var(--color-border-light);
 }
 .email-mockup-logo {
-  max-height: 48px;
+  max-height: 58px;
   width: auto;
   display: block;
   object-fit: contain;
 }
 
 .email-mockup-body {
-  padding: 24px 32px;
+  padding: 12px 32px 24px;
 }
 
 .email-greeting {
@@ -54,47 +64,158 @@
   color: var(--color-text-muted);
 }
 
-.email-invoice-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.9375rem;
+.email-invoice-card {
+  background: var(--color-bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-border);
+  overflow: hidden;
   margin-bottom: 24px;
 }
-.email-invoice-table th {
-  text-align: left;
-  padding: 10px 12px;
-  background: var(--color-bg);
-  color: var(--color-text-secondary);
-  font-weight: 500;
-  font-size: 0.8125rem;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
-}
-.email-invoice-table td {
-  padding: 12px;
+
+.email-invoice-list-heading {
+  margin: 0;
+  padding: 20px 24px;
   border-bottom: 1px solid var(--color-border-light);
-  color: var(--color-text);
-}
-.email-invoice-table tr:last-child td {
-  border-bottom: none;
-}
-.email-invoice-table .amount {
+  font-size: 1.125rem;
   font-weight: 600;
   color: var(--color-primary);
 }
-.email-invoice-table .email-due-overdue {
-  color: #c53030;
-  font-weight: 600;
+
+.email-invoice-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
-.email-total-row {
-  background: var(--color-primary-light) !important;
+.email-invoice-list-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--color-border-light);
+  gap: 12px;
+}
+.email-invoice-list-item:last-child {
+  border-bottom: none;
+}
+
+.email-invoice-item-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.email-invoice-item-left {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  flex: 1;
+}
+
+.email-invoice-item-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.email-invoice-item-number {
+  font-weight: 600;
+  font-size: 0.9375rem;
+  color: var(--color-primary);
+}
+
+.email-invoice-item-description {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+}
+
+.email-view-invoice-link {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  align-self: flex-start;
+  color: var(--color-accent);
+  text-decoration: none;
+}
+.email-view-invoice-link:hover {
+  text-decoration: underline;
+}
+
+.email-invoice-item-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.email-invoice-item-amount {
   font-weight: 700;
   font-size: 1.0625rem;
+  color: var(--color-primary);
 }
-.email-total-row td {
-  padding: 16px 12px;
+
+.email-invoice-item-due {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+.email-invoice-item-due--overdue {
+  color: var(--color-danger);
+}
+.email-invoice-item-due-icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+.email-status-tag {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.email-status-tag--danger {
+  background: var(--color-danger-bg);
+  color: var(--color-danger);
+}
+.email-status-tag--warning {
+  background: var(--color-warning-bg);
+  color: var(--color-warning);
+}
+.email-status-tag--neutral {
+  background: var(--color-border-light);
+  color: var(--color-text-secondary);
+}
+
+.email-invoice-total-row {
+  background: var(--color-primary-light);
+  margin: 0;
+  padding: 16px 24px;
   border-top: 2px solid var(--color-border);
+}
+.email-invoice-total-row .email-invoice-item-content {
+  width: 100%;
+  align-items: center;
+}
+.email-invoice-total-label {
+  font-weight: 700;
+  font-size: 1.0625rem;
+  color: var(--color-primary);
+}
+.email-invoice-total-amount {
+  font-weight: 700;
+  font-size: 1.0625rem;
   color: var(--color-primary);
 }
 
@@ -215,11 +336,8 @@
 }
 
 .email-envelope {
-  background: var(--color-bg-card);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
   padding: 20px 24px;
-  margin-bottom: 20px;
+  border-bottom: 1px solid var(--color-border-light);
   font-size: 0.875rem;
   color: var(--color-text-secondary);
 }
