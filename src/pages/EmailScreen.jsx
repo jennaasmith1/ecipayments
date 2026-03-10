@@ -2,9 +2,16 @@ import { Link } from 'react-router-dom';
 import { dealer, customer, invoices, formatCurrency, formatDate } from '../data/fakeData';
 import './EmailScreen.css';
 
-// Show invoices and total for email
-const emailInvoices = invoices.slice(0, 5);
+// Show invoices sorted by due date (earliest first), then take first 5
+const emailInvoices = [...invoices]
+  .sort((a, b) => a.dueDate.localeCompare(b.dueDate))
+  .slice(0, 5);
 const totalOutstanding = emailInvoices.reduce((sum, inv) => sum + inv.amount, 0);
+
+const today = new Date().toISOString().slice(0, 10);
+function isOverdue(dueDate) {
+  return dueDate < today;
+}
 
 export default function EmailScreen() {
   return (
@@ -45,7 +52,9 @@ export default function EmailScreen() {
                 <tr key={inv.id}>
                   <td>{inv.number}</td>
                   <td>{inv.description}</td>
-                  <td>{formatDate(inv.dueDate)}</td>
+                  <td className={isOverdue(inv.dueDate) ? 'email-due-overdue' : undefined}>
+                    {formatDate(inv.dueDate)}
+                  </td>
                   <td className="amount">{formatCurrency(inv.amount)}</td>
                 </tr>
               ))}

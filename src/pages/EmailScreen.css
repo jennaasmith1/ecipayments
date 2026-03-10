@@ -82,6 +82,10 @@
   font-weight: 600;
   color: var(--color-primary);
 }
+.email-invoice-table .email-due-overdue {
+  color: #c53030;
+  font-weight: 600;
+}
 
 .email-total-row {
   background: var(--color-primary-light) !important;

@@ -22,7 +22,7 @@ export const notifications = [
     id: '1',
     type: 'invoice',
     title: 'Invoice #84219 Due in 3 Days',
-    message: 'Canon ImageRunner Copier Lease – $487.00 due Mar 12',
+    message: 'Canon ImageRunner Copier Lease – $487.00 due Mar 12, 2026',
     time: '2 hours ago',
     read: true,
   },
@@ -39,7 +39,7 @@ export const notifications = [
     type: 'invoice',
     title: 'New Invoice Available',
     message: 'Service Invoice – Copier Maintenance #84222',
-    time: 'Mar 7',
+    time: 'Mar 7, 2026',
     read: true,
   },
   {
@@ -47,7 +47,7 @@ export const notifications = [
     type: 'service',
     title: 'Service Ticket Updated',
     message: 'Ticket #ST-9012 – Technician scheduled for Mar 10',
-    time: 'Mar 6',
+    time: 'Mar 6, 2026',
     read: true,
   },
   {
@@ -55,7 +55,7 @@ export const notifications = [
     type: 'payment',
     title: 'AutoPay Payment Processed',
     message: '$1,240.00 for Invoice #84215',
-    time: 'Mar 5',
+    time: 'Mar 5, 2026',
     read: true,
   },
 ];
@@ -65,61 +65,61 @@ export const invoices = [
     id: 'inv-84219',
     number: '84219',
     description: 'Canon ImageRunner Copier Lease',
-    dueDate: '2025-03-12',
+    dueDate: '2026-03-11',
     amount: 487.0,
     status: 'due_soon',
     lineItems: [
       { description: 'Canon ImageRunner C3525i – Monthly lease', quantity: 1, unitPrice: 387.0, amount: 387.0 },
       { description: 'Maintenance bundle', quantity: 1, unitPrice: 100.0, amount: 100.0 },
     ],
-    date: '2025-03-01',
+    date: '2026-03-01',
   },
   {
     id: 'inv-84220',
     number: '84220',
     description: 'Service Invoice – Copier Maintenance',
-    dueDate: '2025-03-08',
+    dueDate: '2026-03-07',
     amount: 325.5,
     status: 'overdue',
     lineItems: [
       { description: 'Preventive maintenance – 3 devices', quantity: 1, unitPrice: 275.0, amount: 275.0 },
       { description: 'Parts & labor', quantity: 1, unitPrice: 50.5, amount: 50.5 },
     ],
-    date: '2025-02-28',
+    date: '2026-02-28',
   },
   {
     id: 'inv-84221',
     number: '84221',
     description: 'Toner Supply Order',
-    dueDate: '2025-03-15',
+    dueDate: '2026-03-14',
     amount: 892.0,
     status: 'due_soon',
     lineItems: [
       { description: 'Canon Genuine Toner – Black (x4)', quantity: 4, unitPrice: 148.0, amount: 592.0 },
       { description: 'Canon Genuine Toner – Cyan (x2)', quantity: 2, unitPrice: 150.0, amount: 300.0 },
     ],
-    date: '2025-03-05',
+    date: '2026-03-05',
   },
   {
     id: 'inv-84222',
     number: '84222',
     description: 'Monthly Maintenance Contract',
-    dueDate: '2025-03-20',
+    dueDate: '2026-03-19',
     amount: 1240.0,
     status: 'current',
     lineItems: [
-      { description: 'Full-service maintenance agreement – Mar 2025', quantity: 1, unitPrice: 1240.0, amount: 1240.0 },
+      { description: 'Full-service maintenance agreement – Mar 2026', quantity: 1, unitPrice: 1240.0, amount: 1240.0 },
     ],
-    date: '2025-03-01',
+    date: '2026-03-01',
   },
 ];
 
 export const recentPayments = [
-  { id: 'pmt-1', date: '2025-03-08', description: 'Invoice #84220 – Service Invoice', amount: 325.5, method: 'ACH •••• 1187' },
-  { id: 'pmt-2', date: '2025-03-05', description: 'Invoice #84215 – Monthly Maintenance', amount: 1240.0, method: 'AutoPay • ACH •••• 1187' },
-  { id: 'pmt-3', date: '2025-02-28', description: 'Invoice #84218 – Toner Supply', amount: 892.0, method: 'Visa •••• 4242' },
-  { id: 'pmt-4', date: '2025-02-15', description: 'Invoice #84217 – Copier Lease', amount: 487.0, method: 'ACH •••• 1187' },
-  { id: 'pmt-5', date: '2025-02-01', description: 'Invoice #84216 – Service Invoice', amount: 275.0, method: 'AutoPay • ACH •••• 1187' },
+  { id: 'pmt-1', date: '2026-03-08', description: 'Invoice #84220 – Service Invoice', amount: 325.5, method: 'ACH •••• 1187' },
+  { id: 'pmt-2', date: '2026-03-05', description: 'Invoice #84215 – Monthly Maintenance', amount: 1240.0, method: 'AutoPay • ACH •••• 1187' },
+  { id: 'pmt-3', date: '2026-02-28', description: 'Invoice #84218 – Toner Supply', amount: 892.0, method: 'Visa •••• 4242' },
+  { id: 'pmt-4', date: '2026-02-15', description: 'Invoice #84217 – Copier Lease', amount: 487.0, method: 'ACH •••• 1187' },
+  { id: 'pmt-5', date: '2026-02-01', description: 'Invoice #84216 – Service Invoice', amount: 275.0, method: 'AutoPay • ACH •••• 1187' },
 ];
 
 export const paymentMethods = [
@@ -182,7 +182,7 @@ export const equipment = [
     location: 'Main Office – 2nd Floor',
     status: 'active',
     needsAttention: false,
-    lastMeterRead: '2025-03-01',
+    lastMeterRead: '2026-03-01',
     lastMeterValue: 12450,
     meterType: 'B&W / Color',
   },
@@ -194,7 +194,7 @@ export const equipment = [
     location: 'Reception',
     status: 'active',
     needsAttention: true,
-    lastMeterRead: '2025-02-15',
+    lastMeterRead: '2026-02-15',
     lastMeterValue: 8920,
     meterType: 'B&W',
   },
@@ -206,7 +206,7 @@ export const equipment = [
     location: 'Legal – 3rd Floor',
     status: 'active',
     needsAttention: false,
-    lastMeterRead: '2025-03-05',
+    lastMeterRead: '2026-03-05',
     lastMeterValue: 3420,
     meterType: 'B&W',
   },
@@ -220,8 +220,8 @@ export const serviceTickets = [
     deviceName: 'Canon ImageRunner C3525i',
     status: 'scheduled',
     statusLabel: 'Technician scheduled',
-    createdAt: '2025-03-06',
-    scheduledDate: '2025-03-10',
+    createdAt: '2026-03-06',
+    scheduledDate: '2026-03-10',
     description: 'Frequent paper jams in tray 2.',
   },
   {
@@ -230,7 +230,7 @@ export const serviceTickets = [
     deviceName: 'HP LaserJet MFP M428',
     status: 'in_progress',
     statusLabel: 'In progress',
-    createdAt: '2025-03-04',
+    createdAt: '2026-03-04',
     scheduledDate: null,
     description: 'Black toner replacement requested.',
   },
@@ -240,32 +240,32 @@ export const serviceTickets = [
     deviceName: 'Canon imageCLASS MF445dw',
     status: 'completed',
     statusLabel: 'Completed',
-    createdAt: '2025-02-28',
-    completedDate: '2025-03-02',
+    createdAt: '2026-02-28',
+    completedDate: '2026-03-02',
     description: 'Quarterly PM completed.',
   },
 ];
 
 // Supplies (products / recommended)
 export const supplies = [
-  { id: 'sup-1', name: 'Canon Genuine Toner – Black', sku: '125', forDevice: 'Canon ImageRunner C3525i', lastOrdered: '2025-03-05', recommended: true },
-  { id: 'sup-2', name: 'Canon Genuine Toner – Cyan', sku: '126', forDevice: 'Canon ImageRunner C3525i', lastOrdered: '2025-03-05', recommended: true },
-  { id: 'sup-3', name: 'HP 414A Black Toner', sku: 'HP-414A', forDevice: 'HP LaserJet MFP M428', lastOrdered: '2025-02-10', recommended: true },
+  { id: 'sup-1', name: 'Canon Genuine Toner – Black', sku: '125', forDevice: 'Canon ImageRunner C3525i', lastOrdered: '2026-03-05', recommended: true },
+  { id: 'sup-2', name: 'Canon Genuine Toner – Cyan', sku: '126', forDevice: 'Canon ImageRunner C3525i', lastOrdered: '2026-03-05', recommended: true },
+  { id: 'sup-3', name: 'HP 414A Black Toner', sku: 'HP-414A', forDevice: 'HP LaserJet MFP M428', lastOrdered: '2026-02-10', recommended: true },
   { id: 'sup-4', name: 'Canon Drum Unit', sku: 'DR-3525', forDevice: 'Canon ImageRunner C3525i', lastOrdered: null, recommended: false },
 ];
 
 // Supply orders history
 export const supplyOrders = [
-  { id: 'ord-1', date: '2025-03-05', items: ['Canon Genuine Toner – Black (x4)', 'Canon Genuine Toner – Cyan (x2)'], total: 892.0, status: 'delivered' },
-  { id: 'ord-2', date: '2025-02-10', items: ['HP 414A Black Toner (x2)'], total: 296.0, status: 'delivered' },
-  { id: 'ord-3', date: '2025-01-15', items: ['Canon Genuine Toner – Black (x2)'], total: 296.0, status: 'delivered' },
+  { id: 'ord-1', date: '2026-03-05', items: ['Canon Genuine Toner – Black (x4)', 'Canon Genuine Toner – Cyan (x2)'], total: 892.0, status: 'delivered' },
+  { id: 'ord-2', date: '2026-02-10', items: ['HP 414A Black Toner (x2)'], total: 296.0, status: 'delivered' },
+  { id: 'ord-3', date: '2026-01-15', items: ['Canon Genuine Toner – Black (x2)'], total: 296.0, status: 'delivered' },
 ];
 
 // Recent activity (for dashboard)
 export const recentActivity = [
-  { id: 'act-1', type: 'payment', title: 'Payment received', detail: '$325.50 – Invoice #84220', time: 'Mar 8', link: '/payments' },
-  { id: 'act-2', type: 'invoice', title: 'New invoice', detail: 'Invoice #84221 – Toner Supply Order', time: 'Mar 5', link: '/billing' },
-  { id: 'act-3', type: 'service', title: 'Service update', detail: 'Ticket #ST-9012 – Technician scheduled Mar 10', time: 'Mar 6', link: '/service' },
-  { id: 'act-4', type: 'supplies', title: 'Supply order shipped', detail: 'Order #ord-1 delivered', time: 'Mar 7', link: '/supplies' },
-  { id: 'act-5', type: 'payment', title: 'AutoPay processed', detail: '$1,240.00 – Invoice #84215', time: 'Mar 5', link: '/payments' },
+  { id: 'act-1', type: 'payment', title: 'Payment received', detail: '$325.50 – Invoice #84220', time: 'Mar 8, 2026', link: '/payments' },
+  { id: 'act-2', type: 'invoice', title: 'New invoice', detail: 'Invoice #84221 – Toner Supply Order', time: 'Mar 5, 2026', link: '/billing' },
+  { id: 'act-3', type: 'service', title: 'Service update', detail: 'Ticket #ST-9012 – Technician scheduled Mar 10', time: 'Mar 6, 2026', link: '/service' },
+  { id: 'act-4', type: 'supplies', title: 'Supply order shipped', detail: 'Order #ord-1 delivered', time: 'Mar 7, 2026', link: '/supplies' },
+  { id: 'act-5', type: 'payment', title: 'AutoPay processed', detail: '$1,240.00 – Invoice #84215', time: 'Mar 5, 2026', link: '/payments' },
 ];
