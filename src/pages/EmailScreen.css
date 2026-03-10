@@ -319,14 +319,14 @@ body.email-screen-page #root {
   box-shadow: var(--shadow-md);
   border: 1px solid var(--color-border);
   overflow: hidden;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 
 .email-invoice-list-heading {
   margin: 0;
-  padding: 20px 24px;
+  padding: 12px 20px;
   border-bottom: 1px solid var(--color-border-light);
-  font-size: 1.125rem;
+  font-size: 1rem;
   font-weight: 600;
   color: var(--color-primary);
 }
@@ -341,7 +341,7 @@ body.email-screen-page #root {
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 16px 24px;
+  padding: 10px 20px;
   border-bottom: 1px solid var(--color-border-light);
   gap: 12px;
 }
@@ -355,13 +355,13 @@ body.email-screen-page #root {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 16px;
+  gap: 12px;
 }
 
 .email-invoice-item-left {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
   min-width: 0;
   flex: 1;
 }
@@ -375,19 +375,19 @@ body.email-screen-page #root {
 
 .email-invoice-item-number {
   font-weight: 600;
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
   color: var(--color-primary);
 }
 
 .email-invoice-item-description {
   margin: 0;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   color: var(--color-text-secondary);
-  line-height: 1.4;
+  line-height: 1.35;
 }
 
 .email-view-invoice-link {
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   font-weight: 500;
   align-self: flex-start;
   color: var(--color-accent);
@@ -407,31 +407,31 @@ body.email-screen-page #root {
 
 .email-invoice-item-amount {
   font-weight: 700;
-  font-size: 1.0625rem;
+  font-size: 1rem;
   color: var(--color-primary);
 }
 
 .email-invoice-item-due {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-size: 0.75rem;
+  gap: 4px;
+  font-size: 0.6875rem;
   color: var(--color-text-muted);
 }
 .email-invoice-item-due--overdue {
   color: var(--color-danger);
 }
 .email-invoice-item-due-icon {
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
   flex-shrink: 0;
 }
 
 .email-status-tag {
   display: inline-block;
-  padding: 4px 10px;
+  padding: 3px 8px;
   border-radius: 20px;
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   font-weight: 600;
 }
 .email-status-tag--danger {
@@ -450,7 +450,7 @@ body.email-screen-page #root {
 .email-invoice-total-row {
   background: var(--color-primary-light);
   margin: 0;
-  padding: 16px 24px;
+  padding: 12px 20px;
   border-top: 2px solid var(--color-border);
 }
 .email-invoice-total-row .email-invoice-item-content {
@@ -459,20 +459,20 @@ body.email-screen-page #root {
 }
 .email-invoice-total-label {
   font-weight: 700;
-  font-size: 1.0625rem;
+  font-size: 1rem;
   color: var(--color-primary);
 }
 .email-invoice-total-amount {
   font-weight: 700;
-  font-size: 1.0625rem;
+  font-size: 1rem;
   color: var(--color-primary);
 }
 
 .email-cta-row {
-  margin-top: 28px;
+  margin-top: 20px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
   align-items: stretch;
 }
 .email-cta-primary {

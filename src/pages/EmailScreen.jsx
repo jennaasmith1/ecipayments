@@ -146,9 +146,9 @@ export default function EmailScreen() {
               </div>
             </div>
             <div className="email-inbox-pane-inner">
-              {isSummitEmail ? (
-                <SummitEmailBody />
-              ) : (
+{isSummitEmail ? (
+              <SummitEmailBody />
+            ) : (
                 <GenericEmailBody email={selectedEmail} />
               )}
             </div>
@@ -245,7 +245,13 @@ function SummitEmailBody() {
             </div>
           </div>
           <div className="email-cta-row">
-            <Link to="/pay" className="email-cta-primary">
+            <a
+              href="/pay"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="email-cta-primary"
+              aria-label="Pay Now"
+            >
               Pay Now
               <svg
                 className="email-cta-primary-icon email-cta-primary-icon-arrow"
@@ -257,7 +263,7 @@ function SummitEmailBody() {
               >
                 <path d="M5 12h14M12 5l7 7-7 7" />
               </svg>
-            </Link>
+            </a>
             <div className="email-cta-secondary-row">
               <Link to="/settings/autopay" className="email-cta-secondary-link">
                 <svg
