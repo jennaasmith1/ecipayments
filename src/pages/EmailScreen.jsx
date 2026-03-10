@@ -23,7 +23,7 @@ export default function EmailScreen() {
             Hi {customer.name},
           </p>
           <p className="email-lead">
-            You have <strong>{formatCurrency(totalOutstanding)}</strong> in outstanding invoices. Pay now with one click — no login required.
+            You have <strong>{formatCurrency(totalOutstanding)}</strong> in outstanding invoices. Pay now, no login required.
           </p>
           {emailInvoices.length > 0 && (
             <p className="email-earliest-due">

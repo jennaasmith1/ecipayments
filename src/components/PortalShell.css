@@ -8,7 +8,7 @@
 
 /* Sidebar */
 .portal-sidebar {
-  width: 260px;
+  width: 220px;
   flex-shrink: 0;
   height: 100vh;
   background: var(--color-bg-card);
@@ -185,7 +185,7 @@
   left: 0;
   width: 320px;
   min-width: 0;
-  max-width: calc(100vw - 24px);
+  max-width: 100%;
   max-height: 0;
   overflow: hidden;
   background: var(--color-bg-card);
@@ -198,12 +198,14 @@
   transition: max-height 0.25s ease;
   overflow-wrap: break-word;
   word-wrap: break-word;
+  box-sizing: border-box;
 }
 
 .portal-sidebar-notification-dropdown-open {
   max-height: 420px;
   border-color: var(--color-border-light);
   box-shadow: var(--shadow-sm);
+  overflow-x: hidden;
 }
 
 @keyframes portalDropdownIn {
@@ -230,14 +232,17 @@
 
 .portal-sidebar-notification-list {
   overflow-y: auto;
+  overflow-x: hidden;
   max-height: 300px;
   min-width: 0;
+  max-width: 100%;
 }
 
 .portal-sidebar-notification-item {
   display: block;
   width: 100%;
   min-width: 0;
+  max-width: 100%;
   padding: 12px 18px;
   text-align: left;
   background: none;
@@ -246,6 +251,7 @@
   cursor: pointer;
   transition: background var(--transition);
   font-family: inherit;
+  box-sizing: border-box;
 }
 
 .portal-sidebar-notification-item:hover {
@@ -264,30 +270,34 @@
   background: #dde5ed;
 }
 
+.portal-sidebar-notification-item-title,
+.portal-sidebar-notification-item-message,
+.portal-sidebar-notification-item-time {
+  display: block;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  box-sizing: border-box;
+}
+
+
 .portal-sidebar-notification-item-title {
   font-weight: 500;
   font-size: 0.875rem;
   color: var(--color-text);
   margin-bottom: 2px;
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-  word-break: break-word;
 }
 
 .portal-sidebar-notification-item-message {
   font-size: 0.8125rem;
   color: var(--color-text-secondary);
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-  word-break: break-word;
 }
 
 .portal-sidebar-notification-item-time {
   font-size: 0.75rem;
   color: var(--color-text-muted);
   margin-top: 4px;
-  overflow-wrap: break-word;
-  word-wrap: break-word;
 }
 
 .portal-sidebar-notification-dropdown-footer {
