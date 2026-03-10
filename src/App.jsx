@@ -12,6 +12,7 @@ import PaymentsDashboard from './pages/PaymentsDashboard';
 import AutoPaySetup from './pages/AutoPaySetup';
 import NotificationSettings from './pages/NotificationSettings';
 import Account from './pages/Account';
+import Chat from './pages/Chat';
 import './App.css';
 
 function ConditionalShell({ children }) {
@@ -37,6 +38,7 @@ function App() {
           <Route path="/pay" element={<PaymentLanding />} />
           <Route path="/pay/success" element={<PaymentSuccess />} />
           <Route path="/account" element={<Account />} />
+          <Route path="/chat" element={<Chat />} />
           <Route path="/settings/autopay" element={<AutoPaySetup />} />
           <Route path="/settings/notifications" element={<NotificationSettings />} />
           <Route path="*" element={<Navigate to="/" replace />} />

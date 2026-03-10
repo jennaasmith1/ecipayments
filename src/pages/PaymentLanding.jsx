@@ -14,6 +14,8 @@ import InvoicePreviewModal from '../components/InvoicePreviewModal';
 import AddPaymentMethodModal from '../components/AddPaymentMethodModal';
 import './PaymentLanding.css';
 
+const PAYMENT_PROCESSING_MS = 2200;
+
 const defaultSelectedIds = new Set(invoices.map((i) => i.id));
 const defaultPaymentMethodId = paymentMethods.find((m) => m.isRecommended)?.id ?? paymentMethods[0].id;
 
@@ -23,6 +25,7 @@ export default function PaymentLanding() {
   const [selectedPaymentId, setSelectedPaymentId] = useState(defaultPaymentMethodId);
   const [previewInvoice, setPreviewInvoice] = useState(null);
   const [addPaymentOpen, setAddPaymentOpen] = useState(false);
+  const [isPaying, setIsPaying] = useState(false);
 
   const selectedInvoices = invoices.filter((i) => selectedIds.has(i.id));
   const totalDue = selectedInvoices.reduce((sum, i) => sum + i.amount, 0);
@@ -45,13 +48,16 @@ export default function PaymentLanding() {
   };
 
   const handlePay = () => {
-    navigate('/pay/success', {
-      state: {
-        amount: totalDue,
-        paymentMethod: paymentMethods.find((m) => m.id === selectedPaymentId),
-        invoices: selectedInvoices,
-      },
-    });
+    setIsPaying(true);
+    setTimeout(() => {
+      navigate('/pay/success', {
+        state: {
+          amount: totalDue,
+          paymentMethod: paymentMethods.find((m) => m.id === selectedPaymentId),
+          invoices: selectedInvoices,
+        },
+      });
+    }, PAYMENT_PROCESSING_MS);
   };
 
   return (
@@ -204,7 +210,7 @@ export default function PaymentLanding() {
             type="button"
             className="pay-button"
             onClick={handlePay}
-            disabled={selectedInvoices.length === 0}
+            disabled={selectedInvoices.length === 0 || isPaying}
           >
             Pay {formatCurrency(totalDue)}
           </button>
@@ -217,6 +223,15 @@ export default function PaymentLanding() {
           </p>
         </aside>
       </div>
+
+      {isPaying && (
+        <div className="payment-loading-overlay" aria-live="polite" aria-busy="true">
+          <div className="payment-loading-overlay-content">
+            <div className="payment-loading-spinner" aria-hidden />
+            <p className="payment-loading-message">Processing your payment...</p>
+          </div>
+        </div>
+      )}
 
       {previewInvoice && (
         <InvoicePreviewModal invoice={previewInvoice} onClose={() => setPreviewInvoice(null)} />
