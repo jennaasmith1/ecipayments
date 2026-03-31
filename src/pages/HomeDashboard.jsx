@@ -3,18 +3,17 @@ import {
   customer,
   invoices,
   equipment,
-  serviceTickets,
   notifications,
   recentActivity,
   formatCurrency,
-  formatDate,
 } from '../data/fakeData';
+import { serviceTickets, isOpenServiceTicket } from '../data/serviceTicketsData';
 import './HomeDashboard.css';
 
 const totalBalance = invoices.reduce((sum, inv) => sum + inv.amount, 0);
 const invoicesDue = invoices.filter((i) => i.status === 'due_soon' || i.status === 'overdue');
 const amountDue = invoicesDue.reduce((sum, i) => sum + i.amount, 0);
-const openTickets = serviceTickets.filter((t) => t.status !== 'completed');
+const openTickets = serviceTickets.filter(isOpenServiceTicket);
 const devicesNeedingAttention = equipment.filter((e) => e.needsAttention);
 
 export default function HomeDashboard() {
@@ -55,7 +54,7 @@ export default function HomeDashboard() {
           <p className="home-card-meta">Active device{equipment.length !== 1 ? 's' : ''}</p>
           {devicesNeedingAttention.length > 0 && (
             <p className="home-card-alert">
-              {devicesNeedingAttention.length} device{devicesNeedingAttention.length !== 1 ? 's' : ''} need attention
+              {devicesNeedingAttention.length} device{devicesNeedingAttention.length !== 1 ? 's' : ''} with alerts (offline, meter, or supplies)
             </p>
           )}
           <Link to="/equipment" className="home-card-cta">
@@ -78,7 +77,7 @@ export default function HomeDashboard() {
       <section className="home-section">
         <h2 className="home-section-title">Quick actions</h2>
         <div className="home-quick-actions">
-          <Link to="/service#create" className="home-quick-action">
+          <Link to="/service?create=1" className="home-quick-action">
             <span className="home-quick-action-icon" aria-hidden>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 4v16M4 12h16" /></svg>
             </span>

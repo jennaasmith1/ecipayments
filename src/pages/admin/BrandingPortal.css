@@ -1,0 +1,213 @@
+.admin-branding-page .admin-branding-split {
+  display: grid;
+  grid-template-columns: minmax(300px, 400px) 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .admin-branding-page .admin-branding-split {
+    grid-template-columns: 1fr;
+  }
+}
+
+.admin-branding-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.admin-branding-logo-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.admin-branding-logo-thumb-wrap {
+  flex-shrink: 0;
+  width: 120px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.admin-branding-logo-thumb {
+  max-width: 100%;
+  max-height: 40px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+.admin-branding-logo-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.admin-branding-logo-file-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.admin-branding-logo-upload-label {
+  cursor: pointer;
+  margin: 0;
+}
+
+.admin-branding-colors-caption {
+  margin: -4px 0 12px;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--color-text-secondary);
+}
+
+.admin-color-row {
+  display: flex;
+  gap: 24px;
+}
+
+.admin-color-row input[type='color'] {
+  width: 48px;
+  height: 40px;
+  padding: 2px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+
+.admin-module-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.admin-module-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--color-border-light);
+  font-size: 0.875rem;
+}
+
+.admin-module-btns {
+  display: flex;
+  gap: 4px;
+}
+
+.admin-preview-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-secondary);
+  margin: 0 0 8px;
+}
+
+.admin-portal-preview {
+  display: flex;
+  min-height: 420px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--color-bg);
+  box-shadow: var(--shadow-md);
+}
+
+.admin-portal-preview-body {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+}
+
+.admin-portal-preview-sidebar {
+  width: 148px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg-card);
+  border-right: 1px solid var(--color-border);
+  box-shadow: inset 4px 0 0 0 var(--preview-primary);
+}
+
+.admin-portal-preview-sidebar-brand {
+  padding: 14px 12px;
+  border-bottom: 1px solid var(--color-border-light);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 56px;
+}
+
+.admin-portal-preview-logo-img {
+  max-height: 36px;
+  max-width: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+.admin-portal-preview-main {
+  flex: 1;
+  padding: 24px;
+  min-width: 0;
+  background: var(--color-bg);
+}
+
+.admin-portal-preview-hero h3 {
+  margin: 0 0 8px;
+  font-size: 1.25rem;
+}
+
+.admin-portal-preview-hero p {
+  margin: 0 0 20px;
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+}
+
+.admin-portal-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.admin-portal-preview-card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-top: 2px solid var(--preview-accent);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.admin-portal-preview-card-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--color-text-secondary);
+}
+
+.admin-portal-preview-cta {
+  font-size: 0.8125rem;
+  font-weight: 600;
+}

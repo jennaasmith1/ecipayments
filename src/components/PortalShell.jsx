@@ -1,6 +1,7 @@
-import { useState } from 'react';
-import { Link, NavLink, useLocation } from 'react-router-dom';
+import { useState, useMemo } from 'react';
+import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
 import { dealer, customer, notifications } from '../data/fakeData';
+import { ADMIN_PREVIEW_STORAGE_KEY } from '../data/adminMockData';
 import './PortalShell.css';
 
 const navSections = [
@@ -24,7 +25,7 @@ const navSections = [
     path: '/service',
     icon: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z',
     sub: [
-      { label: 'Create service ticket', path: '/service#create' },
+      { label: 'Create service ticket', path: '/service?create=1' },
       { label: 'View service tickets', path: '/service' },
       { label: 'Track technician', path: '/service' },
     ],
@@ -58,17 +59,6 @@ const navSections = [
       { label: 'AutoPay settings', path: '/settings/autopay' },
     ],
   },
-  {
-    label: 'Account',
-    path: '/account',
-    icon: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z',
-    sub: [
-      { label: 'Company details', path: '/account' },
-      { label: 'Saved payment methods', path: '/account#payment-methods' },
-      { label: 'Notification settings', path: '/settings/notifications' },
-      { label: 'User preferences', path: '/account#preferences' },
-    ],
-  },
 ];
 
 const accountLinks = [
@@ -76,16 +66,39 @@ const accountLinks = [
   { label: 'Saved payment methods', path: '/account#payment-methods' },
   { label: 'Notification settings', path: '/settings/notifications' },
   { label: 'User preferences', path: '/account#preferences' },
+  { label: 'Dealer admin', path: '/admin' },
 ];
 
-function PortalShell({ children }) {
+function PortalShell() {
   const [notificationOpen, setNotificationOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [expandedSection, setExpandedSection] = useState(null);
   const [accountDropdownOpen, setAccountDropdownOpen] = useState(false);
+  const [previewRev, setPreviewRev] = useState(0);
   const location = useLocation();
   const unreadCount = notifications.filter((n) => !n.read).length;
+
+  const adminPreview = useMemo(() => {
+    void location.pathname;
+    void previewRev;
+    if (typeof sessionStorage === 'undefined') return null;
+    try {
+      const raw = sessionStorage.getItem(ADMIN_PREVIEW_STORAGE_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
+  }, [location.pathname, previewRev]);
+
+  const dismissAdminPreview = () => {
+    try {
+      sessionStorage.removeItem(ADMIN_PREVIEW_STORAGE_KEY);
+    } catch {
+      /* ignore */
+    }
+    setPreviewRev((r) => r + 1);
+  };
 
   const isActiveSection = (path) => {
     if (path === '/') return location.pathname === '/';
@@ -307,6 +320,22 @@ function PortalShell({ children }) {
       </aside>
 
       <div className="portal-main-wrap">
+        {adminPreview?.label && (
+          <div className="portal-admin-preview-banner" role="status">
+            <span>
+              Viewing as <strong>{adminPreview.label}</strong>
+              {adminPreview.accountId && <span className="portal-admin-preview-meta"> · {adminPreview.accountId}</span>} (preview)
+            </span>
+            <div className="portal-admin-preview-actions">
+              <Link to="/admin" className="portal-admin-preview-link" onClick={dismissAdminPreview}>
+                Back to admin
+              </Link>
+              <button type="button" className="portal-admin-preview-dismiss" onClick={dismissAdminPreview}>
+                Dismiss
+              </button>
+            </div>
+          </div>
+        )}
         <button
           type="button"
           className="portal-mobile-menu-trigger"
@@ -320,7 +349,9 @@ function PortalShell({ children }) {
             <line x1="3" y1="18" x2="21" y2="18" />
           </svg>
         </button>
-        <main className="portal-content">{children}</main>
+        <main className="portal-content">
+          <Outlet />
+        </main>
       </div>
     </div>
   );

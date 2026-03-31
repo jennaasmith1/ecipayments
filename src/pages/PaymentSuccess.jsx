@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { customer, formatCurrency } from '../data/fakeData';
 import './PaymentSuccess.css';
@@ -14,9 +14,8 @@ export default function PaymentSuccess() {
     dateStyle: 'medium',
     timeStyle: 'short',
   });
-  const confirmationNumber = useMemo(
-    () => state.confirmationNumber ?? `CONF-${Date.now().toString(36).toUpperCase().slice(-9)}`,
-    [state.confirmationNumber]
+  const [confirmationNumber] = useState(
+    () => state.confirmationNumber ?? `CONF-${Date.now().toString(36).toUpperCase().slice(-9)}`
   );
 
   return (

@@ -1,5 +1,7 @@
 // Realistic fake data for office equipment dealer customer portal (demo only)
 
+import { legacyEquipmentList } from './equipmentFleetData';
+
 export const dealer = {
   name: 'Summit Office Solutions',
   logoText: 'Summit',
@@ -230,6 +232,15 @@ export const formatCurrency = (amount) =>
 export const formatDate = (dateStr) =>
   new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 
+export const formatDateTime = (isoStr) =>
+  new Date(isoStr).toLocaleString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+  });
+
 export const getStatusLabel = (status) => {
   switch (status) {
     case 'overdue':
@@ -256,79 +267,11 @@ export const getStatusVariant = (status) => {
   }
 };
 
-// Equipment (devices)
-export const equipment = [
-  {
-    id: 'eq-1',
-    name: 'Canon ImageRunner C3525i',
-    model: 'C3525i',
-    serialNumber: 'CN-2847-A1',
-    location: 'Main Office – 2nd Floor',
-    status: 'active',
-    needsAttention: false,
-    lastMeterRead: '2026-03-01',
-    lastMeterValue: 12450,
-    meterType: 'B&W / Color',
-  },
-  {
-    id: 'eq-2',
-    name: 'HP LaserJet MFP M428',
-    model: 'M428',
-    serialNumber: 'HP-8821-B2',
-    location: 'Reception',
-    status: 'active',
-    needsAttention: true,
-    lastMeterRead: '2026-02-15',
-    lastMeterValue: 8920,
-    meterType: 'B&W',
-  },
-  {
-    id: 'eq-3',
-    name: 'Canon imageCLASS MF445dw',
-    model: 'MF445dw',
-    serialNumber: 'CN-9102-C3',
-    location: 'Legal – 3rd Floor',
-    status: 'active',
-    needsAttention: false,
-    lastMeterRead: '2026-03-05',
-    lastMeterValue: 3420,
-    meterType: 'B&W',
-  },
-];
+// Equipment (devices) — derived from fleet prototype data for consistency across portal pages
+export const equipment = legacyEquipmentList;
 
-// Service tickets
-export const serviceTickets = [
-  {
-    id: 'ST-9012',
-    subject: 'Paper jam – C3525i',
-    deviceName: 'Canon ImageRunner C3525i',
-    status: 'scheduled',
-    statusLabel: 'Technician scheduled',
-    createdAt: '2026-03-06',
-    scheduledDate: '2026-03-10',
-    description: 'Frequent paper jams in tray 2.',
-  },
-  {
-    id: 'ST-9010',
-    subject: 'Toner low – M428',
-    deviceName: 'HP LaserJet MFP M428',
-    status: 'in_progress',
-    statusLabel: 'In progress',
-    createdAt: '2026-03-04',
-    scheduledDate: null,
-    description: 'Black toner replacement requested.',
-  },
-  {
-    id: 'ST-9008',
-    subject: 'Preventive maintenance – MF445dw',
-    deviceName: 'Canon imageCLASS MF445dw',
-    status: 'completed',
-    statusLabel: 'Completed',
-    createdAt: '2026-02-28',
-    completedDate: '2026-03-02',
-    description: 'Quarterly PM completed.',
-  },
-];
+// Service tickets (rich mock list — see serviceTicketsData.js)
+export { serviceTickets, isOpenServiceTicket } from './serviceTicketsData';
 
 // Supplies (products / recommended)
 export const supplies = [

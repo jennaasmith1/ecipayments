@@ -1,5 +1,5 @@
-/* Portal layout: sidebar + main */
-.portal-shell {
+/* Admin console layout: sidebar + main */
+.admin-shell {
   height: 100vh;
   overflow: hidden;
   display: flex;
@@ -7,7 +7,7 @@
 }
 
 /* Sidebar */
-.portal-sidebar {
+.admin-sidebar {
   width: 220px;
   flex-shrink: 0;
   height: 100vh;
@@ -20,44 +20,58 @@
   box-shadow: var(--shadow-sm);
 }
 
-.portal-sidebar-collapsed {
+.admin-sidebar-collapsed {
   width: 72px;
 }
 
-.portal-sidebar-collapsed .portal-nav-label,
-.portal-sidebar-collapsed .portal-nav-sub {
+.admin-sidebar-collapsed .admin-nav-label,
+.admin-sidebar-collapsed .admin-nav-sub {
   display: none;
 }
 
-.portal-sidebar-collapsed .portal-sidebar-logo-img {
+.admin-sidebar-collapsed .admin-sidebar-logo-img {
   display: block;
   max-width: 48px;
   height: auto;
   max-height: 48px;
 }
 
-.portal-sidebar-collapsed .portal-account-labels {
+.admin-sidebar-collapsed .admin-sidebar-logo-img-eci {
+  max-width: 100%;
+  width: auto;
+  max-height: 28px;
+}
+
+.admin-sidebar-collapsed .admin-account-labels {
   display: none;
 }
 
-.portal-sidebar-collapsed .portal-account-trigger {
+.admin-sidebar-collapsed .admin-account-trigger {
+  align-items: center;
+}
+
+.admin-sidebar-collapsed .admin-account-employer {
+  display: none;
+}
+
+.admin-sidebar-collapsed .admin-account-trigger-row {
   justify-content: center;
 }
 
-.portal-sidebar-collapsed .portal-account-chevron {
+.admin-sidebar-collapsed .admin-account-chevron {
   display: none;
 }
 
-.portal-sidebar-collapsed .portal-sidebar-header {
+.admin-sidebar-collapsed .admin-sidebar-header {
   padding: 8px 6px;
 }
 
-.portal-sidebar-collapsed .portal-sidebar-logo {
+.admin-sidebar-collapsed .admin-sidebar-logo {
   justify-content: center;
   padding: 12px;
 }
 
-.portal-sidebar-header {
+.admin-sidebar-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -69,14 +83,14 @@
   position: relative;
 }
 
-.portal-sidebar-header-actions {
+.admin-sidebar-header-actions {
   display: flex;
   align-items: center;
   gap: 4px;
 }
 
 /* Notifications block (above account) */
-.portal-sidebar-notifications {
+.admin-sidebar-notifications {
   flex-shrink: 0;
   border-top: 1px solid var(--color-border-light);
   padding: 8px 0;
@@ -84,7 +98,7 @@
   position: relative;
 }
 
-.portal-notifications-trigger {
+.admin-notifications-trigger {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -102,17 +116,17 @@
   font-weight: 500;
 }
 
-.portal-notifications-trigger:hover {
+.admin-notifications-trigger:hover {
   background: var(--color-primary-light);
   color: var(--color-text);
 }
 
-.portal-notifications-trigger-open {
+.admin-notifications-trigger-open {
   background: var(--color-primary-light);
   color: var(--color-primary);
 }
 
-.portal-notifications-icon {
+.admin-notifications-icon {
   flex-shrink: 0;
   position: relative;
   display: flex;
@@ -122,12 +136,12 @@
   height: 20px;
 }
 
-.portal-notifications-icon svg {
+.admin-notifications-icon svg {
   width: 20px;
   height: 20px;
 }
 
-.portal-notifications-badge {
+.admin-notifications-badge {
   position: absolute;
   top: -4px;
   right: -4px;
@@ -144,7 +158,7 @@
   justify-content: center;
 }
 
-.portal-notifications-label {
+.admin-notifications-label {
   flex: 1;
   min-width: 0;
   white-space: nowrap;
@@ -152,34 +166,34 @@
   text-overflow: ellipsis;
 }
 
-.portal-notifications-chevron {
+.admin-notifications-chevron {
   flex-shrink: 0;
   width: 18px;
   height: 18px;
   transition: transform var(--transition);
 }
 
-.portal-notifications-chevron-open {
+.admin-notifications-chevron-open {
   transform: rotate(180deg);
 }
 
-.portal-sidebar-collapsed .portal-notifications-label,
-.portal-sidebar-collapsed .portal-notifications-chevron {
+.admin-sidebar-collapsed .admin-notifications-label,
+.admin-sidebar-collapsed .admin-notifications-chevron {
   display: none;
 }
 
-.portal-sidebar-collapsed .portal-notifications-trigger {
+.admin-sidebar-collapsed .admin-notifications-trigger {
   justify-content: center;
 }
 
-.portal-sidebar-notification-backdrop {
+.admin-sidebar-notification-backdrop {
   position: fixed;
   inset: 0;
   z-index: 99;
   background: transparent;
 }
 
-.portal-sidebar-notification-dropdown {
+.admin-sidebar-notification-dropdown {
   position: absolute;
   bottom: calc(100% + 4px);
   left: 0;
@@ -201,7 +215,7 @@
   box-sizing: border-box;
 }
 
-.portal-sidebar-notification-dropdown-open {
+.admin-sidebar-notification-dropdown-open {
   max-height: 420px;
   border-color: var(--color-border-light);
   box-shadow: var(--shadow-sm);
@@ -219,7 +233,7 @@
   }
 }
 
-.portal-sidebar-notification-dropdown-header {
+.admin-sidebar-notification-dropdown-header {
   padding: 14px 18px;
   border-bottom: 1px solid var(--color-border-light);
   font-weight: 600;
@@ -230,7 +244,7 @@
   word-wrap: break-word;
 }
 
-.portal-sidebar-notification-list {
+.admin-sidebar-notification-list {
   overflow-y: auto;
   overflow-x: hidden;
   max-height: 300px;
@@ -238,7 +252,7 @@
   max-width: 100%;
 }
 
-.portal-sidebar-notification-item {
+.admin-sidebar-notification-item {
   display: block;
   width: 100%;
   min-width: 0;
@@ -254,25 +268,25 @@
   box-sizing: border-box;
 }
 
-.portal-sidebar-notification-item:hover {
+.admin-sidebar-notification-item:hover {
   background: var(--color-bg);
 }
 
-.portal-sidebar-notification-item:last-of-type {
+.admin-sidebar-notification-item:last-of-type {
   border-bottom: none;
 }
 
-.portal-sidebar-notification-item-unread {
+.admin-sidebar-notification-item-unread {
   background: var(--color-primary-light);
 }
 
-.portal-sidebar-notification-item-unread:hover {
+.admin-sidebar-notification-item-unread:hover {
   background: #dde5ed;
 }
 
-.portal-sidebar-notification-item-title,
-.portal-sidebar-notification-item-message,
-.portal-sidebar-notification-item-time {
+.admin-sidebar-notification-item-title,
+.admin-sidebar-notification-item-message,
+.admin-sidebar-notification-item-time {
   display: block;
   max-width: 100%;
   white-space: normal;
@@ -282,49 +296,61 @@
 }
 
 
-.portal-sidebar-notification-item-title {
+.admin-sidebar-notification-item-title {
   font-weight: 500;
   font-size: 0.875rem;
   color: var(--color-text);
   margin-bottom: 2px;
 }
 
-.portal-sidebar-notification-item-message {
+.admin-sidebar-notification-item-message {
   font-size: 0.8125rem;
   color: var(--color-text-secondary);
 }
 
-.portal-sidebar-notification-item-time {
+.admin-sidebar-notification-item-time {
   font-size: 0.75rem;
   color: var(--color-text-muted);
   margin-top: 4px;
 }
 
-.portal-sidebar-notification-dropdown-footer {
+.admin-sidebar-notification-dropdown-footer {
   padding: 12px 18px;
   border-top: 1px solid var(--color-border-light);
   background: var(--color-bg);
 }
 
-.portal-sidebar-notification-dropdown-footer a {
+.admin-sidebar-notification-dropdown-footer a {
   font-size: 0.875rem;
   font-weight: 500;
 }
 
-.portal-sidebar-logo {
+.admin-sidebar-logo {
   display: flex;
   align-items: center;
   text-decoration: none;
   color: inherit;
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
 }
 
-.portal-sidebar-logo-img {
+.admin-sidebar-logo-img {
   height: 48px;
   width: auto;
   object-fit: contain;
 }
 
-.portal-sidebar-collapse-wrap {
+.admin-sidebar-logo-img-eci {
+  height: auto;
+  max-height: 40px;
+  width: 100%;
+  max-width: 100%;
+  object-fit: contain;
+  object-position: left center;
+}
+
+.admin-sidebar-collapse-wrap {
   flex-shrink: 0;
   border-top: 1px solid var(--color-border-light);
   padding: 8px;
@@ -333,7 +359,7 @@
   justify-content: center;
 }
 
-.portal-sidebar-toggle {
+.admin-sidebar-toggle {
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -348,22 +374,22 @@
   transition: background var(--transition), color var(--transition);
 }
 
-.portal-sidebar-toggle:hover {
+.admin-sidebar-toggle:hover {
   background: var(--color-primary-light);
   color: var(--color-primary);
 }
 
-.portal-sidebar-toggle svg {
+.admin-sidebar-toggle svg {
   width: 18px;
   height: 18px;
   transition: transform var(--transition);
 }
 
-.portal-sidebar-collapse-icon-expand {
+.admin-sidebar-collapse-icon-expand {
   transform: rotate(180deg);
 }
 
-.portal-sidebar-close-mobile {
+.admin-sidebar-close-mobile {
   display: none;
   align-items: center;
   justify-content: center;
@@ -377,17 +403,17 @@
   cursor: pointer;
 }
 
-.portal-sidebar-close-mobile:hover {
+.admin-sidebar-close-mobile:hover {
   background: var(--color-primary-light);
   color: var(--color-primary);
 }
 
-.portal-sidebar-close-mobile svg {
+.admin-sidebar-close-mobile svg {
   width: 22px;
   height: 22px;
 }
 
-.portal-sidebar-nav {
+.admin-sidebar-nav {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
@@ -396,17 +422,18 @@
 }
 
 /* Sidebar account block (bottom) */
-.portal-sidebar-account {
+.admin-sidebar-account {
   flex-shrink: 0;
   border-top: 1px solid var(--color-border-light);
   padding: 8px 0;
   margin: 0 8px;
 }
 
-.portal-account-trigger {
+.admin-account-trigger {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
   width: 100%;
   padding: 8px 10px;
   background: none;
@@ -419,11 +446,18 @@
   font-family: inherit;
 }
 
-.portal-account-trigger:hover {
+.admin-account-trigger-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+}
+
+.admin-account-trigger:hover {
   background: var(--color-primary-light);
 }
 
-.portal-account-avatar {
+.admin-account-avatar {
   flex-shrink: 0;
   width: 28px;
   height: 28px;
@@ -437,7 +471,7 @@
   font-size: 0.75rem;
 }
 
-.portal-account-labels {
+.admin-account-labels {
   flex: 1;
   min-width: 0;
   display: flex;
@@ -446,31 +480,65 @@
   align-items: flex-start;
 }
 
-.portal-account-name {
+.admin-account-name {
   font-size: 0.8125rem;
   font-weight: 500;
   color: var(--color-text);
   line-height: 1.25;
 }
 
-.portal-account-company {
+.admin-account-role {
   font-size: 0.6875rem;
   color: var(--color-text-secondary);
   line-height: 1.2;
 }
 
-.portal-account-chevron {
+.admin-account-subtitle {
+  font-size: 0.625rem;
+  color: var(--color-text-muted);
+  line-height: 1.25;
+  margin-top: 2px;
+  word-break: break-all;
+}
+
+.admin-account-employer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  width: 100%;
+  padding-top: 10px;
+  margin-top: 2px;
+  border-top: 1px solid var(--color-border-light);
+}
+
+.admin-account-employer-logo {
+  max-height: 32px;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  object-position: left center;
+}
+
+.admin-account-employer-name {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  line-height: 1.2;
+}
+
+.admin-account-chevron {
   flex-shrink: 0;
   width: 18px;
   height: 18px;
   transition: transform var(--transition);
 }
 
-.portal-account-chevron-open {
+.admin-account-chevron-open {
   transform: rotate(180deg);
 }
 
-.portal-account-dropdown {
+.admin-account-dropdown {
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.25s ease;
@@ -481,23 +549,23 @@
   border-top: none;
 }
 
-.portal-account-dropdown-open {
+.admin-account-dropdown-open {
   max-height: 280px;
   border-color: var(--color-border-light);
   box-shadow: var(--shadow-sm);
 }
 
-.portal-account-links {
+.admin-account-links {
   list-style: none;
   margin: 0;
   padding: 4px 0 8px 0;
 }
 
-.portal-account-links li {
+.admin-account-links li {
   margin: 0;
 }
 
-.portal-account-link {
+.admin-account-link {
   display: block;
   padding: 6px 14px 6px 40px;
   font-size: 0.8125rem;
@@ -506,27 +574,27 @@
   transition: color var(--transition), background var(--transition);
 }
 
-.portal-account-link:hover {
+.admin-account-link:hover {
   color: var(--color-accent);
   background: var(--color-bg-card);
 }
 
-.portal-nav-section {
+.admin-nav-section {
   margin-bottom: 2px;
 }
 
-.portal-nav-item-wrapper {
+.admin-nav-item-wrapper {
   display: flex;
   align-items: center;
   position: relative;
 }
 
-.portal-nav-item-wrapper .portal-nav-item {
+.admin-nav-item-wrapper .admin-nav-item {
   flex: 1;
   min-width: 0;
 }
 
-.portal-nav-dropdown-trigger {
+.admin-nav-dropdown-trigger {
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -543,21 +611,21 @@
   transition: background var(--transition), color var(--transition), transform var(--transition);
 }
 
-.portal-nav-dropdown-trigger:hover {
+.admin-nav-dropdown-trigger:hover {
   background: var(--color-bg);
   color: var(--color-text);
 }
 
-.portal-nav-dropdown-trigger svg {
+.admin-nav-dropdown-trigger svg {
   width: 16px;
   height: 16px;
 }
 
-.portal-nav-dropdown-trigger svg.portal-nav-chevron-open {
+.admin-nav-dropdown-trigger svg.admin-nav-chevron-open {
   transform: rotate(180deg);
 }
 
-.portal-nav-dropdown {
+.admin-nav-dropdown {
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.25s ease;
@@ -568,13 +636,13 @@
   border-top: none;
 }
 
-.portal-nav-dropdown-open {
+.admin-nav-dropdown-open {
   max-height: 320px;
   border-color: var(--color-border-light);
   box-shadow: var(--shadow-sm);
 }
 
-.portal-nav-item {
+.admin-nav-item {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -587,18 +655,18 @@
   border-left: 3px solid transparent;
 }
 
-.portal-nav-item:hover {
+.admin-nav-item:hover {
   background: var(--color-bg);
   color: var(--color-text);
 }
 
-.portal-nav-item-active {
+.admin-nav-item-active {
   background: var(--color-primary-light);
   color: var(--color-primary);
   border-left-color: var(--color-accent);
 }
 
-.portal-nav-icon {
+.admin-nav-icon {
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -607,28 +675,28 @@
   height: 20px;
 }
 
-.portal-nav-icon svg {
+.admin-nav-icon svg {
   width: 18px;
   height: 18px;
 }
 
-.portal-nav-label {
+.admin-nav-label {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.portal-nav-sub {
+.admin-nav-sub {
   list-style: none;
   margin: 0;
   padding: 4px 0 8px 0;
 }
 
-.portal-nav-sub li {
+.admin-nav-sub li {
   margin: 0;
 }
 
-.portal-nav-sub-link {
+.admin-nav-sub-link {
   display: block;
   padding: 6px 14px 6px 40px;
   font-size: 0.8125rem;
@@ -637,59 +705,13 @@
   transition: color var(--transition), background var(--transition);
 }
 
-.portal-nav-sub-link:hover {
+.admin-nav-sub-link:hover {
   color: var(--color-accent);
   background: var(--color-bg-card);
 }
 
-/* Admin preview banner (opened from dealer admin) */
-.portal-admin-preview-banner {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 10px 24px;
-  background: var(--color-accent-light);
-  border-bottom: 1px solid var(--color-border);
-  font-size: 0.875rem;
-  color: var(--color-text);
-}
-
-.portal-admin-preview-meta {
-  color: var(--color-text-secondary);
-  font-weight: 400;
-}
-
-.portal-admin-preview-actions {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.portal-admin-preview-link {
-  font-weight: 600;
-  font-size: 0.875rem;
-}
-
-.portal-admin-preview-dismiss {
-  padding: 6px 12px;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-accent);
-  background: var(--color-bg-card);
-  color: var(--color-primary);
-  font-family: inherit;
-  cursor: pointer;
-}
-
-.portal-admin-preview-dismiss:hover {
-  background: var(--color-bg);
-}
-
 /* Main area */
-.portal-main-wrap {
+.admin-main-wrap {
   flex: 1;
   min-width: 0;
   min-height: 0;
@@ -699,36 +721,21 @@
   position: relative;
 }
 
-.portal-mobile-menu-trigger {
+.admin-mobile-menu-trigger {
   display: none;
 }
 
-.portal-content {
+.admin-content {
   flex: 1;
+  width: 100%;
+  min-width: 0;
   padding: 24px;
   overflow-x: hidden;
 }
 
-/* Service workspace: flush top, fill main height, column scroll (not whole main) */
-.portal-main-wrap:has(main.portal-content > .service-page) {
-  overflow: hidden;
-}
-
-main.portal-content:has(.service-page) {
-  padding-top: 0;
-  padding-right: 0;
-  padding-bottom: 0;
-  padding-left: 0;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  min-height: 0;
-  overflow: hidden;
-}
-
 /* Mobile: sidebar as overlay + menu trigger */
 @media (max-width: 1024px) {
-  .portal-mobile-menu-trigger {
+  .admin-mobile-menu-trigger {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -748,21 +755,21 @@ main.portal-content:has(.service-page) {
     transition: background var(--transition), color var(--transition);
   }
 
-  .portal-mobile-menu-trigger:hover {
+  .admin-mobile-menu-trigger:hover {
     background: var(--color-primary-light);
     color: var(--color-primary);
   }
 
-  .portal-mobile-menu-trigger svg {
+  .admin-mobile-menu-trigger svg {
     width: 22px;
     height: 22px;
   }
 
-  .portal-shell:has(.portal-sidebar-mobile-open) .portal-mobile-menu-trigger {
+  .admin-shell:has(.admin-sidebar-mobile-open) .admin-mobile-menu-trigger {
     display: none;
   }
 
-  .portal-sidebar {
+  .admin-sidebar {
     position: fixed;
     left: 0;
     top: 0;
@@ -772,35 +779,35 @@ main.portal-content:has(.service-page) {
     transition: transform var(--transition);
   }
 
-  .portal-sidebar-mobile-open {
+  .admin-sidebar-mobile-open {
     transform: translateX(0);
     box-shadow: var(--shadow-lg);
   }
 
-  .portal-sidebar-collapsed {
+  .admin-sidebar-collapsed {
     width: 280px;
   }
 
-  .portal-sidebar-collapsed .portal-nav-label,
-  .portal-sidebar-collapsed .portal-nav-sub,
-  .portal-sidebar-collapsed .portal-sidebar-logo-img {
+  .admin-sidebar-collapsed .admin-nav-label,
+  .admin-sidebar-collapsed .admin-nav-sub,
+  .admin-sidebar-collapsed .admin-sidebar-logo-img {
     display: block;
   }
 
-  .portal-sidebar-collapsed .portal-sidebar-logo-img {
+  .admin-sidebar-collapsed .admin-sidebar-logo-img {
     max-width: none;
     max-height: 48px;
   }
 
-  .portal-sidebar-collapsed .portal-sidebar-logo {
+  .admin-sidebar-collapsed .admin-sidebar-logo {
     justify-content: flex-start;
   }
 
-  .portal-sidebar-toggle {
+  .admin-sidebar-toggle {
     display: none;
   }
 
-  .portal-sidebar-close-mobile {
+  .admin-sidebar-close-mobile {
     display: flex;
   }
 }
