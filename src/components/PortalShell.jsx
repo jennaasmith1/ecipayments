@@ -129,10 +129,27 @@ function PortalShell() {
         </div>
         <nav className="portal-sidebar-nav" aria-label="Main navigation">
           {navSections.map((section) => (
-            <div key={section.path} className="portal-nav-section">
+            <div
+              key={section.path}
+              className="portal-nav-section"
+              onMouseEnter={() => {
+                if (!sidebarCollapsed && section.sub) {
+                  setExpandedSection(section.path);
+                }
+              }}
+              onMouseLeave={() => {
+                if (!sidebarCollapsed && section.sub) {
+                  setExpandedSection(null);
+                }
+              }}
+            >
               {section.sub && !sidebarCollapsed ? (
                 <>
-                  <div className="portal-nav-item-wrapper">
+                  <div
+                    className={`portal-nav-item-wrapper portal-nav-item-wrapper-with-dropdown ${
+                      expandedSection === section.path ? 'portal-nav-item-wrapper-open' : ''
+                    }`}
+                  >
                     <NavLink
                       to={section.path}
                       end={section.path === '/'}
@@ -147,18 +164,18 @@ function PortalShell() {
                         </svg>
                       </span>
                       <span className="portal-nav-label">{section.label}</span>
+                      <span className="portal-nav-chevron-wrap">
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          className={expandedSection === section.path ? 'portal-nav-chevron-open' : ''}
+                        >
+                          <path d="M6 9l6 6 6-6" />
+                        </svg>
+                      </span>
                     </NavLink>
-                    <button
-                      type="button"
-                      className="portal-nav-dropdown-trigger"
-                      onClick={() => toggleSection(section.path)}
-                      aria-expanded={expandedSection === section.path}
-                      aria-label={expandedSection === section.path ? 'Collapse submenu' : 'Expand submenu'}
-                    >
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={expandedSection === section.path ? 'portal-nav-chevron-open' : ''}>
-                        <path d="M6 9l6 6 6-6" />
-                      </svg>
-                    </button>
                   </div>
                   <div className={`portal-nav-dropdown ${expandedSection === section.path ? 'portal-nav-dropdown-open' : ''}`}>
                     <ul className="portal-nav-sub">

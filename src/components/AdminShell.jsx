@@ -99,10 +99,27 @@ export default function AdminShell() {
         </div>
         <nav className="admin-sidebar-nav" aria-label="Admin navigation">
           {navSections.map((section) => (
-            <div key={section.path} className="admin-nav-section">
+            <div
+              key={section.path}
+              className="admin-nav-section"
+              onMouseEnter={() => {
+                if (!sidebarCollapsed && section.sub) {
+                  setExpandedSection(section.path);
+                }
+              }}
+              onMouseLeave={() => {
+                if (!sidebarCollapsed && section.sub) {
+                  setExpandedSection(null);
+                }
+              }}
+            >
               {section.sub && !sidebarCollapsed ? (
                 <>
-                  <div className="admin-nav-item-wrapper">
+                  <div
+                    className={`admin-nav-item-wrapper admin-nav-item-wrapper-with-dropdown ${
+                      expandedSection === section.path ? 'admin-nav-item-wrapper-open' : ''
+                    }`}
+                  >
                     <NavLink
                       to={section.path}
                       end={section.end}
@@ -117,24 +134,18 @@ export default function AdminShell() {
                         </svg>
                       </span>
                       <span className="admin-nav-label">{section.label}</span>
+                      <span className="admin-nav-chevron-wrap">
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          className={expandedSection === section.path ? 'admin-nav-chevron-open' : ''}
+                        >
+                          <path d="M6 9l6 6 6-6" />
+                        </svg>
+                      </span>
                     </NavLink>
-                    <button
-                      type="button"
-                      className="admin-nav-dropdown-trigger"
-                      onClick={() => toggleSection(section.path)}
-                      aria-expanded={expandedSection === section.path}
-                      aria-label={expandedSection === section.path ? 'Collapse submenu' : 'Expand submenu'}
-                    >
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        className={expandedSection === section.path ? 'admin-nav-chevron-open' : ''}
-                      >
-                        <path d="M6 9l6 6 6-6" />
-                      </svg>
-                    </button>
                   </div>
                   <div className={`admin-nav-dropdown ${expandedSection === section.path ? 'admin-nav-dropdown-open' : ''}`}>
                     <ul className="admin-nav-sub">
