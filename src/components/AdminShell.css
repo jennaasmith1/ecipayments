@@ -343,9 +343,9 @@
 
 .admin-sidebar-logo-img-eci {
   height: auto;
-  max-height: 40px;
+  max-height: 36px;
   width: 100%;
-  max-width: 100%;
+  max-width: 168px;
   object-fit: contain;
   object-position: left center;
 }

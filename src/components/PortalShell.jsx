@@ -66,8 +66,23 @@ const accountLinks = [
   { label: 'Saved payment methods', path: '/account#payment-methods' },
   { label: 'Notification settings', path: '/settings/notifications' },
   { label: 'User preferences', path: '/account#preferences' },
-  { label: 'Dealer admin', path: '/admin' },
+  { label: 'Platform admin', path: '/admin' },
 ];
+
+/** Whether the current URL belongs to this sidebar section (for active styling + which submenu stays open). */
+function pathMatchesNavSection(sectionPath, pathname) {
+  if (sectionPath === '/') return pathname === '/';
+  if (sectionPath === '/payments') {
+    return (
+      pathname === '/payments' ||
+      pathname.startsWith('/payments/') ||
+      pathname === '/pay' ||
+      pathname.startsWith('/pay/') ||
+      pathname === '/settings/autopay'
+    );
+  }
+  return pathname === sectionPath || pathname.startsWith(`${sectionPath}/`);
+}
 
 function PortalShell() {
   const [notificationOpen, setNotificationOpen] = useState(false);
@@ -101,10 +116,7 @@ function PortalShell() {
     setPreviewRev((r) => r + 1);
   };
 
-  const isActiveSection = (path) => {
-    if (path === '/') return location.pathname === '/';
-    return location.pathname.startsWith(path);
-  };
+  const isActiveSection = (path) => pathMatchesNavSection(path, location.pathname);
 
   const toggleSection = (path) => {
     // If this section is the active one (current route inside it), don't allow collapsing it
@@ -115,14 +127,11 @@ function PortalShell() {
     setExpandedSection((prev) => (prev === path ? null : path));
   };
 
-  // Keep dropdown open when a sub-route under a section is active
+  // Only one submenu open: the section that owns the current route. Home and other top-level pages collapse all.
   useEffect(() => {
-    const activeParent = navSections.find(
-      (section) => section.sub && location.pathname.startsWith(section.path)
-    );
-    if (activeParent) {
-      setExpandedSection((prev) => (prev === activeParent.path ? prev : activeParent.path));
-    }
+    const { pathname } = location;
+    const active = navSections.find((section) => section.sub && pathMatchesNavSection(section.path, pathname));
+    setExpandedSection(active ? active.path : null);
   }, [location.pathname]);
 
   return (
@@ -130,7 +139,7 @@ function PortalShell() {
       <aside className={`portal-sidebar ${sidebarCollapsed ? 'portal-sidebar-collapsed' : ''} ${mobileMenuOpen ? 'portal-sidebar-mobile-open' : ''}`}>
         <div className="portal-sidebar-header">
           <Link to="/" className="portal-sidebar-logo" onClick={() => setMobileMenuOpen(false)}>
-            <img src="/summit-logo-header.png" alt={dealer.name} className="portal-sidebar-logo-img" />
+            <img src="/branding/tesla-logo.png" alt={dealer.name} className="portal-sidebar-logo-img" />
           </Link>
           <div className="portal-sidebar-header-actions">
             <button
@@ -324,6 +333,12 @@ function PortalShell() {
                 </li>
               ))}
             </ul>
+          </div>
+        </div>
+        <div className="portal-powered-by" aria-label="Platform provider">
+          <div className="portal-powered-by-inner">
+            <span className="portal-powered-by-text">Powered by</span>
+            <img src="/branding/ubeo-wordmark.png" alt="" className="portal-powered-by-logo" />
           </div>
         </div>
         <div className="portal-sidebar-collapse-wrap">

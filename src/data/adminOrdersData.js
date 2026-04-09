@@ -1,5 +1,5 @@
 /**
- * Dealer-facing global orders — demo data only (no APIs).
+ * Ubeo admin — global orders — demo data only (no APIs).
  */
 
 export const ORDER_STATUS_OPTIONS = [
@@ -18,12 +18,12 @@ export const ORDER_TYPE_OPTIONS = [
 
 /** Customers with orders — ids match admin customers where possible */
 export const ORDER_CUSTOMER_OPTIONS = [
-  { id: 'brightstone', name: 'Brightstone Law Group' },
+  { id: 'tesla', name: 'Tesla' },
   { id: 'hartwell', name: 'Hartwell Medical Group' },
   { id: 'meridian', name: 'Meridian Legal Services' },
   { id: 'kessler', name: 'Kessler Engineering LLC' },
   { id: 'redwood', name: 'Redwood Medical Center' },
-  { id: 'summit-solutions', name: 'Summit Office Solutions' },
+  { id: 'northwind', name: 'Northwind Logistics' },
   { id: 'blue-peak', name: 'Blue Peak Manufacturing' },
 ];
 
@@ -41,10 +41,10 @@ export const ORDER_LOCATIONS = [
 export const AI_ORDER_INSIGHTS = [
   {
     id: 'aoi-1',
-    text: 'Brightstone Law Group has 3 orders with delays or backorders — worth a quick check-in before your Thursday review.',
+    text: 'Tesla has 3 orders with delays or backorders — worth a quick check-in before your Thursday review.',
     tone: 'warn',
     actions: [
-      { id: 'aoi-1a', label: 'Open Brightstone', to: '/admin/customers/brightstone', variant: 'secondary' },
+      { id: 'aoi-1a', label: 'Open Tesla', to: '/admin/customers/tesla', variant: 'secondary' },
       { id: 'aoi-1b', label: 'View orders', to: '/admin/orders', variant: 'tertiary' },
     ],
   },
@@ -68,10 +68,10 @@ export const AI_ORDER_INSIGHTS = [
   },
   {
     id: 'aoi-4',
-    text: 'Summit Office Solutions shows steady supplies volume with no open issues — good account health signal for renewal prep.',
+    text: 'Northwind Logistics shows steady supplies volume with no open issues — good account health signal for renewal prep.',
     tone: 'neutral',
     actions: [
-      { id: 'aoi-4a', label: 'Open Summit', to: '/admin/customers/summit-solutions', variant: 'secondary' },
+      { id: 'aoi-4a', label: 'Open Northwind', to: '/admin/customers/northwind', variant: 'secondary' },
       { id: 'aoi-4b', label: 'Start renewal task', disabled: true, variant: 'tertiary' },
     ],
   },
@@ -98,8 +98,8 @@ export const globalOrders = [
   {
     id: 'ord-24001',
     orderNumber: 'ORD-2026-18420',
-    customerId: 'brightstone',
-    customerName: 'Brightstone Law Group',
+    customerId: 'tesla',
+    customerName: 'Tesla',
     orderType: 'supplies',
     itemsSummary: 'Toner (Black, Cyan), Waste toner box',
     items: [
@@ -111,7 +111,7 @@ export const globalOrders = [
     orderDate: '2026-03-26',
     expectedDelivery: '2026-04-03',
     total: 1240.5,
-    location: 'Main Office — 200 Park Ave',
+    location: 'Tesla Palo Alto – Finance & AP, Floor 2',
     contractBilling: 'contract',
     trackingNumber: null,
     carrier: '—',
@@ -120,8 +120,8 @@ export const globalOrders = [
   {
     id: 'ord-24002',
     orderNumber: 'ORD-2026-18302',
-    customerId: 'brightstone',
-    customerName: 'Brightstone Law Group',
+    customerId: 'tesla',
+    customerName: 'Tesla',
     orderType: 'parts',
     itemsSummary: 'Drum unit, Developer (Magenta)',
     items: [
@@ -132,7 +132,7 @@ export const globalOrders = [
     orderDate: '2026-03-22',
     expectedDelivery: '2026-03-28',
     total: 892.0,
-    location: 'Legal — 3rd Floor',
+    location: 'Tesla Fremont – Legal production, Bldg D',
     contractBilling: 'contract',
     trackingNumber: '1Z999AA10123456784',
     carrier: 'UPS Ground',
@@ -141,8 +141,8 @@ export const globalOrders = [
   {
     id: 'ord-24003',
     orderNumber: 'ORD-2026-18011',
-    customerId: 'brightstone',
-    customerName: 'Brightstone Law Group',
+    customerId: 'tesla',
+    customerName: 'Tesla',
     orderType: 'supplies',
     itemsSummary: 'Staple cartridge, Paper (Letter)',
     items: [
@@ -153,7 +153,7 @@ export const globalOrders = [
     orderDate: '2026-03-10',
     expectedDelivery: '2026-03-14',
     total: 428.9,
-    location: 'Main Office — 200 Park Ave',
+    location: 'Tesla Palo Alto – Mailroom & reprographics',
     contractBilling: 'contract',
     trackingNumber: '94055118995600000001',
     carrier: 'FedEx',
@@ -162,8 +162,8 @@ export const globalOrders = [
   {
     id: 'ord-24004',
     orderNumber: 'ORD-2026-18488',
-    customerId: 'brightstone',
-    customerName: 'Brightstone Law Group',
+    customerId: 'tesla',
+    customerName: 'Tesla',
     orderType: 'equipment',
     itemsSummary: 'Canon imageRUNNER ADVANCE C5840i',
     items: [itemLine('Canon imageRUNNER ADVANCE C5840i', 1, 'ok', 'EQ-NEW-9021')],
@@ -171,7 +171,7 @@ export const globalOrders = [
     orderDate: '2026-03-29',
     expectedDelivery: '2026-04-18',
     total: 12850.0,
-    location: 'Reception',
+    location: 'Tesla Las Vegas Service & Delivery – Front desk',
     contractBilling: 'contract',
     trackingNumber: null,
     carrier: 'Freight — scheduled',
@@ -390,8 +390,8 @@ export const globalOrders = [
   {
     id: 'ord-24015',
     orderNumber: 'ORD-2026-18495',
-    customerId: 'summit-solutions',
-    customerName: 'Summit Office Solutions',
+    customerId: 'northwind',
+    customerName: 'Northwind Logistics',
     orderType: 'supplies',
     itemsSummary: 'Paper (Letter, Legal), Toner (Black)',
     items: [
@@ -412,8 +412,8 @@ export const globalOrders = [
   {
     id: 'ord-24016',
     orderNumber: 'ORD-2026-18421',
-    customerId: 'summit-solutions',
-    customerName: 'Summit Office Solutions',
+    customerId: 'northwind',
+    customerName: 'Northwind Logistics',
     orderType: 'equipment',
     itemsSummary: 'Wide-format printer — PlotWave',
     items: [itemLine('PlotWave 3000 system', 1, 'ok', 'EQ-WF-900')],
@@ -430,8 +430,8 @@ export const globalOrders = [
   {
     id: 'ord-24017',
     orderNumber: 'ORD-2026-18200',
-    customerId: 'summit-solutions',
-    customerName: 'Summit Office Solutions',
+    customerId: 'northwind',
+    customerName: 'Northwind Logistics',
     orderType: 'parts',
     itemsSummary: 'Finisher unit, Booklet maker',
     items: [
@@ -514,8 +514,8 @@ export const globalOrders = [
   {
     id: 'ord-24021',
     orderNumber: 'ORD-2026-18499',
-    customerId: 'brightstone',
-    customerName: 'Brightstone Law Group',
+    customerId: 'tesla',
+    customerName: 'Tesla',
     orderType: 'supplies',
     itemsSummary: 'Paper (Letter), Binder covers',
     items: [
@@ -526,7 +526,7 @@ export const globalOrders = [
     orderDate: '2026-03-20',
     expectedDelivery: '2026-04-05',
     total: 356.0,
-    location: 'Main Office — 200 Park Ave',
+    location: 'Tesla Palo Alto – Engineering, Floor 3',
     contractBilling: 'non_contract',
     trackingNumber: null,
     carrier: '—',
@@ -598,7 +598,7 @@ export const globalOrders = [
 ];
 
 /** Admin customer profile routes exist for these ids */
-export const ADMIN_CUSTOMER_ROUTE_IDS = new Set(['brightstone', 'hartwell', 'meridian', 'kessler']);
+export const ADMIN_CUSTOMER_ROUTE_IDS = new Set(['tesla', 'hartwell', 'meridian', 'kessler']);
 
 const HIGH_VALUE_MIN = 5000;
 

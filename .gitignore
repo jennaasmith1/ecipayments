@@ -9,6 +9,9 @@ lerna-debug.log*
 
 node_modules
 dist
+
+# Vercel CLI local state (use GitHub Actions secrets for CI; or commit .vercel/project.json if your team shares one project)
+.vercel
 .env
 .env.*
 !.env.example

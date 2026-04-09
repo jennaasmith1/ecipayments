@@ -1,16 +1,16 @@
 /**
- * Dealer Billing — demo invoices only (no APIs).
+ * Ubeo admin — billing — demo invoices only (no APIs).
  * Reference "today" aligns with other admin demo data.
  */
 export const BILLING_REFERENCE = new Date('2026-03-30T12:00:00');
 
 export const BILLING_CUSTOMER_OPTIONS = [
-  { id: 'brightstone', name: 'Brightstone Law Group' },
+  { id: 'tesla', name: 'Tesla' },
   { id: 'hartwell', name: 'Hartwell Medical Group' },
   { id: 'meridian', name: 'Meridian Legal Services' },
   { id: 'kessler', name: 'Kessler Engineering LLC' },
   { id: 'redwood', name: 'Redwood Medical Center' },
-  { id: 'summit-solutions', name: 'Summit Office Solutions' },
+  { id: 'northwind', name: 'Northwind Logistics' },
   { id: 'blue-peak', name: 'Blue Peak Manufacturing' },
 ];
 
@@ -23,6 +23,12 @@ export const BILLING_LOCATIONS = [
   'West Distribution — Bay 4',
   'Plant 2 — Receiving',
   'Regional HQ — Conference wing',
+  'Tesla Palo Alto – Engineering, Floor 3',
+  'Tesla Palo Alto – Finance & AP, Floor 2',
+  'Tesla Fremont – Legal & Compliance, Bldg D',
+  'Tesla Reno Parts Distribution – Shipping office',
+  'Tesla Las Vegas Service & Delivery – Front desk',
+  'Tesla Palo Alto – IT / Network Services',
 ];
 
 export const INVOICE_STATUS_OPTIONS = [
@@ -44,10 +50,10 @@ export const globalInvoices = [
   {
     id: 'inv-bs-1',
     invoiceNumber: 'INV-2026-084220',
-    customerId: 'brightstone',
-    customerName: 'Brightstone Law Group',
+    customerId: 'tesla',
+    customerName: 'Tesla',
     poNumber: 'PO-BLS-4410',
-    location: 'Main Office — 200 Park Ave',
+    location: 'Tesla Palo Alto – Engineering, Floor 3',
     invoiceDate: '2026-02-10',
     dueDate: '2026-03-12',
     total: 4280.0,
@@ -65,10 +71,10 @@ export const globalInvoices = [
   {
     id: 'inv-bs-2',
     invoiceNumber: 'INV-2026-089901',
-    customerId: 'brightstone',
-    customerName: 'Brightstone Law Group',
+    customerId: 'tesla',
+    customerName: 'Tesla',
     poNumber: 'PO-BLS-4488',
-    location: 'Main Office — 200 Park Ave',
+    location: 'Tesla Palo Alto – Finance & AP, Floor 2',
     invoiceDate: '2026-03-01',
     dueDate: '2026-03-31',
     total: 3120.5,
@@ -82,10 +88,10 @@ export const globalInvoices = [
   {
     id: 'inv-bs-3',
     invoiceNumber: 'INV-2025-072200',
-    customerId: 'brightstone',
-    customerName: 'Brightstone Law Group',
+    customerId: 'tesla',
+    customerName: 'Tesla',
     poNumber: null,
-    location: 'Downtown HQ — 12th Floor',
+    location: 'Tesla Reno Parts Distribution – Shipping office',
     invoiceDate: '2025-12-18',
     dueDate: '2026-01-17',
     total: 2140.0,
@@ -99,8 +105,8 @@ export const globalInvoices = [
   {
     id: 'inv-sos-1',
     invoiceNumber: 'INV-2026-090112',
-    customerId: 'summit-solutions',
-    customerName: 'Summit Office Solutions',
+    customerId: 'northwind',
+    customerName: 'Northwind Logistics',
     poNumber: 'SOS-77821',
     location: 'Regional HQ — Conference wing',
     invoiceDate: '2026-03-18',
@@ -116,8 +122,8 @@ export const globalInvoices = [
   {
     id: 'inv-sos-2',
     invoiceNumber: 'INV-2026-087654',
-    customerId: 'summit-solutions',
-    customerName: 'Summit Office Solutions',
+    customerId: 'northwind',
+    customerName: 'Northwind Logistics',
     poNumber: 'SOS-77100',
     location: 'Regional HQ — Conference wing',
     invoiceDate: '2026-02-22',
@@ -306,10 +312,10 @@ export const globalInvoices = [
   {
     id: 'inv-bs-4',
     invoiceNumber: 'INV-2026-086700',
-    customerId: 'brightstone',
-    customerName: 'Brightstone Law Group',
+    customerId: 'tesla',
+    customerName: 'Tesla',
     poNumber: 'PO-BLS-4300',
-    location: 'Main Office — 200 Park Ave',
+    location: 'Tesla Palo Alto – IT / Network Services',
     invoiceDate: '2026-02-28',
     dueDate: '2026-03-30',
     total: 560.0,
@@ -323,8 +329,8 @@ export const globalInvoices = [
   {
     id: 'inv-sos-3',
     invoiceNumber: 'INV-2026-091200',
-    customerId: 'summit-solutions',
-    customerName: 'Summit Office Solutions',
+    customerId: 'northwind',
+    customerName: 'Northwind Logistics',
     poNumber: null,
     location: 'Regional HQ — Conference wing',
     invoiceDate: '2026-03-25',
@@ -359,19 +365,19 @@ export const globalInvoices = [
 export const AI_BILLING_INSIGHTS = [
   {
     id: 'abi-1',
-    text: '3 customer accounts have overdue balances — Brightstone Law Group has $2,140 past terms on INV-2025-072200.',
+    text: '3 customer accounts have overdue balances — Tesla has $2,140 past terms on INV-2025-072200.',
     tone: 'warn',
     actions: [
       { id: 'abi-1a', label: 'View overdue', to: '/admin/billing', variant: 'secondary' },
-      { id: 'abi-1b', label: 'Open Brightstone', to: '/admin/customers/brightstone', variant: 'tertiary' },
+      { id: 'abi-1b', label: 'Open Tesla', to: '/admin/customers/tesla', variant: 'tertiary' },
     ],
   },
   {
     id: 'abi-2',
-    text: 'Payments from Brightstone Law Group are often a few days after the due date — helpful context if they ask about timing.',
+    text: 'Payments from Tesla are often a few days after the due date — helpful context if they ask about timing.',
     tone: 'info',
     actions: [
-      { id: 'abi-2a', label: 'Account profile', to: '/admin/customers/brightstone', variant: 'secondary' },
+      { id: 'abi-2a', label: 'Account profile', to: '/admin/customers/tesla', variant: 'secondary' },
       { id: 'abi-2b', label: 'Add note', disabled: true, variant: 'tertiary' },
     ],
   },

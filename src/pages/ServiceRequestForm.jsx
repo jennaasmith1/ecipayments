@@ -338,7 +338,7 @@ export default function ServiceRequestForm({ draftTicket, equipmentQuery, onSucc
 
             <div className="service-upload-block">
               <span className="service-field-label">Attachments (optional)</span>
-              <p className="service-field-hint">You can upload photos of error codes or the issue. In production these would go to your dealer.</p>
+              <p className="service-field-hint">You can upload photos of error codes or the issue. In production these would go to your service team.</p>
               <label className="service-upload-zone">
                 <input type="file" accept="image/*,.pdf" multiple className="service-upload-input" onChange={onPickFiles} />
                 <span>Drop files here or browse — demo only, stored in this browser session</span>

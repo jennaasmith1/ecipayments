@@ -426,7 +426,9 @@ export default function CustomerDetail() {
                   <span className="admin-preview-dot" />
                   <span className="admin-preview-dot" />
                   <span className="admin-preview-dot" />
-                  <span className="admin-preview-url">portal.summitoffice.com</span>
+                  <span className="admin-preview-url">
+                    {c.id === 'tesla' ? 'fleet.tesla.com' : 'portal.example.com'}
+                  </span>
                 </div>
                 <div className="admin-preview-inner">
                   <p className="admin-preview-welcome">Welcome back, {c.useSharedFakeData ? customer.name.split(' ')[0] : c.primaryContact.split(' ')[0]}</p>

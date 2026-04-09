@@ -34,9 +34,11 @@
 
 .portal-sidebar-collapsed .portal-sidebar-logo-img {
   display: block;
-  max-width: 48px;
+  max-width: 56px;
+  width: auto;
   height: auto;
-  max-height: 48px;
+  max-height: 56px;
+  object-fit: contain;
 }
 
 .portal-sidebar-collapsed .portal-account-labels {
@@ -56,8 +58,9 @@
 }
 
 .portal-sidebar-collapsed .portal-sidebar-logo {
+  flex: 0 1 auto;
   justify-content: center;
-  padding: 12px;
+  padding: 8px 4px;
 }
 
 .portal-sidebar-header {
@@ -65,9 +68,9 @@
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  padding: 12px 14px;
+  padding: 10px 10px 12px;
   border-bottom: 1px solid var(--color-border-light);
-  min-height: 52px;
+  min-height: 82px;
   flex-shrink: 0;
   position: relative;
 }
@@ -76,6 +79,7 @@
   display: flex;
   align-items: center;
   gap: 4px;
+  flex-shrink: 0;
 }
 
 /* Notifications block (above account) */
@@ -347,14 +351,72 @@
 .portal-sidebar-logo {
   display: flex;
   align-items: center;
+  flex: 1 1 auto;
+  min-width: 0;
   text-decoration: none;
   color: inherit;
 }
 
 .portal-sidebar-logo-img {
-  height: 48px;
-  width: auto;
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  max-height: 64px;
   object-fit: contain;
+  object-position: left center;
+}
+
+/* Platform attribution — below profile, visually secondary but readable */
+.portal-powered-by {
+  flex-shrink: 0;
+  padding: 10px 12px 12px;
+  margin: 0 8px 4px;
+  border-top: 1px solid var(--color-border-light);
+}
+
+.portal-powered-by-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.portal-powered-by-text {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-secondary);
+}
+
+.portal-powered-by-logo {
+  height: 22px;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  object-position: left center;
+  opacity: 0.88;
+  filter: grayscale(0.15) contrast(1.05);
+}
+
+.portal-sidebar-collapsed .portal-powered-by {
+  padding: 8px 6px 10px;
+  margin: 0 4px 4px;
+}
+
+.portal-sidebar-collapsed .portal-powered-by-inner {
+  align-items: center;
+}
+
+.portal-sidebar-collapsed .portal-powered-by-text {
+  display: none;
+}
+
+.portal-sidebar-collapsed .portal-powered-by-logo {
+  height: 18px;
+  opacity: 0.9;
+  filter: grayscale(0.1);
 }
 
 .portal-sidebar-collapse-wrap {
@@ -800,7 +862,7 @@ main.portal-content:has(.service-page) {
 
   .portal-sidebar-collapsed .portal-sidebar-logo-img {
     max-width: none;
-    max-height: 48px;
+    max-height: 56px;
   }
 
   .portal-sidebar-collapsed .portal-sidebar-logo {

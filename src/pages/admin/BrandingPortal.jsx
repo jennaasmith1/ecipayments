@@ -107,7 +107,7 @@ export default function BrandingPortal() {
           <section className="admin-card">
             <h2 className="admin-section-title">Colors</h2>
             <p className="admin-branding-colors-caption">
-              Customer portal theme for <strong>{dealer.name}</strong> (matches live portal navy and teal).
+              Customer portal theme for <strong>{dealer.name}</strong> (matches the live white-label portal).
             </p>
             <div className="admin-color-row">
               <div className="admin-form-row">

@@ -6,7 +6,7 @@ export default function InternalUsers() {
     <div className="admin-page">
       <header className="admin-page-header">
         <h1>Internal users</h1>
-        <p className="admin-page-subtitle">Dealer team directory (demo).</p>
+        <p className="admin-page-subtitle">Ubeo internal team directory (demo).</p>
       </header>
       <div className="admin-actions-row" style={{ marginBottom: 16 }}>
         <button type="button" className="admin-btn admin-btn-primary">

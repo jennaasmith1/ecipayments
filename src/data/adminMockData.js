@@ -1,14 +1,14 @@
-// Admin / dealer console mock data (demo only — no backend)
+// Admin console mock data — Ubeo internal tools (demo only — no backend)
 import { dealer, formatCurrency, formatDate } from './fakeData';
 
-export const ADMIN_PREVIEW_STORAGE_KEY = 'summit_admin_portal_preview';
+export const ADMIN_PREVIEW_STORAGE_KEY = 'ubeo_admin_portal_preview';
 
 export const adminUser = {
   name: 'Jordan Kim',
-  role: 'Sales rep',
-  email: 'j.kim@summitoffice.com',
-  employerName: dealer.name,
-  employerLogoSrc: '/summit-logo-header.png',
+  role: 'Account manager',
+  email: 'j.kim@ubeo.com',
+  employerName: 'Ubeo',
+  employerLogoSrc: '/branding/ubeo-wordmark.png',
 };
 
 export const dashboardKpis = [
@@ -28,14 +28,14 @@ export const dashboardKpis = [
 ];
 
 export const dashboardAttentionQueue = [
-  { id: 'att-1', customerId: 'brightstone', company: 'Brightstone Law Group', snippet: 'Overdue invoice #84220 · 2 open tickets', severity: 'high' },
+  { id: 'att-1', customerId: 'tesla', company: 'Tesla', snippet: 'Overdue invoice #84220 · 2 open tickets', severity: 'high' },
   { id: 'att-2', customerId: 'hartwell', company: 'Hartwell Medical Group', snippet: 'Duplicate email on portal user · 6 locations', severity: 'medium' },
   { id: 'att-3', customerId: 'kessler', company: 'Kessler Engineering LLC', snippet: 'No portal users · invite not accepted', severity: 'medium' },
   { id: 'att-4', customerId: 'meridian', company: 'Meridian Legal Services', snippet: 'Ambiguous location naming · billing contact churn', severity: 'low' },
 ];
 
 export const adminActivityFeed = [
-  { id: 'af-1', type: 'impersonation', title: 'View as customer', detail: 'Brightstone Law Group · Jordan Kim', time: '32 min ago' },
+  { id: 'af-1', type: 'impersonation', title: 'View as customer', detail: 'Tesla · Jordan Kim', time: '32 min ago' },
   { id: 'af-2', type: 'settings', title: 'Portal branding updated', detail: 'Primary color · Morgan Patel', time: '2 hr ago' },
   { id: 'af-3', type: 'user', title: 'Portal invite resent', detail: 'hartwell@shared-mail.net · Alex Rivera', time: 'Yesterday' },
   { id: 'af-4', type: 'service', title: 'Ticket escalated', detail: 'ST-9012 → Field supervisor', time: 'Yesterday' },
@@ -89,17 +89,17 @@ export const rolePermissionsSeed = {
 };
 
 export const globalPortalUsers = [
-  { id: 'gpu-1', name: 'Sarah Chen', email: 'sarah.chen@brightstonelaw.com', account: 'Brightstone Law Group', duplicate: false },
+  { id: 'gpu-1', name: 'Sarah Chen', email: 'sarah.chen@tesla.com', account: 'Tesla', duplicate: false },
   { id: 'gpu-2', name: 'Priya Nair', email: 'hartwell@shared-mail.net', account: 'Hartwell Medical Group', duplicate: true },
   { id: 'gpu-3', name: 'David Okonkwo', email: 'hartwell@shared-mail.net', account: 'Hartwell – North Clinic', duplicate: true },
   { id: 'gpu-4', name: 'Elena Vasquez', email: 'e.vasquez@meridianlegal.com', account: 'Meridian Legal Services', duplicate: false },
 ];
 
 export const auditEvents = [
-  { id: 'ae-1', time: '2026-03-10 09:42', actor: 'Jordan Kim', type: 'Impersonation', detail: 'View as Brightstone Law Group', account: 'BSG-2847' },
+  { id: 'ae-1', time: '2026-03-10 09:42', actor: 'Jordan Kim', type: 'Impersonation', detail: 'View as Tesla', account: 'TSLA-2847' },
   { id: 'ae-2', time: '2026-03-10 08:10', actor: 'Morgan Patel', type: 'Settings', detail: 'Communications · Banner text updated', account: '—' },
   { id: 'ae-3', time: '2026-03-09 16:22', actor: 'Alex Rivera', type: 'User', detail: 'Resent portal invite', account: 'HMW-9910' },
-  { id: 'ae-4', time: '2026-03-09 14:05', actor: 'Jordan Kim', type: 'User', detail: 'Password reset initiated', account: 'BSG-2847' },
+  { id: 'ae-4', time: '2026-03-09 14:05', actor: 'Jordan Kim', type: 'User', detail: 'Password reset initiated', account: 'TSLA-2847' },
   { id: 'ae-5', time: '2026-03-09 11:30', actor: 'Casey Wu', type: 'Settings', detail: 'Service requests · PO required toggled on', account: '—' },
   { id: 'ae-6', time: '2026-03-08 15:18', actor: 'Riley Brooks', type: 'Impersonation', detail: 'View as Hartwell Medical Group', account: 'HMW-9910' },
   { id: 'ae-7', time: '2026-03-08 10:00', actor: 'Morgan Patel', type: 'Settings', detail: 'Branding · Hero headline', account: '—' },
@@ -115,14 +115,19 @@ export const defaultBranding = {
   serviceLabel: 'Service request',
 };
 
-/** Customer portal defaults for Summit — matches :root in index.css (navy + teal). */
-export const summitPortalColors = {
-  primaryHex: '#1c5490',
-  accentHex: '#0d9488',
+/** White-label preview defaults — Tesla-themed portal (matches customer :root). */
+export const teslaPortalColors = {
+  primaryHex: '#171a20',
+  accentHex: '#3e6ae1',
 };
 
-/** Default customer portal header logo (same path as PortalShell). */
-export const summitPortalLogoSrc = '/summit-logo-header.png';
+/** Default customer portal header logo for white-label preview. */
+export const teslaPortalLogoSrc = '/branding/tesla-logo.png';
+
+/** @deprecated Use teslaPortalColors — alias for admin branding form reset. */
+export const summitPortalColors = teslaPortalColors;
+/** @deprecated Use teslaPortalLogoSrc */
+export const summitPortalLogoSrc = teslaPortalLogoSrc;
 
 export const serviceRequestSettingsSeed = {
   poRequired: true,
@@ -171,14 +176,14 @@ const meridianLocationsFlat = [
 
 export const adminCustomers = [
   {
-    id: 'brightstone',
-    company: 'Brightstone Law Group',
-    accountId: 'BSG-2847',
+    id: 'tesla',
+    company: 'Tesla',
+    accountId: 'TSLA-2847',
     type: 'standalone',
     parentId: null,
     parentCompany: null,
     primaryContact: 'Sarah Chen',
-    billingEmail: 'billing@brightstonelaw.com',
+    billingEmail: 'billing@tesla.com',
     phone: '(555) 555-0123',
     portalUserCount: 4,
     lastPortalLogin: '2026-03-10 8:14 AM',
@@ -188,19 +193,47 @@ export const adminCustomers = [
     portalStatus: 'Active',
     flags: { overdueAr: true, noPortalUsers: false, duplicateEmail: false, messyLocationStructure: false },
     locations: [
-      { id: 'bs-main', name: 'Main Office – 200 Park Ave', parentId: null },
-      { id: 'bs-rec', name: 'Reception', parentId: 'bs-main' },
-      { id: 'bs-leg', name: 'Legal – 3rd Floor', parentId: 'bs-main' },
+      { id: 'tsla-pa-eng', name: 'Tesla Palo Alto – Engineering, Floor 3', parentId: null },
+      { id: 'tsla-lv-front', name: 'Tesla Las Vegas Service & Delivery – Front desk', parentId: null },
+      { id: 'tsla-fre-legal', name: 'Tesla Fremont – Legal & Compliance, Bldg D', parentId: null },
+      { id: 'tsla-pa-fin', name: 'Tesla Palo Alto – Finance & AP, Floor 2', parentId: null },
+      { id: 'tsla-gftx-hr', name: 'Tesla Austin Gigafactory – HR Office', parentId: null },
+      { id: 'tsla-reno-ship', name: 'Tesla Reno Parts Distribution – Shipping office', parentId: null },
+      { id: 'tsla-reno-lbl', name: 'Tesla Reno Parts Distribution – Label station, Dock 4', parentId: null },
+      { id: 'tsla-slc-reg', name: 'Tesla Salt Lake City – Regional Operations', parentId: null },
+      { id: 'tsla-bel-back', name: 'Tesla Bellevue Showroom – Back office', parentId: null },
+      { id: 'tsla-sac-br', name: 'Tesla Sacramento Regional – Branch admin', parentId: null },
     ],
     portalUsers: [
-      { id: 'bsu-1', name: 'Sarah Chen', email: 'sarah.chen@brightstonelaw.com', role: 'Billing admin', locationIds: ['bs-main', 'bs-rec', 'bs-leg'], lastLogin: '2026-03-10' },
-      { id: 'bsu-2', name: 'Michael Torres', email: 'm.torres@brightstonelaw.com', role: 'Office manager', locationIds: ['bs-main'], lastLogin: '2026-03-09' },
-      { id: 'bsu-3', name: 'Jennifer Park', email: 'j.park@brightstonelaw.com', role: 'Read-only', locationIds: ['bs-rec'], lastLogin: '2026-03-02' },
+      {
+        id: 'tsu-1',
+        name: 'Sarah Chen',
+        email: 'sarah.chen@tesla.com',
+        role: 'Fleet billing admin',
+        locationIds: ['tsla-pa-eng', 'tsla-pa-fin', 'tsla-fre-legal'],
+        lastLogin: '2026-03-10',
+      },
+      {
+        id: 'tsu-2',
+        name: 'Michael Torres',
+        email: 'm.torres@tesla.com',
+        role: 'Regional workplace services',
+        locationIds: ['tsla-lv-front', 'tsla-reno-ship', 'tsla-reno-lbl'],
+        lastLogin: '2026-03-09',
+      },
+      {
+        id: 'tsu-3',
+        name: 'Jennifer Park',
+        email: 'j.park@tesla.com',
+        role: 'Read-only',
+        locationIds: ['tsla-slc-reg', 'tsla-bel-back'],
+        lastLogin: '2026-03-02',
+      },
     ],
     recentActivityAdmin: [
-      { id: 'ra-b1', title: 'Payment posted', detail: '$325.50 · Invoice #84220', time: 'Mar 8, 2026' },
-      { id: 'ra-b2', title: 'Ticket updated', detail: 'ST-9012 scheduled', time: 'Mar 6, 2026' },
-      { id: 'ra-b3', title: 'Invoice issued', detail: '#84221 Toner supply', time: 'Mar 5, 2026' },
+      { id: 'ra-t1', title: 'Payment posted', detail: '$325.50 · Invoice #84220', time: 'Mar 8, 2026' },
+      { id: 'ra-t2', title: 'Ticket updated', detail: 'ST-9012 scheduled', time: 'Mar 6, 2026' },
+      { id: 'ra-t3', title: 'Invoice issued', detail: '#84221 Toner supply', time: 'Mar 5, 2026' },
     ],
     useSharedFakeData: true,
   },
@@ -312,14 +345,14 @@ export const adminCustomers = [
     useSharedFakeData: false,
   },
   {
-    id: 'summit-solutions',
-    company: 'Summit Office Solutions',
-    accountId: 'SOS-5500',
+    id: 'northwind',
+    company: 'Northwind Logistics',
+    accountId: 'NWL-5500',
     type: 'standalone',
     parentId: null,
     parentCompany: null,
     primaryContact: 'Marcus Webb',
-    billingEmail: 'billing@summitofficesolutions.com',
+    billingEmail: 'ap@northwindlogistics.com',
     phone: '(555) 555-0702',
     portalUserCount: 6,
     lastPortalLogin: '2026-03-11 2:18 PM',
@@ -328,9 +361,9 @@ export const adminCustomers = [
     unpaidTotal: 2254.4,
     portalStatus: 'Active',
     flags: { overdueAr: false, noPortalUsers: false, duplicateEmail: false, messyLocationStructure: false },
-    locations: [{ id: 'sos-1', name: 'Regional HQ — Conference wing', parentId: null }],
-    portalUsers: [{ id: 'sosu-1', name: 'Marcus Webb', email: 'm.webb@summitos.com', role: 'Admin', locationIds: ['sos-1'], lastLogin: '2026-03-11' }],
-    recentActivityAdmin: [{ id: 'ra-sos1', title: 'Order shipped', detail: 'Supplies · ORD-2026-087654', time: 'Mar 22, 2026' }],
+    locations: [{ id: 'nw-1', name: 'Regional HQ — Distribution wing', parentId: null }],
+    portalUsers: [{ id: 'nwu-1', name: 'Marcus Webb', email: 'm.webb@northwindlogistics.com', role: 'Admin', locationIds: ['nw-1'], lastLogin: '2026-03-11' }],
+    recentActivityAdmin: [{ id: 'ra-nw1', title: 'Order shipped', detail: 'Supplies · ORD-2026-087654', time: 'Mar 22, 2026' }],
     useSharedFakeData: false,
   },
   {

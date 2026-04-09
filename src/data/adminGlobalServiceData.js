@@ -1,5 +1,5 @@
 /**
- * Dealer-facing global service overview — demo data only (no APIs).
+ * Ubeo admin — global service overview — demo data only (no APIs).
  */
 
 export const GLOBAL_SERVICE_BRANCHES = ['Salt Lake', 'Ogden', 'Provo', 'Park City'];
@@ -15,10 +15,10 @@ export const GLOBAL_SERVICE_TECHS = [
 export const AI_SERVICE_INSIGHTS = [
   {
     id: 'ai-1',
-    text: 'Brightstone Law Group has 5 open service calls across 3 locations — highest volume among your accounts this week.',
+    text: 'Tesla has 5 open service calls across 3 locations — highest volume among your accounts this week.',
     tone: 'info',
     actions: [
-      { id: 'ai-1a', label: 'Open Brightstone', to: '/admin/customers/brightstone', variant: 'secondary' },
+      { id: 'ai-1a', label: 'Open Tesla', to: '/admin/customers/tesla', variant: 'secondary' },
       { id: 'ai-1b', label: 'Filter to account', disabled: true, variant: 'tertiary' },
     ],
   },
@@ -65,8 +65,8 @@ const tl = (type, label, at, detail) => ({ type, label, at, detail });
 export const globalServiceCalls = [
   {
     id: 'SC-104821',
-    customerId: 'cust-brightstone',
-    customerName: 'Brightstone Law Group',
+    customerId: 'cust-tesla',
+    customerName: 'Tesla',
     callNumber: 'SC-104821',
     equipmentName: 'Canon imageRUNNER ADVANCE C5840i',
     equipmentNumber: 'EQ-45821',
@@ -107,8 +107,8 @@ export const globalServiceCalls = [
   },
   {
     id: 'SC-104798',
-    customerId: 'cust-brightstone',
-    customerName: 'Brightstone Law Group',
+    customerId: 'cust-tesla',
+    customerName: 'Tesla',
     callNumber: 'SC-104798',
     equipmentName: 'Xerox VersaLink C7020',
     equipmentNumber: 'EQ-44102',
@@ -142,8 +142,8 @@ export const globalServiceCalls = [
   },
   {
     id: 'SC-104755',
-    customerId: 'cust-summit',
-    customerName: 'Summit Office Solutions',
+    customerId: 'cust-northwind',
+    customerName: 'Northwind Logistics',
     callNumber: 'SC-104755',
     equipmentName: 'HP LaserJet Managed E87650',
     equipmentNumber: 'EQ-22001',
@@ -348,8 +348,8 @@ export const globalServiceCalls = [
   },
   {
     id: 'SC-104830',
-    customerId: 'cust-brightstone',
-    customerName: 'Brightstone Law Group',
+    customerId: 'cust-tesla',
+    customerName: 'Tesla',
     callNumber: 'SC-104830',
     equipmentName: 'Lexmark XC6152',
     equipmentNumber: 'EQ-12088',
@@ -382,8 +382,8 @@ export const globalServiceCalls = [
   },
   {
     id: 'SC-104650',
-    customerId: 'cust-summit',
-    customerName: 'Summit Office Solutions',
+    customerId: 'cust-northwind',
+    customerName: 'Northwind Logistics',
     callNumber: 'SC-104650',
     equipmentName: 'Canon imageRUNNER ADVANCE 4545i',
     equipmentNumber: 'EQ-22044',
@@ -575,8 +575,8 @@ export const globalServiceCalls = [
   },
   {
     id: 'SC-104500',
-    customerId: 'cust-brightstone',
-    customerName: 'Brightstone Law Group',
+    customerId: 'cust-tesla',
+    customerName: 'Tesla',
     callNumber: 'SC-104500',
     equipmentName: 'Canon imageRUNNER ADVANCE DX 6980i',
     equipmentNumber: 'EQ-45890',
@@ -606,8 +606,8 @@ export const globalServiceCalls = [
   },
   {
     id: 'SC-104520',
-    customerId: 'cust-brightstone',
-    customerName: 'Brightstone Law Group',
+    customerId: 'cust-tesla',
+    customerName: 'Tesla',
     callNumber: 'SC-104520',
     equipmentName: 'Canon imageRUNNER ADVANCE C5840i',
     equipmentNumber: 'EQ-45821',
@@ -671,8 +671,8 @@ export const globalServiceCalls = [
   },
   {
     id: 'SC-104540',
-    customerId: 'cust-summit',
-    customerName: 'Summit Office Solutions',
+    customerId: 'cust-northwind',
+    customerName: 'Northwind Logistics',
     callNumber: 'SC-104540',
     equipmentName: 'HP LaserJet Managed E87650',
     equipmentNumber: 'EQ-22001',
@@ -859,8 +859,8 @@ export const globalServiceCalls = [
   },
   {
     id: 'SC-104620',
-    customerId: 'cust-brightstone',
-    customerName: 'Brightstone Law Group',
+    customerId: 'cust-tesla',
+    customerName: 'Tesla',
     callNumber: 'SC-104620',
     equipmentName: 'Lexmark XC6152',
     equipmentNumber: 'EQ-12088',

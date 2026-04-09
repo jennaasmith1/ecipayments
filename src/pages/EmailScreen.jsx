@@ -27,7 +27,7 @@ const BODY_CLASS = 'email-screen-page';
 const INBOX_COUNT = inboxEmails.filter((e) => !e.read).length;
 
 export default function EmailScreen() {
-  const [selectedEmailId, setSelectedEmailId] = useState('summit-payment');
+  const [selectedEmailId, setSelectedEmailId] = useState('tesla-payment');
 
   useEffect(() => {
     document.body.classList.add(BODY_CLASS);
@@ -35,7 +35,7 @@ export default function EmailScreen() {
   }, []);
 
   const selectedEmail = inboxEmails.find((e) => e.id === selectedEmailId);
-  const isSummitEmail = selectedEmail?.bodyType === 'summit-payment';
+  const isPortalBillingEmail = selectedEmail?.bodyType === 'tesla-payment';
 
   return (
     <div className="email-inbox-app">
@@ -125,7 +125,7 @@ export default function EmailScreen() {
               <div className="email-envelope-row">
                 <span className="email-envelope-label">From:</span>{' '}
                 <span className="email-envelope-value">
-                  {isSummitEmail
+                  {isPortalBillingEmail
                     ? `${dealer.name} <${dealer.billingEmail}>`
                     : `${selectedEmail.from.name} <${selectedEmail.from.email}>`}
                 </span>
@@ -139,15 +139,15 @@ export default function EmailScreen() {
               <div className="email-envelope-row">
                 <span className="email-envelope-label">Subject:</span>{' '}
                 <span className="email-envelope-value">
-                  {isSummitEmail
+                  {isPortalBillingEmail
                     ? `Payment reminder: ${emailInvoices.length} invoices due`
                     : selectedEmail.subject}
                 </span>
               </div>
             </div>
             <div className="email-inbox-pane-inner">
-{isSummitEmail ? (
-              <SummitEmailBody />
+{isPortalBillingEmail ? (
+              <TeslaBillingEmailBody />
             ) : (
                 <GenericEmailBody email={selectedEmail} />
               )}
@@ -159,14 +159,14 @@ export default function EmailScreen() {
   );
 }
 
-function SummitEmailBody() {
+function TeslaBillingEmailBody() {
   return (
     <div className="email-card">
       <div className="email-mockup">
         <div className="email-mockup-header">
           <img
-            src="/summit-logo.png"
-            alt="Summit Office Solutions"
+            src="/branding/tesla-logo.png"
+            alt="Tesla"
             className="email-mockup-logo"
           />
         </div>

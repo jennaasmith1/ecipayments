@@ -241,13 +241,13 @@ export default function ServiceTicketDetailPanel({ ticket, equipment, onClose })
                     {ticket.paymentAuthorizationRequired
                       ? ticket.paymentMethodSummary
                         ? `Required — ${ticket.paymentMethodSummary}`
-                        : 'Required — method on file with dealer'
+                        : 'Required — method on file with your service provider'
                       : 'Not required for this request'}
                   </dd>
                 </div>
               </dl>
               {unreadInThread && (
-                <p className="service-detail-unread-banner">You have unread messages from your dealer in this ticket.</p>
+                <p className="service-detail-unread-banner">You have unread messages from your service team in this ticket.</p>
               )}
             </section>
 
@@ -284,7 +284,7 @@ export default function ServiceTicketDetailPanel({ ticket, equipment, onClose })
                 </label>
               </div>
               <p className="service-detail-hint service-detail-hint--compact">
-                Context your dealer and technician see for this machine.
+                Context your service team and technician see for this machine.
               </p>
               <EquipmentDeviceThumb device={equipment} className="service-detail-equip-thumb" />
               <dl className="service-detail-dl">
@@ -411,14 +411,14 @@ export default function ServiceTicketDetailPanel({ ticket, equipment, onClose })
               Messages
             </h3>
             <p className="service-detail-hint service-detail-hint--compact">
-              Reply here so updates stay in one thread with your dealer.
+              Reply here so updates stay in one thread with your service team.
             </p>
             <div className="service-chat-thread service-chat-thread--doc">
               {allMessages.length === 0 && <p className="service-detail-muted">No messages yet.</p>}
               {allMessages.map((m) => (
                 <div key={m.id} className={`service-chat-bubble service-chat-bubble--${m.role}`}>
                   <div className="service-chat-meta">
-                    {m.role === 'dealer' ? 'Summit service' : 'You'}
+                    {m.role === 'dealer' ? 'Service team' : 'You'}
                     <span className="service-chat-time">{formatDateTime(m.at)}</span>
                   </div>
                   <p className="service-chat-body">{m.body}</p>
@@ -436,7 +436,7 @@ export default function ServiceTicketDetailPanel({ ticket, equipment, onClose })
             </div>
             <form className="service-chat-form" onSubmit={sendChat}>
               <label className="service-sr-only" htmlFor="service-chat-input">
-                Message dealer
+                Message service team
               </label>
               <textarea
                 id="service-chat-input"
