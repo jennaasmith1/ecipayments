@@ -4,6 +4,41 @@ export function nextTicketId(list) {
   return `ST-${max + 1}`;
 }
 
+/** Placeholder ticket shown in the service list until the customer submits the request form. */
+export function buildDraftTicket(id, equipment, requestedByName) {
+  const iso = new Date().toISOString();
+  const today = iso.slice(0, 10);
+  const covered = equipment.contractStatus !== 'none';
+  return {
+    id,
+    isDraft: true,
+    status: 'draft',
+    statusLabel: 'Draft',
+    subject: 'New service request',
+    summary: 'Blank draft — add details and submit when ready.',
+    equipmentId: equipment.id,
+    locationLabel: equipment.label,
+    createdAt: today,
+    updatedAt: iso,
+    scheduledVisitStart: null,
+    scheduledVisitEnd: null,
+    hasAttachments: false,
+    unreadMessages: 0,
+    activityCue: 'Draft — not submitted yet',
+    requestedBy: requestedByName,
+    poNumber: null,
+    preferredAvailability: '—',
+    contractStatusOnTicket: covered ? equipment.contractStatus : 'none',
+    paymentAuthorizationRequired: !covered,
+    paymentMethodSummary: null,
+    urgencyNote: null,
+    timeline: [],
+    attachments: [],
+    messages: [],
+    priorRelatedTickets: [],
+  };
+}
+
 export function buildSubmittedTicket(fields, equipment, paymentSummary) {
   const now = new Date();
   const iso = now.toISOString();
@@ -11,6 +46,7 @@ export function buildSubmittedTicket(fields, equipment, paymentSummary) {
   const id = fields.nextId;
   return {
     id,
+    isDraft: false,
     status: 'new',
     statusLabel: 'New',
     subject: fields.subject.trim(),

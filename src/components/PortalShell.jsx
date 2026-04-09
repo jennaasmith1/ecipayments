@@ -1,5 +1,5 @@
-import { useState, useMemo } from 'react';
-import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
+import { useState, useMemo, useEffect } from 'react';
+import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { dealer, customer, notifications } from '../data/fakeData';
 import { ADMIN_PREVIEW_STORAGE_KEY } from '../data/adminMockData';
 import './PortalShell.css';
@@ -77,6 +77,7 @@ function PortalShell() {
   const [accountDropdownOpen, setAccountDropdownOpen] = useState(false);
   const [previewRev, setPreviewRev] = useState(0);
   const location = useLocation();
+  const navigate = useNavigate();
   const unreadCount = notifications.filter((n) => !n.read).length;
 
   const adminPreview = useMemo(() => {
@@ -106,8 +107,23 @@ function PortalShell() {
   };
 
   const toggleSection = (path) => {
+    // If this section is the active one (current route inside it), don't allow collapsing it
+    if (isActiveSection(path)) {
+      setExpandedSection(path);
+      return;
+    }
     setExpandedSection((prev) => (prev === path ? null : path));
   };
+
+  // Keep dropdown open when a sub-route under a section is active
+  useEffect(() => {
+    const activeParent = navSections.find(
+      (section) => section.sub && location.pathname.startsWith(section.path)
+    );
+    if (activeParent) {
+      setExpandedSection((prev) => (prev === activeParent.path ? prev : activeParent.path));
+    }
+  }, [location.pathname]);
 
   return (
     <div className="portal-shell">
@@ -129,54 +145,38 @@ function PortalShell() {
         </div>
         <nav className="portal-sidebar-nav" aria-label="Main navigation">
           {navSections.map((section) => (
-            <div
-              key={section.path}
-              className="portal-nav-section"
-              onMouseEnter={() => {
-                if (!sidebarCollapsed && section.sub) {
-                  setExpandedSection(section.path);
-                }
-              }}
-              onMouseLeave={() => {
-                if (!sidebarCollapsed && section.sub) {
-                  setExpandedSection(null);
-                }
-              }}
-            >
+            <div key={section.path} className="portal-nav-section">
               {section.sub && !sidebarCollapsed ? (
                 <>
-                  <div
-                    className={`portal-nav-item-wrapper portal-nav-item-wrapper-with-dropdown ${
-                      expandedSection === section.path ? 'portal-nav-item-wrapper-open' : ''
-                    }`}
+                  <NavLink
+                    to={section.path}
+                    end={section.path === '/'}
+                    className={({ isActive }) =>
+                      `portal-nav-item ${isActive ? 'portal-nav-item-active' : ''} ${isActiveSection(section.path) ? 'portal-nav-item-active' : ''}`
+                    }
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      toggleSection(section.path);
+                    }}
+                    aria-expanded={expandedSection === section.path}
+                    aria-label={expandedSection === section.path ? 'Collapse submenu' : 'Expand submenu'}
                   >
-                    <NavLink
-                      to={section.path}
-                      end={section.path === '/'}
-                      className={({ isActive }) =>
-                        `portal-nav-item ${isActive ? 'portal-nav-item-active' : ''} ${isActiveSection(section.path) ? 'portal-nav-item-active' : ''}`
-                      }
-                      onClick={() => setMobileMenuOpen(false)}
+                    <span className="portal-nav-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d={section.icon} />
+                      </svg>
+                    </span>
+                    <span className="portal-nav-label">{section.label}</span>
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      className={`portal-nav-chevron ${expandedSection === section.path ? 'portal-nav-chevron-open' : ''}`}
                     >
-                      <span className="portal-nav-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <path d={section.icon} />
-                        </svg>
-                      </span>
-                      <span className="portal-nav-label">{section.label}</span>
-                      <span className="portal-nav-chevron-wrap">
-                        <svg
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          className={expandedSection === section.path ? 'portal-nav-chevron-open' : ''}
-                        >
-                          <path d="M6 9l6 6 6-6" />
-                        </svg>
-                      </span>
-                    </NavLink>
-                  </div>
+                      <path d="M6 9l6 6 6-6" />
+                    </svg>
+                  </NavLink>
                   <div className={`portal-nav-dropdown ${expandedSection === section.path ? 'portal-nav-dropdown-open' : ''}`}>
                     <ul className="portal-nav-sub">
                       {section.sub.map((sub) => (
@@ -186,7 +186,6 @@ function PortalShell() {
                             className="portal-nav-sub-link"
                             onClick={() => {
                               setMobileMenuOpen(false);
-                              setExpandedSection(null);
                             }}
                           >
                             {sub.label}
@@ -264,8 +263,19 @@ function PortalShell() {
               ))}
             </div>
             <div className="portal-sidebar-notification-dropdown-footer">
-              <Link to="/settings/notifications" onClick={() => setNotificationOpen(false)}>
-                Manage notification settings
+              <Link
+                to="/notifications"
+                className="portal-notification-footer-main"
+                onClick={() => setNotificationOpen(false)}
+              >
+                See all notifications
+              </Link>
+              <Link
+                to="/settings/notifications"
+                className="portal-notification-footer-secondary"
+                onClick={() => setNotificationOpen(false)}
+              >
+                Settings
               </Link>
             </div>
           </div>

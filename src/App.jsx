@@ -13,6 +13,7 @@ import PaymentLanding from './pages/PaymentLanding';
 import PaymentSuccess from './pages/PaymentSuccess';
 import PaymentsDashboard from './pages/PaymentsDashboard';
 import AutoPaySetup from './pages/AutoPaySetup';
+import NotificationsPage from './pages/NotificationsPage';
 import NotificationSettings from './pages/NotificationSettings';
 import Account from './pages/Account';
 import Chat from './pages/Chat';
@@ -27,6 +28,7 @@ import ServiceRequestSettings from './pages/admin/ServiceRequestSettings';
 import PaymentsSettings from './pages/admin/PaymentsSettings';
 import CommunicationsSettings from './pages/admin/CommunicationsSettings';
 import AuditActivity from './pages/admin/AuditActivity';
+import IntelligenceHub from './pages/admin/IntelligenceHub';
 import AdminGlobalService from './pages/admin/AdminGlobalService';
 import AdminOrders from './pages/admin/AdminOrders';
 import AdminBilling from './pages/admin/AdminBilling';
@@ -52,6 +54,7 @@ function App() {
           <Route path="portal/payments" element={<PaymentsSettings />} />
           <Route path="portal/communications" element={<CommunicationsSettings />} />
           <Route path="audit" element={<AuditActivity />} />
+          <Route path="intelligence-hub" element={<IntelligenceHub />} />
         </Route>
         <Route element={<PortalShell />}>
           <Route path="/" element={<HomeDashboard />} />
@@ -70,6 +73,7 @@ function App() {
           <Route path="/chat" element={<Chat />} />
           <Route path="/settings/autopay" element={<AutoPaySetup />} />
           <Route path="/settings/notifications" element={<NotificationSettings />} />
+          <Route path="/notifications" element={<NotificationsPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

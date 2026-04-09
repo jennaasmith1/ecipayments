@@ -7,16 +7,25 @@ import { buildSubmittedTicket, nextTicketId, paymentScenario } from './serviceFo
 
 /**
  * Create-ticket form for use in the Service split detail pane (or standalone page chrome elsewhere).
+ * When `draftTicket` is set, submitting replaces that draft with a real ticket (same id).
  */
-export default function ServiceRequestForm({ equipmentQuery, onSuccess, onCancel }) {
+export default function ServiceRequestForm({ draftTicket, equipmentQuery, onSuccess, onCancel }) {
   const { tickets, setTickets } = useServiceTickets();
   const fleetById = useMemo(() => Object.fromEntries(fleetEquipment.map((e) => [e.id, e])), []);
 
   const [createEquipmentId, setCreateEquipmentId] = useState(() => {
+    if (draftTicket?.equipmentId && fleetById[draftTicket.equipmentId]) {
+      return draftTicket.equipmentId;
+    }
     const q = equipmentQuery;
     return q && fleetById[q] ? q : fleetEquipment[0]?.id ?? '';
   });
-  const [createSubject, setCreateSubject] = useState('');
+  const [createSubject, setCreateSubject] = useState(() => {
+    if (draftTicket?.subject && draftTicket.subject !== 'New service request') {
+      return draftTicket.subject;
+    }
+    return '';
+  });
   const [createDescription, setCreateDescription] = useState('');
   const [createPo, setCreatePo] = useState('');
   const [createAvailability, setCreateAvailability] = useState('');
@@ -31,12 +40,17 @@ export default function ServiceRequestForm({ equipmentQuery, onSuccess, onCancel
   const [mockCardSaved, setMockCardSaved] = useState(false);
 
   useEffect(() => {
+    if (draftTicket?.equipmentId && fleetById[draftTicket.equipmentId]) {
+      setCreateEquipmentId(draftTicket.equipmentId);
+      setMockCardSaved(false);
+      return;
+    }
     const q = equipmentQuery;
     if (q && fleetById[q]) {
       setCreateEquipmentId(q);
       setMockCardSaved(false);
     }
-  }, [equipmentQuery, fleetById]);
+  }, [draftTicket?.equipmentId, equipmentQuery, fleetById]);
 
   const createEquipment = fleetById[createEquipmentId];
   const payCase = createEquipment ? paymentScenario(createEquipment) : 'covered';
@@ -79,6 +93,21 @@ export default function ServiceRequestForm({ equipmentQuery, onSuccess, onCancel
     setMockCardSaved(true);
   };
 
+  const saveDraftProgress = () => {
+    if (!draftTicket) return;
+    const subj = createSubject.trim() || 'New service request';
+    const desc = createDescription.trim();
+    const summary =
+      desc.length > 140 ? `${desc.slice(0, 137)}…` : desc || 'Blank draft — add details and submit when ready.';
+    setTickets((prev) =>
+      prev.map((t) =>
+        t.id === draftTicket.id
+          ? { ...t, subject: subj, summary, updatedAt: new Date().toISOString() }
+          : t,
+      ),
+    );
+  };
+
   const submitCreate = (e) => {
     e.preventDefault();
     if (!createEquipment) return;
@@ -89,7 +118,7 @@ export default function ServiceRequestForm({ equipmentQuery, onSuccess, onCancel
     if (payCase === 'pay_saved') paymentSummary = 'Visa ending in 4242';
     if (payCase === 'pay_add_card') paymentSummary = 'Visa ending in 4242 (demo)';
 
-    const nextId = nextTicketId(tickets);
+    const nextId = draftTicket ? draftTicket.id : nextTicketId(tickets);
     const ticket = buildSubmittedTicket(
       {
         nextId,
@@ -106,7 +135,11 @@ export default function ServiceRequestForm({ equipmentQuery, onSuccess, onCancel
       paymentSummary
     );
 
-    setTickets((prev) => [ticket, ...prev]);
+    if (draftTicket) {
+      setTickets((prev) => prev.map((t) => (t.id === draftTicket.id ? ticket : t)));
+    } else {
+      setTickets((prev) => [ticket, ...prev]);
+    }
     resetCreateForm();
     onSuccess(ticket);
   };
@@ -117,14 +150,22 @@ export default function ServiceRequestForm({ equipmentQuery, onSuccess, onCancel
         <h2 id="service-inline-create-title" className="service-detail-create-title">
           Request service
         </h2>
-        <button type="button" className="service-btn" onClick={onCancel}>
-          Cancel
-        </button>
+        <div className="service-detail-create-toolbar-actions">
+          {draftTicket && (
+            <button type="button" className="service-btn service-btn-ghost" onClick={saveDraftProgress}>
+              Save draft
+            </button>
+          )}
+          <button type="button" className="service-btn" onClick={onCancel}>
+            Cancel
+          </button>
+        </div>
       </div>
       <div className="service-detail-create-body">
         <p className="service-detail-create-lead">
-          Describe what’s happening with the equipment. You can upload photos of error codes or the issue — it helps our technician
-          prepare.
+          {draftTicket
+            ? 'This request is saved as a draft in your list until you submit it. You can save your progress anytime, then submit when you’re ready.'
+            : 'Describe what’s happening with the equipment. You can upload photos of error codes or the issue — it helps our technician prepare.'}
         </p>
         <section className="service-create-panel service-create-panel-inline" aria-labelledby="service-create-title">
           <h3 id="service-create-title" className="service-sr-only">
@@ -321,6 +362,11 @@ export default function ServiceRequestForm({ equipmentQuery, onSuccess, onCancel
               <button type="submit" className="service-btn service-btn-primary" disabled={payCase === 'pay_add_card' && !mockCardSaved}>
                 Submit ticket
               </button>
+              {draftTicket && (
+                <button type="button" className="service-btn service-btn-ghost" onClick={saveDraftProgress}>
+                  Save draft
+                </button>
+              )}
               <button type="button" className="service-btn" onClick={onCancel}>
                 Cancel
               </button>

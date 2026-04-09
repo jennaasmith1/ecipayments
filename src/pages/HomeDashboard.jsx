@@ -131,7 +131,10 @@ export default function HomeDashboard() {
         <section className="home-section home-notifications-section">
           <div className="home-section-header">
             <h2 className="home-section-title">Notifications</h2>
-            <Link to="/settings/notifications" className="home-section-link">Settings</Link>
+            <div className="home-section-header-actions">
+              <Link to="/notifications" className="home-section-link">See all</Link>
+              <Link to="/settings/notifications" className="home-section-link">Settings</Link>
+            </div>
           </div>
           <ul className="home-notifications-list">
             {notifications.slice(0, 4).map((n) => (

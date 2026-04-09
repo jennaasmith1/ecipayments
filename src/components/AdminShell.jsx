@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { adminUser } from '../data/adminMockData';
 import './AdminShell.css';
 import './adminEciTheme.css';
@@ -57,6 +57,11 @@ const navSections = [
     path: '/admin/audit',
     icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z',
   },
+  {
+    label: 'Intelligence Hub',
+    path: '/admin/intelligence-hub',
+    icon: 'M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z',
+  },
 ];
 
 export default function AdminShell() {
@@ -65,6 +70,7 @@ export default function AdminShell() {
   const [expandedSection, setExpandedSection] = useState(null);
   const [accountDropdownOpen, setAccountDropdownOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   const isActiveSection = (path) => {
     if (path === '/admin') return location.pathname === '/admin' || location.pathname === '/admin/';
@@ -72,8 +78,23 @@ export default function AdminShell() {
   };
 
   const toggleSection = (path) => {
+    // If this section is the active one (current route inside it), don't allow collapsing it
+    if (isActiveSection(path)) {
+      setExpandedSection(path);
+      return;
+    }
     setExpandedSection((prev) => (prev === path ? null : path));
   };
+
+  // Keep dropdown open when a sub-route under a section is active
+  useEffect(() => {
+    const activeParent = navSections.find(
+      (section) => section.sub && location.pathname.startsWith(section.path)
+    );
+    if (activeParent) {
+      setExpandedSection((prev) => (prev === activeParent.path ? prev : activeParent.path));
+    }
+  }, [location.pathname]);
 
   return (
     <div className="admin-shell">
@@ -99,54 +120,38 @@ export default function AdminShell() {
         </div>
         <nav className="admin-sidebar-nav" aria-label="Admin navigation">
           {navSections.map((section) => (
-            <div
-              key={section.path}
-              className="admin-nav-section"
-              onMouseEnter={() => {
-                if (!sidebarCollapsed && section.sub) {
-                  setExpandedSection(section.path);
-                }
-              }}
-              onMouseLeave={() => {
-                if (!sidebarCollapsed && section.sub) {
-                  setExpandedSection(null);
-                }
-              }}
-            >
+            <div key={section.path} className="admin-nav-section">
               {section.sub && !sidebarCollapsed ? (
                 <>
-                  <div
-                    className={`admin-nav-item-wrapper admin-nav-item-wrapper-with-dropdown ${
-                      expandedSection === section.path ? 'admin-nav-item-wrapper-open' : ''
-                    }`}
+                  <NavLink
+                    to={section.path}
+                    end={section.end}
+                    className={({ isActive }) =>
+                      `admin-nav-item ${isActive || isActiveSection(section.path) ? 'admin-nav-item-active' : ''}`
+                    }
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      toggleSection(section.path);
+                    }}
+                    aria-expanded={expandedSection === section.path}
+                    aria-label={expandedSection === section.path ? 'Collapse submenu' : 'Expand submenu'}
                   >
-                    <NavLink
-                      to={section.path}
-                      end={section.end}
-                      className={({ isActive }) =>
-                        `admin-nav-item ${isActive || isActiveSection(section.path) ? 'admin-nav-item-active' : ''}`
-                      }
-                      onClick={() => setMobileMenuOpen(false)}
+                    <span className="admin-nav-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d={section.icon} />
+                      </svg>
+                    </span>
+                    <span className="admin-nav-label">{section.label}</span>
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      className={`admin-nav-chevron ${expandedSection === section.path ? 'admin-nav-chevron-open' : ''}`}
                     >
-                      <span className="admin-nav-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <path d={section.icon} />
-                        </svg>
-                      </span>
-                      <span className="admin-nav-label">{section.label}</span>
-                      <span className="admin-nav-chevron-wrap">
-                        <svg
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          className={expandedSection === section.path ? 'admin-nav-chevron-open' : ''}
-                        >
-                          <path d="M6 9l6 6 6-6" />
-                        </svg>
-                      </span>
-                    </NavLink>
-                  </div>
+                      <path d="M6 9l6 6 6-6" />
+                    </svg>
+                  </NavLink>
                   <div className={`admin-nav-dropdown ${expandedSection === section.path ? 'admin-nav-dropdown-open' : ''}`}>
                     <ul className="admin-nav-sub">
                       {section.sub.map((sub) => (
@@ -156,7 +161,6 @@ export default function AdminShell() {
                             className="admin-nav-sub-link"
                             onClick={() => {
                               setMobileMenuOpen(false);
-                              setExpandedSection(null);
                             }}
                           >
                             {sub.label}

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { customer, formatDate, formatDateTime } from '../data/fakeData';
 import { fleetEquipment } from '../data/equipmentFleetData';
 import {
@@ -11,11 +11,13 @@ import {
 import { useServiceTickets } from '../context/ServiceTicketsContext';
 import ServiceRequestForm from './ServiceRequestForm';
 import ServiceTicketDetailPanel from './ServiceTicketDetailPanel';
+import { buildDraftTicket, nextTicketId } from './serviceFormShared';
 import './Equipment.css';
 import './Service.css';
 
 const STATUS_FILTER_OPTIONS = [
   { value: '', label: 'All statuses' },
+  { value: 'draft', label: 'Draft' },
   { value: 'new', label: 'New' },
   { value: 'pending_dispatch', label: 'Pending dispatch' },
   { value: 'technician_scheduled', label: 'Technician scheduled' },
@@ -72,7 +74,7 @@ export default function Service() {
   const { ticketId } = useParams();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { tickets } = useServiceTickets();
+  const { tickets, setTickets } = useServiceTickets();
   const fleetById = useMemo(() => Object.fromEntries(fleetEquipment.map((e) => [e.id, e])), []);
 
   const [filtersDropdownOpen, setFiltersDropdownOpen] = useState(false);
@@ -193,8 +195,9 @@ export default function Service() {
   }, []);
 
   const filteredSorted = useMemo(() => {
-    let list = [...tickets];
     const q = search.trim().toLowerCase();
+    let list = tickets.filter((t) => !t.isDraft);
+
     if (q) {
       list = list.filter((t) => ticketSearchHaystack(t, fleetById[t.equipmentId]).includes(q));
     }
@@ -217,6 +220,20 @@ export default function Service() {
       list = list.filter((t) => isOpenServiceTicket(t) && t.requestedBy === customer.name);
     }
 
+    const draftTickets = tickets.filter((t) => t.isDraft);
+    const shownDrafts = draftTickets.filter((d) => {
+      if (q && !ticketSearchHaystack(d, fleetById[d.equipmentId]).includes(q)) return false;
+      if (quickFilter === 'scheduled' || quickFilter === 'completed') return false;
+      if (quickFilter === 'mine' && d.requestedBy !== customer.name) return false;
+      if (statusFilter && statusFilter !== 'draft') return false;
+      if (locationFilter && d.locationLabel !== locationFilter) return false;
+      if (dateFrom && new Date(d.createdAt) < new Date(dateFrom)) return false;
+      if (dateTo && new Date(d.createdAt) > new Date(dateTo)) return false;
+      if (contractFilter === 'under' && !contractOnTicketIsCovered(d.contractStatusOnTicket)) return false;
+      if (contractFilter === 'not' && contractOnTicketIsCovered(d.contractStatusOnTicket)) return false;
+      return true;
+    });
+
     list.sort((a, b) => {
       if (sortKey === 'newest') return new Date(b.createdAt) - new Date(a.createdAt);
       if (sortKey === 'oldest') return new Date(a.createdAt) - new Date(b.createdAt);
@@ -230,7 +247,8 @@ export default function Service() {
       return 0;
     });
 
-    return list;
+    shownDrafts.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+    return [...shownDrafts, ...list];
   }, [
     tickets,
     search,
@@ -264,14 +282,22 @@ export default function Service() {
   const isCreateMode = searchParams.get('create') === '1';
   const equipmentCreateQuery = searchParams.get('equipment');
 
-  const cancelCreate = useCallback(() => {
-    setSearchParams((prev) => {
-      const p = new URLSearchParams(prev);
-      p.delete('create');
-      p.delete('equipment');
-      return p;
+  useLayoutEffect(() => {
+    if (!isCreateMode || ticketId) return;
+    let newId = null;
+    setTickets((prev) => {
+      const id = nextTicketId(prev);
+      const eqKey =
+        equipmentCreateQuery && fleetById[equipmentCreateQuery] ? equipmentCreateQuery : fleetEquipment[0]?.id;
+      const equip = eqKey ? fleetById[eqKey] : null;
+      if (!equip) return prev;
+      newId = id;
+      return [buildDraftTicket(id, equip, customer.name), ...prev];
     });
-  }, [setSearchParams]);
+    if (newId) {
+      navigate(`/service/${encodeURIComponent(newId)}`, { replace: true });
+    }
+  }, [isCreateMode, ticketId, equipmentCreateQuery, fleetById, navigate, setTickets]);
 
   const onCreateSuccess = useCallback(
     (ticket) => {
@@ -286,9 +312,14 @@ export default function Service() {
         <h1 id="service-heading" className="service-list-title">
           Service
         </h1>
-        <Link to="/service?create=1" className="service-btn service-btn-primary service-list-cta" id="service-create-link">
+        <button
+          type="button"
+          className="service-btn service-btn-primary service-list-cta"
+          id="service-create-link"
+          onClick={() => navigate('/service?create=1')}
+        >
           Request Service
-        </Link>
+        </button>
       </div>
 
       <div className="service-chips" role="tablist" aria-label="Quick filters">
@@ -480,7 +511,6 @@ export default function Service() {
             const eq = fleetById[t.equipmentId];
             const schedule = formatScheduleWindow(t.scheduledVisitStart, t.scheduledVisitEnd);
             const isSel = ticketId === t.id;
-            const hasIcons = t.hasAttachments || t.unreadMessages > 0;
             return (
               <li key={t.id} className="service-ticket-list-item">
                 <button
@@ -490,44 +520,25 @@ export default function Service() {
                   aria-current={isSel ? 'true' : undefined}
                 >
                   <div className="service-ticket-row-head">
-                    <span className="service-ticket-num">{t.id}</span>
+                    <h3 className="service-ticket-title service-ticket-title--list">{t.subject}</h3>
                     <span className={`service-status-pill service-status-pill--compact service-status-pill--${t.status}`}>
                       {t.statusLabel}
                     </span>
                   </div>
-                  <h3 className="service-ticket-title service-ticket-title--list">{t.subject}</h3>
                   <p className="service-ticket-row-sub">
-                    {eq?.displayName ?? 'Equipment'} · <span className="service-ticket-eqno">{eq?.equipmentNo ?? '—'}</span>
+                    <span className="service-ticket-num">{t.id}</span>
+                    {' · '}
+                    {eq?.displayName ?? 'Equipment'}
                     {t.locationLabel ? ` · ${t.locationLabel}` : ''}
                   </p>
-                  <p className="service-ticket-summary service-ticket-summary--list">{t.summary}</p>
-                  {t.activityCue && <p className="service-ticket-cue service-ticket-cue--list">{t.activityCue}</p>}
                   <div className="service-ticket-row-foot">
                     <div className="service-ticket-row-meta">
-                      <span>Created {formatDate(t.createdAt)}</span>
-                      <span>Updated {formatDateTime(t.updatedAt)}</span>
-                      {schedule && <span className="service-ticket-schedule">Visit: {schedule}</span>}
+                      {schedule ? (
+                        <span>Visit {schedule}</span>
+                      ) : (
+                        <span>Created {formatDate(t.createdAt)}</span>
+                      )}
                     </div>
-                    {hasIcons && (
-                      <div className="service-ticket-icons service-ticket-icons--list">
-                        {t.hasAttachments && (
-                          <span className="service-ticket-ico" title="Has attachments">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-                              <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
-                            </svg>
-                            Files
-                          </span>
-                        )}
-                        {t.unreadMessages > 0 && (
-                          <span className="service-ticket-ico service-ticket-ico-unread" title="Unread messages">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-                              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                            </svg>
-                            {t.unreadMessages} new
-                          </span>
-                        )}
-                      </div>
-                    )}
                   </div>
                 </button>
               </li>
@@ -553,22 +564,25 @@ export default function Service() {
           </div>
         );
       }
+      if (selectedTicket.isDraft) {
+        return (
+          <ServiceRequestForm
+            key={selectedTicket.id}
+            draftTicket={selectedTicket}
+            onSuccess={onCreateSuccess}
+            onCancel={() => {
+              setTickets((prev) => prev.filter((t) => t.id !== selectedTicket.id));
+              closeDetail();
+            }}
+          />
+        );
+      }
       return (
         <ServiceTicketDetailPanel
           key={selectedTicket.id}
           ticket={selectedTicket}
           equipment={selectedEquipment}
           onClose={closeDetail}
-        />
-      );
-    }
-    if (isCreateMode) {
-      return (
-        <ServiceRequestForm
-          key={equipmentCreateQuery ?? 'create'}
-          equipmentQuery={equipmentCreateQuery}
-          onSuccess={onCreateSuccess}
-          onCancel={cancelCreate}
         />
       );
     }
@@ -586,7 +600,7 @@ export default function Service() {
   })();
 
   return (
-    <div className="service-page" data-mobile-detail={ticketId || isCreateMode ? 'true' : 'false'}>
+    <div className="service-page" data-mobile-detail={ticketId ? 'true' : 'false'}>
       {createdId && (
         <div className="service-banner service-banner-success" role="status">
           <div>

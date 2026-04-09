@@ -8,7 +8,9 @@
 
 /* Sidebar */
 .portal-sidebar {
-  width: 220px;
+  /* Track width via CSS var so overlays can align to the sidebar edge */
+  --portal-sidebar-width: 220px;
+  width: var(--portal-sidebar-width);
   flex-shrink: 0;
   height: 100vh;
   background: var(--color-bg-card);
@@ -21,7 +23,8 @@
 }
 
 .portal-sidebar-collapsed {
-  width: 72px;
+  --portal-sidebar-width: 72px;
+  width: var(--portal-sidebar-width);
 }
 
 .portal-sidebar-collapsed .portal-nav-label,
@@ -180,29 +183,27 @@
 }
 
 .portal-sidebar-notification-dropdown {
+  /* Anchor dropdown above the notifications button, wider than the menu */
   position: absolute;
-  bottom: calc(100% + 4px);
+  bottom: calc(100% + 8px);
   left: 0;
-  width: 320px;
-  min-width: 0;
-  max-width: 100%;
-  max-height: 0;
-  overflow: hidden;
+  width: 360px;
+  min-width: 260px;
+  max-width: min(420px, calc(100vw - var(--portal-sidebar-width) - 32px));
+  max-height: min(420px, calc(100vh - 32px));
   background: var(--color-bg-card);
-  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  border-radius: var(--radius-md);
   border: 1px solid transparent;
-  border-bottom: none;
-  z-index: 100;
-  display: flex;
+  z-index: 110;
+  display: none;
   flex-direction: column;
-  transition: max-height 0.25s ease;
   overflow-wrap: break-word;
   word-wrap: break-word;
   box-sizing: border-box;
 }
 
 .portal-sidebar-notification-dropdown-open {
-  max-height: 420px;
+  display: flex;
   border-color: var(--color-border-light);
   box-shadow: var(--shadow-sm);
   overflow-x: hidden;
@@ -233,7 +234,7 @@
 .portal-sidebar-notification-list {
   overflow-y: auto;
   overflow-x: hidden;
-  max-height: 300px;
+  max-height: 320px;
   min-width: 0;
   max-width: 100%;
 }
@@ -301,14 +302,46 @@
 }
 
 .portal-sidebar-notification-dropdown-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   padding: 12px 18px;
   border-top: 1px solid var(--color-border-light);
   background: var(--color-bg);
 }
 
-.portal-sidebar-notification-dropdown-footer a {
+.portal-notification-footer-main {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  border: none;
+  background: var(--color-primary);
+  color: #fff;
   font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.portal-notification-footer-main:hover {
+  background: var(--color-primary-dark);
+}
+
+.portal-notification-footer-secondary {
+  font-size: 0.8125rem;
   font-weight: 500;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.portal-notification-footer-secondary:hover {
+  color: var(--color-accent);
 }
 
 .portal-sidebar-logo {
@@ -513,43 +546,18 @@
 
 .portal-nav-section {
   margin-bottom: 2px;
+  padding: 0 6px;
 }
 
-.portal-nav-item-wrapper {
-  display: flex;
-  align-items: center;
-  position: relative;
+/* caret icon inside the nav item */
+.portal-nav-chevron {
+  margin-left: auto;
+  width: 18px;
+  height: 18px;
+  transition: transform var(--transition);
 }
 
-.portal-nav-item-wrapper-with-dropdown .portal-nav-item {
-  border-radius: var(--radius-md);
-}
-
-.portal-nav-item-wrapper-with-dropdown.portal-nav-item-wrapper-open .portal-nav-item {
-  background: var(--color-primary-light);
-  color: var(--color-primary);
-}
-
-.portal-nav-item-wrapper .portal-nav-item {
-  flex: 1;
-  min-width: 0;
-}
-
-.portal-nav-dropdown-trigger {
-  display: none;
-}
-
-.portal-nav-dropdown-trigger:hover {
-  background: var(--color-bg);
-  color: var(--color-text);
-}
-
-.portal-nav-dropdown-trigger svg {
-  width: 16px;
-  height: 16px;
-}
-
-.portal-nav-dropdown-trigger svg.portal-nav-chevron-open {
+.portal-nav-chevron-open {
   transform: rotate(180deg);
 }
 
@@ -574,18 +582,17 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 8px 14px;
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
   font-size: 0.875rem;
   font-weight: 500;
   color: var(--color-text-secondary);
   text-decoration: none;
   transition: background var(--transition), color var(--transition);
-  border-left: none;
-  border-radius: var(--radius-md);
 }
 
 .portal-nav-item:hover {
-  background: var(--color-primary-light);
+  background: var(--color-bg);
   color: var(--color-text);
 }
 
@@ -594,11 +601,11 @@
   color: var(--color-primary);
 }
 
-.portal-nav-chevron-wrap {
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* Disable hover change for selected item */
+.portal-nav-item-active:hover {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  cursor: default;
 }
 
 .portal-nav-icon {
@@ -770,7 +777,8 @@ main.portal-content:has(.service-page) {
     left: 0;
     top: 0;
     bottom: 0;
-    width: 280px;
+    --portal-sidebar-width: 280px;
+    width: var(--portal-sidebar-width);
     transform: translateX(-100%);
     transition: transform var(--transition);
   }
