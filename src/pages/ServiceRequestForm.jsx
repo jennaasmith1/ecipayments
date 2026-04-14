@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { customer } from '../data/fakeData';
-import { fleetEquipment } from '../data/equipmentFleetData';
+import { usePortalProfile } from '../context/PortalProfileContext';
 import { useServiceTickets } from '../context/ServiceTicketsContext';
 import ServiceEquipmentPicker from '../components/ServiceEquipmentPicker';
 import { buildSubmittedTicket, nextTicketId, paymentScenario } from './serviceFormShared';
@@ -10,8 +9,9 @@ import { buildSubmittedTicket, nextTicketId, paymentScenario } from './serviceFo
  * When `draftTicket` is set, submitting replaces that draft with a real ticket (same id).
  */
 export default function ServiceRequestForm({ draftTicket, equipmentQuery, onSuccess, onCancel }) {
+  const { customer, fleetEquipment } = usePortalProfile();
   const { tickets, setTickets } = useServiceTickets();
-  const fleetById = useMemo(() => Object.fromEntries(fleetEquipment.map((e) => [e.id, e])), []);
+  const fleetById = useMemo(() => Object.fromEntries(fleetEquipment.map((e) => [e.id, e])), [fleetEquipment]);
 
   const [createEquipmentId, setCreateEquipmentId] = useState(() => {
     if (draftTicket?.equipmentId && fleetById[draftTicket.equipmentId]) {
@@ -39,6 +39,7 @@ export default function ServiceRequestForm({ draftTicket, equipmentQuery, onSucc
   const [mockCardExp, setMockCardExp] = useState('');
   const [mockCardSaved, setMockCardSaved] = useState(false);
 
+  /* eslint-disable react-hooks/set-state-in-effect -- sync form equipment when draft or URL query changes */
   useEffect(() => {
     if (draftTicket?.equipmentId && fleetById[draftTicket.equipmentId]) {
       setCreateEquipmentId(draftTicket.equipmentId);
@@ -51,6 +52,7 @@ export default function ServiceRequestForm({ draftTicket, equipmentQuery, onSucc
       setMockCardSaved(false);
     }
   }, [draftTicket?.equipmentId, equipmentQuery, fleetById]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const createEquipment = fleetById[createEquipmentId];
   const payCase = createEquipment ? paymentScenario(createEquipment) : 'covered';

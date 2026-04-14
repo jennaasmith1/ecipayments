@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import PortalShell from './components/PortalShell';
 import AdminShell from './components/AdminShell';
+import { PortalProfileProvider } from './context/PortalProfileContext';
 import EmailScreen from './pages/EmailScreen';
 import HomeDashboard from './pages/HomeDashboard';
 import Equipment from './pages/Equipment';
@@ -34,11 +35,37 @@ import AdminOrders from './pages/admin/AdminOrders';
 import AdminBilling from './pages/admin/AdminBilling';
 import './App.css';
 
+/** Shared customer portal pages (relative paths under each profile layout). */
+function PortalChildRoutes() {
+  return (
+    <>
+      <Route index element={<HomeDashboard />} />
+      <Route path="equipment" element={<Equipment />} />
+      <Route path="service" element={<ServiceTicketsLayout />}>
+        <Route index element={<Service />} />
+        <Route path="new" element={<ServiceNew />} />
+        <Route path=":ticketId" element={<Service />} />
+      </Route>
+      <Route path="supplies" element={<Supplies />} />
+      <Route path="billing" element={<Billing />} />
+      <Route path="payments" element={<PaymentsDashboard />} />
+      <Route path="pay" element={<PaymentLanding />} />
+      <Route path="pay/success" element={<PaymentSuccess />} />
+      <Route path="account" element={<Account />} />
+      <Route path="chat" element={<Chat />} />
+      <Route path="settings/autopay" element={<AutoPaySetup />} />
+      <Route path="settings/notifications" element={<NotificationSettings />} />
+      <Route path="notifications" element={<NotificationsPage />} />
+      <Route path="email" element={<EmailScreen />} />
+      <Route path="*" element={<Navigate to=".." relative="path" replace />} />
+    </>
+  );
+}
+
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/email" element={<EmailScreen />} />
         <Route path="/admin" element={<AdminShell />}>
           <Route index element={<AdminDashboard />} />
           <Route path="customers" element={<CustomerList />} />
@@ -56,25 +83,29 @@ function App() {
           <Route path="audit" element={<AuditActivity />} />
           <Route path="intelligence-hub" element={<IntelligenceHub />} />
         </Route>
-        <Route element={<PortalShell />}>
-          <Route path="/" element={<HomeDashboard />} />
-          <Route path="/equipment" element={<Equipment />} />
-          <Route path="/service" element={<ServiceTicketsLayout />}>
-            <Route index element={<Service />} />
-            <Route path="new" element={<ServiceNew />} />
-            <Route path=":ticketId" element={<Service />} />
-          </Route>
-          <Route path="/supplies" element={<Supplies />} />
-          <Route path="/billing" element={<Billing />} />
-          <Route path="/payments" element={<PaymentsDashboard />} />
-          <Route path="/pay" element={<PaymentLanding />} />
-          <Route path="/pay/success" element={<PaymentSuccess />} />
-          <Route path="/account" element={<Account />} />
-          <Route path="/chat" element={<Chat />} />
-          <Route path="/settings/autopay" element={<AutoPaySetup />} />
-          <Route path="/settings/notifications" element={<NotificationSettings />} />
-          <Route path="/notifications" element={<NotificationsPage />} />
+
+        <Route
+          path="/c/tesla/*"
+          element={
+            <PortalProfileProvider profileId="tesla">
+              <PortalShell />
+            </PortalProfileProvider>
+          }
+        >
+          <PortalChildRoutes />
         </Route>
+
+        <Route
+          path="/*"
+          element={
+            <PortalProfileProvider profileId="summit">
+              <PortalShell />
+            </PortalProfileProvider>
+          }
+        >
+          <PortalChildRoutes />
+        </Route>
+
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

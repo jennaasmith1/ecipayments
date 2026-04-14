@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import EquipmentDeviceThumb from '../components/EquipmentDeviceThumb';
 import { contractOnTicketIsCovered } from '../data/serviceTicketsData';
-import { formatDate, formatDateTime } from '../data/fakeData';
+import { usePortalProfile } from '../context/PortalProfileContext';
 
 const contractTicketLabels = {
   active: 'Active maintenance contract',
@@ -98,6 +98,7 @@ function TonerBar({ label, value, tone }) {
 }
 
 export default function ServiceTicketDetailPanel({ ticket, equipment, onClose }) {
+  const { formatDate, formatDateTime } = usePortalProfile();
   const titleRef = useRef(null);
   const [showExtraEquipment, setShowExtraEquipment] = useState(false);
   const [chatDraft, setChatDraft] = useState('');

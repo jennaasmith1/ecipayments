@@ -1,6 +1,6 @@
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { formatDate } from '../data/fakeData';
+import { usePortalProfile, usePortalPath } from '../context/PortalProfileContext';
 import EquipmentDeviceThumb from './EquipmentDeviceThumb';
 
 function equipmentSearchHaystack(eq) {
@@ -36,6 +36,8 @@ const reportingLabels = {
 };
 
 export function ServiceEquipmentPreviewModal({ equipment, open, onClose }) {
+  const { formatDate } = usePortalProfile();
+  const equipmentListPath = usePortalPath('/equipment');
   const closeBtnRef = useRef(null);
 
   useEffect(() => {
@@ -152,7 +154,7 @@ export function ServiceEquipmentPreviewModal({ equipment, open, onClose }) {
           )}
 
           <div className="service-equip-preview-actions">
-            <Link to="/equipment" className="service-btn service-btn-primary" onClick={onClose}>
+            <Link to={equipmentListPath} className="service-btn service-btn-primary" onClick={onClose}>
               View equipment list
             </Link>
             <button type="button" className="service-btn" onClick={onClose}>

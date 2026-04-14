@@ -1,6 +1,6 @@
-# Customer Portal Payments – Front-End Prototype
+# Customer Portal – Front-End Prototype
 
-High-fidelity React prototype for a future-state customer portal payments experience (office equipment dealer). **Demo/presentation only** – no backend, auth, or production logic.
+High-fidelity React prototype for a dealer customer portal (Summit + Tesla demos, billing, equipment, service, admin console). **Demo/presentation only** – no backend, auth, or production logic.
 
 ## Run the prototype
 

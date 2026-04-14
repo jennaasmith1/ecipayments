@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { usePortalPath } from '../context/PortalProfileContext';
 import EquipmentDeviceThumb from '../components/EquipmentDeviceThumb';
 
 const contractLabels = {
@@ -40,6 +41,11 @@ function SectionTitle({ id, children }) {
 }
 
 export default function EquipmentDetailPanel({ device, open, onClose, formatDate }) {
+  const meterHashPath = usePortalPath('/equipment#meter');
+  const suppliesPath = usePortalPath('/supplies');
+  const servicePath = usePortalPath('/service');
+  const serviceBase = usePortalPath('/service');
+  const serviceCreatePath = device ? `${serviceBase}?create=1&equipment=${encodeURIComponent(device.id)}` : serviceBase;
   const panelRef = useRef(null);
   const closeBtnRef = useRef(null);
 
@@ -110,16 +116,13 @@ export default function EquipmentDetailPanel({ device, open, onClose, formatDate
           <EquipmentDeviceThumb device={device} className="equipment-detail-hero-thumb" />
 
           <div className="equipment-detail-actions equipment-detail-actions--primary">
-            <Link to="/equipment#meter" className="equipment-detail-action-btn equipment-detail-action-btn--solid">
+            <Link to={meterHashPath} className="equipment-detail-action-btn equipment-detail-action-btn--solid">
               Submit meter read
             </Link>
-            <Link
-              to={`/service?create=1&equipment=${encodeURIComponent(device.id)}`}
-              className="equipment-detail-action-btn equipment-detail-action-btn--solid"
-            >
+            <Link to={serviceCreatePath} className="equipment-detail-action-btn equipment-detail-action-btn--solid">
               Request service
             </Link>
-            <Link to="/supplies" className="equipment-detail-action-btn equipment-detail-action-btn--solid">
+            <Link to={suppliesPath} className="equipment-detail-action-btn equipment-detail-action-btn--solid">
               Order supplies
             </Link>
           </div>
@@ -326,7 +329,7 @@ export default function EquipmentDetailPanel({ device, open, onClose, formatDate
                 <p>
                   <strong>{device.openService.id}</strong> — {device.openService.summary}
                 </p>
-                <Link to="/service" className="equipment-detail-inline-link">
+                <Link to={servicePath} className="equipment-detail-inline-link">
                   View ticket
                 </Link>
               </div>

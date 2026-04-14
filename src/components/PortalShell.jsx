@@ -1,6 +1,9 @@
-import { useState, useMemo, useEffect } from 'react';
-import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { dealer, customer, notifications } from '../data/fakeData';
+import { useState, useMemo, useEffect, useCallback } from 'react';
+import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
+import {
+  usePortalProfile,
+  portalPathnameFromLocation,
+} from '../context/PortalProfileContext';
 import { ADMIN_PREVIEW_STORAGE_KEY } from '../data/adminMockData';
 import './PortalShell.css';
 
@@ -70,30 +73,60 @@ const accountLinks = [
 ];
 
 /** Whether the current URL belongs to this sidebar section (for active styling + which submenu stays open). */
-function pathMatchesNavSection(sectionPath, pathname) {
-  if (sectionPath === '/') return pathname === '/';
+function pathMatchesNavSection(sectionPath, pathnameLogical) {
+  if (sectionPath === '/') return pathnameLogical === '/' || pathnameLogical === '';
   if (sectionPath === '/payments') {
     return (
-      pathname === '/payments' ||
-      pathname.startsWith('/payments/') ||
-      pathname === '/pay' ||
-      pathname.startsWith('/pay/') ||
-      pathname === '/settings/autopay'
+      pathnameLogical === '/payments' ||
+      pathnameLogical.startsWith('/payments/') ||
+      pathnameLogical === '/pay' ||
+      pathnameLogical.startsWith('/pay/') ||
+      pathnameLogical === '/settings/autopay'
     );
   }
-  return pathname === sectionPath || pathname.startsWith(`${sectionPath}/`);
+  return pathnameLogical === sectionPath || pathnameLogical.startsWith(`${sectionPath}/`);
+}
+
+function subLinkTo(toPortal, subPath) {
+  const [p, hash] = subPath.split('#');
+  const [pathOnly, query] = p.split('?');
+  const href = toPortal(pathOnly) + (query ? `?${query}` : '') + (hash ? `#${hash}` : '');
+  return href;
 }
 
 function PortalShell() {
+  const {
+    basePath,
+    dealer,
+    customer,
+    notifications,
+    portalLogoSrc,
+    portalThemeClass,
+    portalDocumentTitle,
+  } = usePortalProfile();
+  const toPortal = useCallback(
+    (path) => {
+      const normalized = path.startsWith('/') ? path : `/${path}`;
+      if (!basePath) return normalized;
+      return `${basePath}${normalized}`;
+    },
+    [basePath]
+  );
+
+  const location = useLocation();
+  const pathnameLogical = portalPathnameFromLocation(location.pathname, basePath);
+
   const [notificationOpen, setNotificationOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [expandedSection, setExpandedSection] = useState(null);
   const [accountDropdownOpen, setAccountDropdownOpen] = useState(false);
   const [previewRev, setPreviewRev] = useState(0);
-  const location = useLocation();
-  const navigate = useNavigate();
   const unreadCount = notifications.filter((n) => !n.read).length;
+
+  useEffect(() => {
+    if (portalDocumentTitle) document.title = portalDocumentTitle;
+  }, [portalDocumentTitle]);
 
   const adminPreview = useMemo(() => {
     void location.pathname;
@@ -116,10 +149,9 @@ function PortalShell() {
     setPreviewRev((r) => r + 1);
   };
 
-  const isActiveSection = (path) => pathMatchesNavSection(path, location.pathname);
+  const isActiveSection = (path) => pathMatchesNavSection(path, pathnameLogical);
 
   const toggleSection = (path) => {
-    // If this section is the active one (current route inside it), don't allow collapsing it
     if (isActiveSection(path)) {
       setExpandedSection(path);
       return;
@@ -127,19 +159,18 @@ function PortalShell() {
     setExpandedSection((prev) => (prev === path ? null : path));
   };
 
-  // Only one submenu open: the section that owns the current route. Home and other top-level pages collapse all.
   useEffect(() => {
-    const { pathname } = location;
-    const active = navSections.find((section) => section.sub && pathMatchesNavSection(section.path, pathname));
+    const active = navSections.find((section) => section.sub && pathMatchesNavSection(section.path, pathnameLogical));
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- sync submenu open state with active route
     setExpandedSection(active ? active.path : null);
-  }, [location.pathname]);
+  }, [pathnameLogical]);
 
   return (
-    <div className="portal-shell">
+    <div className={`portal-shell ${portalThemeClass}`}>
       <aside className={`portal-sidebar ${sidebarCollapsed ? 'portal-sidebar-collapsed' : ''} ${mobileMenuOpen ? 'portal-sidebar-mobile-open' : ''}`}>
         <div className="portal-sidebar-header">
-          <Link to="/" className="portal-sidebar-logo" onClick={() => setMobileMenuOpen(false)}>
-            <img src="/branding/tesla-logo.png" alt={dealer.name} className="portal-sidebar-logo-img" />
+          <Link to={toPortal('/')} className="portal-sidebar-logo" onClick={() => setMobileMenuOpen(false)}>
+            <img src={portalLogoSrc} alt={dealer.name} className="portal-sidebar-logo-img" />
           </Link>
           <div className="portal-sidebar-header-actions">
             <button
@@ -158,7 +189,7 @@ function PortalShell() {
               {section.sub && !sidebarCollapsed ? (
                 <>
                   <NavLink
-                    to={section.path}
+                    to={toPortal(section.path)}
                     end={section.path === '/'}
                     className={({ isActive }) =>
                       `portal-nav-item ${isActive ? 'portal-nav-item-active' : ''} ${isActiveSection(section.path) ? 'portal-nav-item-active' : ''}`
@@ -191,7 +222,7 @@ function PortalShell() {
                       {section.sub.map((sub) => (
                         <li key={sub.path + sub.label}>
                           <Link
-                            to={sub.path}
+                            to={subLinkTo(toPortal, sub.path)}
                             className="portal-nav-sub-link"
                             onClick={() => {
                               setMobileMenuOpen(false);
@@ -206,7 +237,7 @@ function PortalShell() {
                 </>
               ) : (
                 <NavLink
-                  to={section.path}
+                  to={toPortal(section.path)}
                   end={section.path === '/'}
                   className={({ isActive }) =>
                     `portal-nav-item ${isActive ? 'portal-nav-item-active' : ''} ${isActiveSection(section.path) ? 'portal-nav-item-active' : ''}`
@@ -273,14 +304,14 @@ function PortalShell() {
             </div>
             <div className="portal-sidebar-notification-dropdown-footer">
               <Link
-                to="/notifications"
+                to={toPortal('/notifications')}
                 className="portal-notification-footer-main"
                 onClick={() => setNotificationOpen(false)}
               >
                 See all notifications
               </Link>
               <Link
-                to="/settings/notifications"
+                to={toPortal('/settings/notifications')}
                 className="portal-notification-footer-secondary"
                 onClick={() => setNotificationOpen(false)}
               >
@@ -321,7 +352,7 @@ function PortalShell() {
               {accountLinks.map((link) => (
                 <li key={link.path + link.label}>
                   <Link
-                    to={link.path}
+                    to={link.path.startsWith('/admin') ? link.path : subLinkTo(toPortal, link.path)}
                     className="portal-account-link"
                     onClick={() => {
                       setAccountDropdownOpen(false);

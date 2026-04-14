@@ -1,21 +1,21 @@
-/* Design system: customer portal — Tesla-first, minimal (white-label demo via Ubeo) */
+/* Design system: Summit (default) + Tesla (`/c/tesla`) portal themes */
 
 :root {
-  /* Primary: near-black (Tesla-adjacent, premium) */
-  --color-primary: #171a20;
-  --color-primary-hover: #0d0f14;
-  --color-primary-light: #f4f4f5;
-  --color-accent: #3e6ae1;
-  --color-accent-hover: #3457b8;
-  --color-accent-light: #eef2ff;
+  /* Primary (Summit — matches default customer portal) */
+  --color-primary: #1c5490;
+  --color-primary-hover: #164a7a;
+  --color-primary-light: #e3ecf5;
+  --color-accent: #0d9488;
+  --color-accent-hover: #0f766e;
+  --color-accent-light: #ccfbf1;
   /* Neutrals */
-  --color-bg: #f4f4f5;
+  --color-bg: #f8fafc;
   --color-bg-card: #ffffff;
-  --color-border: #e3e3e3;
-  --color-border-light: #f2f2f2;
-  --color-text: #171a20;
-  --color-text-secondary: #5c5e62;
-  --color-text-muted: #8e8e8e;
+  --color-border: #e2e8f0;
+  --color-border-light: #f1f5f9;
+  --color-text: #1e293b;
+  --color-text-secondary: #64748b;
+  --color-text-muted: #94a3b8;
   /* Status */
   --color-success: #059669;
   --color-success-bg: #d1fae5;
@@ -28,11 +28,31 @@
   --radius-md: 10px;
   --radius-lg: 14px;
   --radius-xl: 18px;
+  --shadow-sm: 0 1px 2px rgba(28, 84, 144, 0.08);
+  --shadow-md: 0 4px 12px rgba(28, 84, 144, 0.1);
+  --shadow-lg: 0 10px 40px rgba(28, 84, 144, 0.12);
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --transition: 0.2s ease;
+}
+
+/* Tesla enterprise demo — scoped to portal shell on `/c/tesla/*` */
+.portal-theme-tesla {
+  --color-primary: #171a20;
+  --color-primary-hover: #0d0f14;
+  --color-primary-light: #f4f4f5;
+  --color-accent: #3e6ae1;
+  --color-accent-hover: #3457b8;
+  --color-accent-light: #eef2ff;
+  --color-bg: #f4f4f5;
+  --color-bg-card: #ffffff;
+  --color-border: #e3e3e3;
+  --color-border-light: #f2f2f2;
+  --color-text: #171a20;
+  --color-text-secondary: #5c5e62;
+  --color-text-muted: #8e8e8e;
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
   --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.1);
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --transition: 0.2s ease;
 }
 
 *,

@@ -1,8 +1,8 @@
-import { Link } from 'react-router-dom';
-import { supplies, supplyOrders, formatCurrency, formatDate } from '../data/fakeData';
+import { usePortalProfile } from '../context/PortalProfileContext';
 import './Supplies.css';
 
 export default function Supplies() {
+  const { supplies, supplyOrders, formatCurrency, formatDate } = usePortalProfile();
   const recommended = supplies.filter((s) => s.recommended);
 
   return (

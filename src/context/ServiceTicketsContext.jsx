@@ -1,9 +1,10 @@
 import { createContext, useContext, useMemo, useState } from 'react';
-import { initialServiceTickets } from '../data/serviceTicketsData';
+import { usePortalProfile } from './PortalProfileContext';
 
 const ServiceTicketsContext = createContext(null);
 
 export function ServiceTicketsProvider({ children }) {
+  const { initialServiceTickets } = usePortalProfile();
   const [tickets, setTickets] = useState(() => initialServiceTickets.map((t) => ({ ...t })));
   const value = useMemo(() => ({ tickets, setTickets }), [tickets]);
   return <ServiceTicketsContext.Provider value={value}>{children}</ServiceTicketsContext.Provider>;

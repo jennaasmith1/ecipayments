@@ -179,6 +179,7 @@ export default function AdminOrders() {
 
   useEffect(() => {
     if (selectedId && filtered.some((o) => o.id === selectedId)) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- keep selection valid when filter results change
     setSelectedId(filtered[0]?.id ?? null);
   }, [filtered, selectedId]);
 

@@ -174,6 +174,7 @@ export default function AdminBilling() {
 
   useEffect(() => {
     if (selectedId && filtered.some((i) => i.id === selectedId)) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- keep selection valid when filter results change
     setSelectedId(filtered[0]?.id ?? null);
   }, [filtered, selectedId]);
 

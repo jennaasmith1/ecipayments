@@ -1,10 +1,13 @@
+import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { invoices, formatCurrency, formatDate, getStatusLabel, getStatusVariant } from '../data/fakeData';
+import { usePortalProfile, usePortalPath } from '../context/PortalProfileContext';
 import './Billing.css';
 
-const totalBalance = invoices.reduce((sum, inv) => sum + inv.amount, 0);
-
 export default function Billing() {
+  const { invoices, formatCurrency, formatDate, getStatusLabel, getStatusVariant } = usePortalProfile();
+  const payPath = usePortalPath('/pay');
+  const totalBalance = useMemo(() => invoices.reduce((sum, inv) => sum + inv.amount, 0), [invoices]);
+
   return (
     <div className="billing-page">
       <header className="billing-header">
@@ -19,7 +22,7 @@ export default function Billing() {
           <div className="billing-balance-label">Account balance</div>
           <div className="billing-balance-value">{formatCurrency(totalBalance)}</div>
           <p className="billing-balance-meta">Total outstanding across {invoices.length} invoice{invoices.length !== 1 ? 's' : ''}</p>
-          <Link to="/pay" className="billing-balance-cta">Pay now</Link>
+          <Link to={payPath} className="billing-balance-cta">Pay now</Link>
         </div>
 
         <section className="billing-help-section">
@@ -72,7 +75,7 @@ export default function Billing() {
                   </td>
                   <td className="col-amount">{formatCurrency(inv.amount)}</td>
                   <td>
-                    <Link to="/pay" className="billing-link">Pay</Link>
+                    <Link to={payPath} className="billing-link">Pay</Link>
                   </td>
                 </tr>
               ))}

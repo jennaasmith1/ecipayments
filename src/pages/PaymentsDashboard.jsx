@@ -1,20 +1,22 @@
+import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import {
-  customer,
-  invoices,
-  recentPayments,
-  formatCurrency,
-  formatDate,
-} from '../data/fakeData';
+import { usePortalProfile, usePortalPath } from '../context/PortalProfileContext';
 import './PaymentsDashboard.css';
 
-const totalOutstanding = invoices.reduce((sum, inv) => sum + inv.amount, 0);
-const paidThisMonth = recentPayments
-  .filter((p) => new Date(p.date).getMonth() === new Date().getMonth())
-  .reduce((sum, p) => sum + p.amount, 0);
-const paidThisMonthDisplay = paidThisMonth > 0 ? paidThisMonth : 1565.5;
-
 export default function PaymentsDashboard() {
+  const { customer, invoices, recentPayments, formatCurrency, formatDate } = usePortalProfile();
+  const payPath = usePortalPath('/pay');
+  const autopayPath = usePortalPath('/settings/autopay');
+
+  const { totalOutstanding, paidThisMonthDisplay } = useMemo(() => {
+    const totalOutstandingInner = invoices.reduce((sum, inv) => sum + inv.amount, 0);
+    const paidThisMonth = recentPayments
+      .filter((p) => new Date(p.date).getMonth() === new Date().getMonth())
+      .reduce((sum, p) => sum + p.amount, 0);
+    const paidThisMonthDisplayInner = paidThisMonth > 0 ? paidThisMonth : 1565.5;
+    return { totalOutstanding: totalOutstandingInner, paidThisMonthDisplay: paidThisMonthDisplayInner };
+  }, [invoices, recentPayments]);
+
   return (
     <div className="payments-dashboard">
       <h1>Payments</h1>
@@ -27,7 +29,7 @@ export default function PaymentsDashboard() {
           <div className="dashboard-card-label">Outstanding balance</div>
           <div className="dashboard-card-value">{formatCurrency(totalOutstanding)}</div>
           <p className="dashboard-card-hint">{invoices.length} invoice{invoices.length !== 1 ? 's' : ''} due</p>
-          <Link to="/pay" className="dashboard-card-action">
+          <Link to={payPath} className="dashboard-card-action">
             Pay now
           </Link>
         </div>
@@ -37,7 +39,7 @@ export default function PaymentsDashboard() {
           <p className="dashboard-card-hint">From {recentPayments.length} recent payment{recentPayments.length !== 1 ? 's' : ''}</p>
         </div>
         <div className="dashboard-card dashboard-card-actions-only">
-          <Link to="/settings/autopay" className="dashboard-card-cta">
+          <Link to={autopayPath} className="dashboard-card-cta">
             Set up AutoPay
           </Link>
           <p className="dashboard-card-hint">Automate payments for eligible invoices</p>
@@ -47,7 +49,7 @@ export default function PaymentsDashboard() {
       <section className="payments-dashboard-section">
         <div className="payments-dashboard-section-header">
           <h2>Recent payments</h2>
-          <Link to="/pay" className="payments-dashboard-link">Pay invoices</Link>
+          <Link to={payPath} className="payments-dashboard-link">Pay invoices</Link>
         </div>
         <div className="dashboard-table-wrap">
           <table className="dashboard-table">

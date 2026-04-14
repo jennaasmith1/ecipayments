@@ -1,8 +1,13 @@
 import { Link } from 'react-router-dom';
-import { customer, dealer, paymentMethods } from '../data/fakeData';
+import { usePortalProfile, usePortalPath } from '../context/PortalProfileContext';
 import './Account.css';
 
 export default function Account() {
+  const { customer, dealer, paymentMethods } = usePortalProfile();
+  const paymentsPath = usePortalPath('/payments');
+  const notifPath = usePortalPath('/settings/notifications');
+  const autopayPath = usePortalPath('/settings/autopay');
+
   return (
     <div className="account-page">
       <header className="account-header">
@@ -43,21 +48,21 @@ export default function Account() {
                   <span className="account-method-badge">Recommended</span>
                 )}
               </div>
-              <Link to="/payments" className="account-link">Manage</Link>
+              <Link to={paymentsPath} className="account-link">Manage</Link>
             </div>
           ))}
         </div>
-        <Link to="/payments" className="account-section-link">Add payment method</Link>
+        <Link to={paymentsPath} className="account-section-link">Add payment method</Link>
       </section>
 
       <section className="account-section">
         <h2 className="account-section-title">Notifications & preferences</h2>
         <div className="account-links-list">
-          <Link to="/settings/notifications" className="account-link-card">
+          <Link to={notifPath} className="account-link-card">
             <span className="account-link-card-title">Notification settings</span>
             <span className="account-link-card-desc">Email, SMS, and Teams/Slack preferences</span>
           </Link>
-          <Link to="/settings/autopay" className="account-link-card">
+          <Link to={autopayPath} className="account-link-card">
             <span className="account-link-card-title">AutoPay</span>
             <span className="account-link-card-desc">Automate payments for eligible invoices</span>
           </Link>

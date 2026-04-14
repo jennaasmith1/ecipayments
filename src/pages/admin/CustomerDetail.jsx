@@ -8,7 +8,9 @@ import {
   flattenLocationsForCustomer,
   locationNameById,
 } from '../../data/adminMockData';
-import { invoices, serviceTickets, equipment, customer } from '../../data/fakeData';
+import * as summitFake from '../../data/summitFakeData';
+import * as teslaFake from '../../data/teslaFakeData';
+import { TESLA_PORTAL_BASE } from '../../context/PortalProfileContext';
 import './adminPages.css';
 import './CustomerDetail.css';
 
@@ -31,6 +33,11 @@ const mockTicketsOther = [
   { id: 'HW-198', subject: 'Firmware update', statusLabel: 'Scheduled', createdAt: '2026-03-05' },
 ];
 
+function sharedPortalDataForCustomer(c) {
+  const profile = c.portalProfile ?? (c.id === 'tesla' ? 'tesla' : 'summit');
+  return profile === 'tesla' ? teslaFake : summitFake;
+}
+
 export default function CustomerDetail() {
   const { customerId } = useParams();
   const navigate = useNavigate();
@@ -51,7 +58,7 @@ export default function CustomerDetail() {
 
   const invList = useMemo(() => {
     if (!c) return [];
-    if (c.useSharedFakeData) return invoices;
+    if (c.useSharedFakeData) return sharedPortalDataForCustomer(c).invoices;
     if (c.id === 'hartwell') return mockInvoicesOther;
     if (c.id === 'meridian') return mockInvoicesOther.map((i) => ({ ...i, status: 'overdue' }));
     return [];
@@ -59,14 +66,14 @@ export default function CustomerDetail() {
 
   const ticketList = useMemo(() => {
     if (!c) return [];
-    if (c.useSharedFakeData) return serviceTickets;
+    if (c.useSharedFakeData) return sharedPortalDataForCustomer(c).serviceTickets;
     if (c.id === 'hartwell' || c.id === 'meridian') return mockTicketsOther;
     return [];
   }, [c]);
 
   const equipList = useMemo(() => {
     if (!c) return [];
-    if (c.useSharedFakeData) return equipment;
+    if (c.useSharedFakeData) return sharedPortalDataForCustomer(c).equipment;
     return [
       { id: 'm1', name: 'Canon imageRUNNER ADVANCE', model: '4525', serialNumber: 'CN-MOCK-1', location: 'HQ', status: 'active' },
     ];
@@ -91,16 +98,18 @@ export default function CustomerDetail() {
   const locationSelectValue = activeLocationId || flatLocs[0]?.id || '';
 
   const openFullPortal = () => {
+    const profile = c.portalProfile ?? (c.id === 'tesla' ? 'tesla' : 'summit');
+    const path = profile === 'tesla' ? TESLA_PORTAL_BASE : '/';
     try {
       sessionStorage.setItem(
         ADMIN_PREVIEW_STORAGE_KEY,
-        JSON.stringify({ label: c.company, accountId: c.accountId })
+        JSON.stringify({ label: c.company, accountId: c.accountId, portalProfile: profile })
       );
     } catch {
       /* ignore */
     }
     setConfirmPortal(false);
-    navigate('/');
+    navigate(path);
   };
 
   const showToast = (msg) => setToast(msg);
@@ -427,11 +436,14 @@ export default function CustomerDetail() {
                   <span className="admin-preview-dot" />
                   <span className="admin-preview-dot" />
                   <span className="admin-preview-url">
-                    {c.id === 'tesla' ? 'fleet.tesla.com' : 'portal.example.com'}
+                    {c.id === 'tesla' ? 'fleet.tesla.com' : c.id === 'brightstone' ? 'portal.brightstonelaw.com' : 'portal.example.com'}
                   </span>
                 </div>
                 <div className="admin-preview-inner">
-                  <p className="admin-preview-welcome">Welcome back, {c.useSharedFakeData ? customer.name.split(' ')[0] : c.primaryContact.split(' ')[0]}</p>
+                  <p className="admin-preview-welcome">
+                    Welcome back,{' '}
+                    {c.useSharedFakeData ? sharedPortalDataForCustomer(c).customer.name.split(' ')[0] : c.primaryContact.split(' ')[0]}
+                  </p>
                   <p className="admin-preview-sub">{c.company}</p>
                   <div className="admin-preview-cards">
                     <div className="admin-preview-card">

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { paymentMethods } from '../data/fakeData';
+import { usePortalProfile, usePortalPath } from '../context/PortalProfileContext';
 import './AutoPaySetup.css';
 
 const invoiceTypeOptions = [
@@ -12,6 +12,8 @@ const invoiceTypeOptions = [
 ];
 
 export default function AutoPaySetup() {
+  const { paymentMethods } = usePortalProfile();
+  const payPath = usePortalPath('/pay');
   const [on, setOn] = useState(false);
   const [saved, setSaved] = useState(false);
   const [paymentMethodId, setPaymentMethodId] = useState(paymentMethods[0]?.id ?? '');
@@ -76,7 +78,7 @@ export default function AutoPaySetup() {
           <p>Your preferences have been saved. We'll process payments automatically according to your settings.</p>
           <div className="autopay-actions" style={{ justifyContent: 'center', marginTop: 24 }}>
             <button type="button" className="btn-secondary" onClick={() => setSaved(false)}>Edit Settings</button>
-            <Link to="/pay" className="btn-primary" style={{ textDecoration: 'none' }}>Back to Invoices</Link>
+            <Link to={payPath} className="btn-primary" style={{ textDecoration: 'none' }}>Back to Invoices</Link>
           </div>
         </div>
       </div>
@@ -290,7 +292,7 @@ export default function AutoPaySetup() {
       </div>
 
       <div className="autopay-actions">
-        <Link to="/pay" className="btn-secondary" style={{ textDecoration: 'none' }}>Cancel</Link>
+        <Link to={payPath} className="btn-secondary" style={{ textDecoration: 'none' }}>Cancel</Link>
         <button type="button" className="btn-primary" onClick={handleSave}>
           Save Preferences
         </button>

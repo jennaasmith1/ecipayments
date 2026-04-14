@@ -1,5 +1,6 @@
 // Admin console mock data — Ubeo internal tools (demo only — no backend)
-import { dealer, formatCurrency, formatDate } from './fakeData';
+import { formatCurrency, formatDate } from './formatters';
+import { dealer } from './summitFakeData';
 
 export const ADMIN_PREVIEW_STORAGE_KEY = 'ubeo_admin_portal_preview';
 
@@ -28,14 +29,14 @@ export const dashboardKpis = [
 ];
 
 export const dashboardAttentionQueue = [
-  { id: 'att-1', customerId: 'tesla', company: 'Tesla', snippet: 'Overdue invoice #84220 · 2 open tickets', severity: 'high' },
-  { id: 'att-2', customerId: 'hartwell', company: 'Hartwell Medical Group', snippet: 'Duplicate email on portal user · 6 locations', severity: 'medium' },
-  { id: 'att-3', customerId: 'kessler', company: 'Kessler Engineering LLC', snippet: 'No portal users · invite not accepted', severity: 'medium' },
+  { id: 'att-1', customerId: 'brightstone', company: 'Brightstone Law Group', snippet: 'Overdue invoice #84220 · 2 open tickets', severity: 'high' },
+  { id: 'att-2', customerId: 'tesla', company: 'Tesla', snippet: 'Enterprise fleet · 3 orders with delays or backorders', severity: 'high' },
+  { id: 'att-3', customerId: 'hartwell', company: 'Hartwell Medical Group', snippet: 'Duplicate email on portal user · 6 locations', severity: 'medium' },
   { id: 'att-4', customerId: 'meridian', company: 'Meridian Legal Services', snippet: 'Ambiguous location naming · billing contact churn', severity: 'low' },
 ];
 
 export const adminActivityFeed = [
-  { id: 'af-1', type: 'impersonation', title: 'View as customer', detail: 'Tesla · Jordan Kim', time: '32 min ago' },
+  { id: 'af-1', type: 'impersonation', title: 'View as customer', detail: 'Brightstone Law Group · Jordan Kim', time: '32 min ago' },
   { id: 'af-2', type: 'settings', title: 'Portal branding updated', detail: 'Primary color · Morgan Patel', time: '2 hr ago' },
   { id: 'af-3', type: 'user', title: 'Portal invite resent', detail: 'hartwell@shared-mail.net · Alex Rivera', time: 'Yesterday' },
   { id: 'af-4', type: 'service', title: 'Ticket escalated', detail: 'ST-9012 → Field supervisor', time: 'Yesterday' },
@@ -89,14 +90,14 @@ export const rolePermissionsSeed = {
 };
 
 export const globalPortalUsers = [
-  { id: 'gpu-1', name: 'Sarah Chen', email: 'sarah.chen@tesla.com', account: 'Tesla', duplicate: false },
+  { id: 'gpu-1', name: 'Sarah Chen', email: 'sarah.chen@brightstonelaw.com', account: 'Brightstone Law Group', duplicate: false },
   { id: 'gpu-2', name: 'Priya Nair', email: 'hartwell@shared-mail.net', account: 'Hartwell Medical Group', duplicate: true },
   { id: 'gpu-3', name: 'David Okonkwo', email: 'hartwell@shared-mail.net', account: 'Hartwell – North Clinic', duplicate: true },
   { id: 'gpu-4', name: 'Elena Vasquez', email: 'e.vasquez@meridianlegal.com', account: 'Meridian Legal Services', duplicate: false },
 ];
 
 export const auditEvents = [
-  { id: 'ae-1', time: '2026-03-10 09:42', actor: 'Jordan Kim', type: 'Impersonation', detail: 'View as Tesla', account: 'TSLA-2847' },
+  { id: 'ae-1', time: '2026-03-10 09:42', actor: 'Jordan Kim', type: 'Impersonation', detail: 'View as Brightstone Law Group', account: 'BSG-2847' },
   { id: 'ae-2', time: '2026-03-10 08:10', actor: 'Morgan Patel', type: 'Settings', detail: 'Communications · Banner text updated', account: '—' },
   { id: 'ae-3', time: '2026-03-09 16:22', actor: 'Alex Rivera', type: 'User', detail: 'Resent portal invite', account: 'HMW-9910' },
   { id: 'ae-4', time: '2026-03-09 14:05', actor: 'Jordan Kim', type: 'User', detail: 'Password reset initiated', account: 'TSLA-2847' },
@@ -115,19 +116,21 @@ export const defaultBranding = {
   serviceLabel: 'Service request',
 };
 
-/** White-label preview defaults — Tesla-themed portal (matches customer :root). */
+/** Summit / Brightstone portal — admin white-label form defaults. */
+export const summitPortalColors = {
+  primaryHex: '#1c5490',
+  accentHex: '#0d9488',
+};
+
+export const summitPortalLogoSrc = '/summit-logo-header.png';
+
+/** Tesla enterprise demo portal — matches `/c/tesla` theme. */
 export const teslaPortalColors = {
   primaryHex: '#171a20',
   accentHex: '#3e6ae1',
 };
 
-/** Default customer portal header logo for white-label preview. */
 export const teslaPortalLogoSrc = '/branding/tesla-logo.png';
-
-/** @deprecated Use teslaPortalColors — alias for admin branding form reset. */
-export const summitPortalColors = teslaPortalColors;
-/** @deprecated Use teslaPortalLogoSrc */
-export const summitPortalLogoSrc = teslaPortalLogoSrc;
 
 export const serviceRequestSettingsSeed = {
   poRequired: true,
@@ -175,6 +178,41 @@ const meridianLocationsFlat = [
 ];
 
 export const adminCustomers = [
+  {
+    id: 'brightstone',
+    company: 'Brightstone Law Group',
+    accountId: 'BSG-2847',
+    type: 'standalone',
+    parentId: null,
+    parentCompany: null,
+    primaryContact: 'Sarah Chen',
+    billingEmail: 'billing@brightstonelaw.com',
+    phone: '(555) 555-0123',
+    portalUserCount: 4,
+    lastPortalLogin: '2026-03-10 8:14 AM',
+    openTickets: 2,
+    overdueInvoiceCount: 1,
+    unpaidTotal: 2944.5,
+    portalStatus: 'Active',
+    flags: { overdueAr: true, noPortalUsers: false, duplicateEmail: false, messyLocationStructure: false },
+    locations: [
+      { id: 'bs-main', name: 'Main Office – 200 Park Ave', parentId: null },
+      { id: 'bs-rec', name: 'Reception', parentId: 'bs-main' },
+      { id: 'bs-leg', name: 'Legal – 3rd Floor', parentId: 'bs-main' },
+    ],
+    portalUsers: [
+      { id: 'bsu-1', name: 'Sarah Chen', email: 'sarah.chen@brightstonelaw.com', role: 'Billing admin', locationIds: ['bs-main', 'bs-rec', 'bs-leg'], lastLogin: '2026-03-10' },
+      { id: 'bsu-2', name: 'Michael Torres', email: 'm.torres@brightstonelaw.com', role: 'Office manager', locationIds: ['bs-main'], lastLogin: '2026-03-09' },
+      { id: 'bsu-3', name: 'Jennifer Park', email: 'j.park@brightstonelaw.com', role: 'Read-only', locationIds: ['bs-rec'], lastLogin: '2026-03-02' },
+    ],
+    recentActivityAdmin: [
+      { id: 'ra-b1', title: 'Payment posted', detail: '$325.50 · Invoice #84220', time: 'Mar 8, 2026' },
+      { id: 'ra-b2', title: 'Ticket updated', detail: 'ST-9012 scheduled', time: 'Mar 6, 2026' },
+      { id: 'ra-b3', title: 'Invoice issued', detail: '#84221 Toner supply', time: 'Mar 5, 2026' },
+    ],
+    useSharedFakeData: true,
+    portalProfile: 'summit',
+  },
   {
     id: 'tesla',
     company: 'Tesla',
@@ -236,6 +274,7 @@ export const adminCustomers = [
       { id: 'ra-t3', title: 'Invoice issued', detail: '#84221 Toner supply', time: 'Mar 5, 2026' },
     ],
     useSharedFakeData: true,
+    portalProfile: 'tesla',
   },
   {
     id: 'hartwell',

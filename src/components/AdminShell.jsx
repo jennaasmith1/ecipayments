@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
 import { adminUser } from '../data/adminMockData';
 import './AdminShell.css';
 import './adminEciTheme.css';
@@ -70,7 +70,6 @@ export default function AdminShell() {
   const [expandedSection, setExpandedSection] = useState(null);
   const [accountDropdownOpen, setAccountDropdownOpen] = useState(false);
   const location = useLocation();
-  const navigate = useNavigate();
 
   const isActiveSection = (path) => {
     if (path === '/admin') return location.pathname === '/admin' || location.pathname === '/admin/';
@@ -92,6 +91,7 @@ export default function AdminShell() {
       (section) => section.sub && location.pathname.startsWith(section.path)
     );
     if (activeParent) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- sync admin submenu with active route
       setExpandedSection((prev) => (prev === activeParent.path ? prev : activeParent.path));
     }
   }, [location.pathname]);

@@ -1,8 +1,9 @@
 import { useEffect } from 'react';
-import { dealer, customer, formatCurrency, formatDate } from '../data/fakeData';
+import { usePortalProfile } from '../context/PortalProfileContext';
 import './InvoicePreviewModal.css';
 
 export default function InvoicePreviewModal({ invoice, onClose }) {
+  const { dealer, customer, formatCurrency, formatDate } = usePortalProfile();
   useEffect(() => {
     const handleEscape = (e) => e.key === 'Escape' && onClose();
     window.addEventListener('keydown', handleEscape);

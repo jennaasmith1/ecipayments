@@ -186,10 +186,12 @@ export default function AdminGlobalService() {
 
   useEffect(() => {
     if (selectedId && filtered.some((c) => c.id === selectedId)) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- keep selection valid when filter results change
     setSelectedId(filtered[0]?.id ?? null);
   }, [filtered, selectedId]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- reset detail tab when switching rows
     setDetailTab('overview');
   }, [selectedId]);
 

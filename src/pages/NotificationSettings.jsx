@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { customer } from '../data/fakeData';
+import { usePortalProfile } from '../context/PortalProfileContext';
 import './NotificationSettings.css';
 
 function TeamsLogo({ className }) {
@@ -145,6 +145,7 @@ function NotificationTable({ notifications, selections, setSelections, integrati
 const allNotifications = [...billingNotifications, ...serviceNotifications];
 
 export default function NotificationSettings() {
+  const { customer } = usePortalProfile();
   const [integrations, setIntegrations] = useState({ teams: true, slack: false });
   const [selections, setSelections] = useState(() => getInitialSelections(allNotifications));
   const onToggleIntegration = (key) => setIntegrations((i) => ({ ...i, [key]: !i[key] }));

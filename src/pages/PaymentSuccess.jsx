@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { customer, formatCurrency } from '../data/fakeData';
+import { usePortalProfile, usePortalPath } from '../context/PortalProfileContext';
 import './PaymentSuccess.css';
 
 export default function PaymentSuccess() {
+  const { customer, formatCurrency } = usePortalProfile();
+  const autopayPath = usePortalPath('/settings/autopay');
   const [invoicesExpanded, setInvoicesExpanded] = useState(false);
   const location = useLocation();
   const state = location.state || {};
@@ -114,7 +116,7 @@ export default function PaymentSuccess() {
         <p>
           Avoid manual payments and stay current on invoices automatically. Set up AutoPay to pay on the due date with your preferred payment method.
         </p>
-        <Link to="/settings/autopay" className="btn-accent">
+        <Link to={autopayPath} className="btn-accent">
           <svg className="btn-accent-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
             <path d="M17 1l4 4-4 4" />
             <path d="M3 11V9a4 4 0 0 1 4-4h14" />

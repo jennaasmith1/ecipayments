@@ -598,7 +598,7 @@ export const globalOrders = [
 ];
 
 /** Admin customer profile routes exist for these ids */
-export const ADMIN_CUSTOMER_ROUTE_IDS = new Set(['tesla', 'hartwell', 'meridian', 'kessler']);
+export const ADMIN_CUSTOMER_ROUTE_IDS = new Set(['brightstone', 'tesla', 'hartwell', 'meridian', 'kessler']);
 
 const HIGH_VALUE_MIN = 5000;
 

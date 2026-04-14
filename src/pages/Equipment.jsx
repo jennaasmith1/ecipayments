@@ -1,6 +1,5 @@
 import { useMemo, useState, useCallback } from 'react';
-import { formatDate } from '../data/fakeData';
-import { fleetEquipment } from '../data/equipmentFleetData';
+import { usePortalProfile } from '../context/PortalProfileContext';
 import EquipmentDeviceThumb from '../components/EquipmentDeviceThumb';
 import EquipmentDetailPanel from './EquipmentDetailPanel';
 import './Equipment.css';
@@ -73,6 +72,7 @@ function EquipmentWarningIcon({ className = '' }) {
 }
 
 export default function Equipment() {
+  const { fleetEquipment, formatDate } = usePortalProfile();
   const [search, setSearch] = useState('');
   const [site, setSite] = useState('');
   const [location, setLocation] = useState('');
@@ -90,10 +90,10 @@ export default function Equipment() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [filtersExpanded, setFiltersExpanded] = useState(false);
 
-  const sites = useMemo(() => [...new Set(fleetEquipment.map((d) => d.siteName))].sort(), []);
-  const locations = useMemo(() => [...new Set(fleetEquipment.map((d) => d.label))].sort(), []);
-  const manufacturers = useMemo(() => [...new Set(fleetEquipment.map((d) => d.manufacturer))].sort(), []);
-  const families = useMemo(() => [...new Set(fleetEquipment.map((d) => d.modelFamily))].sort(), []);
+  const sites = useMemo(() => [...new Set(fleetEquipment.map((d) => d.siteName))].sort(), [fleetEquipment]);
+  const locations = useMemo(() => [...new Set(fleetEquipment.map((d) => d.label))].sort(), [fleetEquipment]);
+  const manufacturers = useMemo(() => [...new Set(fleetEquipment.map((d) => d.manufacturer))].sort(), [fleetEquipment]);
+  const families = useMemo(() => [...new Set(fleetEquipment.map((d) => d.modelFamily))].sort(), [fleetEquipment]);
 
   const equipmentQuickCounts = useMemo(
     () => ({
@@ -102,7 +102,7 @@ export default function Equipment() {
       meter: fleetEquipment.filter((d) => d.meterDue).length,
       toner: fleetEquipment.filter((d) => d.tonerHealth !== 'good').length,
     }),
-    [],
+    [fleetEquipment],
   );
 
   const quickFilterBaseline = useMemo(
@@ -141,6 +141,7 @@ export default function Equipment() {
     list = sortDevices(list, sortKey, sortDir);
     return list;
   }, [
+    fleetEquipment,
     search,
     site,
     location,

@@ -1,26 +1,21 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  invoices,
-  paymentMethods,
-  formatCurrency,
-  formatDate,
-  getStatusLabel,
-  getStatusVariant,
-} from '../data/fakeData';
+import { usePortalProfile, usePortalPath } from '../context/PortalProfileContext';
 import InvoicePreviewModal from '../components/InvoicePreviewModal';
 import AddPaymentMethodModal from '../components/AddPaymentMethodModal';
 import './PaymentLanding.css';
 
 const PAYMENT_PROCESSING_MS = 2200;
 
-const defaultSelectedIds = new Set(invoices.map((i) => i.id));
-const defaultPaymentMethodId = paymentMethods.find((m) => m.isRecommended)?.id ?? paymentMethods[0].id;
-
 export default function PaymentLanding() {
+  const { invoices, paymentMethods, formatCurrency, formatDate, getStatusLabel, getStatusVariant } =
+    usePortalProfile();
+  const paySuccessPath = usePortalPath('/pay/success');
   const navigate = useNavigate();
-  const [selectedIds, setSelectedIds] = useState(defaultSelectedIds);
-  const [selectedPaymentId, setSelectedPaymentId] = useState(defaultPaymentMethodId);
+  const [selectedIds, setSelectedIds] = useState(() => new Set(invoices.map((i) => i.id)));
+  const [selectedPaymentId, setSelectedPaymentId] = useState(
+    () => paymentMethods.find((m) => m.isRecommended)?.id ?? paymentMethods[0]?.id ?? ''
+  );
   const [previewInvoice, setPreviewInvoice] = useState(null);
   const [addPaymentOpen, setAddPaymentOpen] = useState(false);
   const [isPaying, setIsPaying] = useState(false);
@@ -48,7 +43,7 @@ export default function PaymentLanding() {
   const handlePay = () => {
     setIsPaying(true);
     setTimeout(() => {
-      navigate('/pay/success', {
+      navigate(paySuccessPath, {
         state: {
           amount: totalDue,
           paymentMethod: paymentMethods.find((m) => m.id === selectedPaymentId),

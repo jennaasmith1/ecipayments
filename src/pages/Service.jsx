@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { customer, formatDate, formatDateTime } from '../data/fakeData';
-import { fleetEquipment } from '../data/equipmentFleetData';
+import { usePortalProfile, usePortalPath } from '../context/PortalProfileContext';
 import {
   isOpenServiceTicket,
   contractOnTicketIsCovered,
@@ -71,11 +70,13 @@ function ticketSearchHaystack(ticket, equipment) {
 }
 
 export default function Service() {
+  const { customer, formatDate, fleetEquipment } = usePortalProfile();
+  const servicePath = usePortalPath('/service');
   const { ticketId } = useParams();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const { tickets, setTickets } = useServiceTickets();
-  const fleetById = useMemo(() => Object.fromEntries(fleetEquipment.map((e) => [e.id, e])), []);
+  const fleetById = useMemo(() => Object.fromEntries(fleetEquipment.map((e) => [e.id, e])), [fleetEquipment]);
 
   const [filtersDropdownOpen, setFiltersDropdownOpen] = useState(false);
   const filterTriggerRef = useRef(null);
@@ -115,7 +116,7 @@ export default function Service() {
       completed: tickets.filter((t) => terminalStatuses.has(t.status)).length,
       mine: tickets.filter((t) => isOpenServiceTicket(t) && t.requestedBy === customer.name).length,
     };
-  }, [tickets]);
+  }, [tickets, customer.name]);
 
   const activeAdvancedFilterCount = useMemo(() => {
     let n = 0;
@@ -156,6 +157,7 @@ export default function Service() {
 
   useLayoutEffect(() => {
     if (!filtersDropdownOpen) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- reset panel anchor when dropdown closes
       setFilterPanelBox(null);
       return undefined;
     }
@@ -260,6 +262,7 @@ export default function Service() {
     sortKey,
     quickFilter,
     fleetById,
+    customer.name,
   ]);
 
   const selectedTicket = useMemo(
@@ -270,14 +273,14 @@ export default function Service() {
 
   const openDetail = useCallback(
     (id) => {
-      navigate(`/service/${encodeURIComponent(id)}`);
+      navigate(`${servicePath}/${encodeURIComponent(id)}`);
     },
-    [navigate],
+    [navigate, servicePath],
   );
 
   const closeDetail = useCallback(() => {
-    navigate('/service');
-  }, [navigate]);
+    navigate(servicePath);
+  }, [navigate, servicePath]);
 
   const isCreateMode = searchParams.get('create') === '1';
   const equipmentCreateQuery = searchParams.get('equipment');
@@ -295,15 +298,15 @@ export default function Service() {
       return [buildDraftTicket(id, equip, customer.name), ...prev];
     });
     if (newId) {
-      navigate(`/service/${encodeURIComponent(newId)}`, { replace: true });
+      navigate(`${servicePath}/${encodeURIComponent(newId)}`, { replace: true });
     }
-  }, [isCreateMode, ticketId, equipmentCreateQuery, fleetById, navigate, setTickets]);
+  }, [isCreateMode, ticketId, equipmentCreateQuery, fleetById, fleetEquipment, customer.name, navigate, servicePath, setTickets]);
 
   const onCreateSuccess = useCallback(
     (ticket) => {
-      navigate(`/service/${encodeURIComponent(ticket.id)}?created=${encodeURIComponent(ticket.id)}`);
+      navigate(`${servicePath}/${encodeURIComponent(ticket.id)}?created=${encodeURIComponent(ticket.id)}`);
     },
-    [navigate],
+    [navigate, servicePath],
   );
 
   const listSection = (
@@ -316,7 +319,7 @@ export default function Service() {
           type="button"
           className="service-btn service-btn-primary service-list-cta"
           id="service-create-link"
-          onClick={() => navigate('/service?create=1')}
+          onClick={() => navigate(`${servicePath}?create=1`)}
         >
           Request Service
         </button>

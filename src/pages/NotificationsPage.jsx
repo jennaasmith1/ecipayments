@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { notifications } from '../data/fakeData';
+import { usePortalProfile, usePortalPath } from '../context/PortalProfileContext';
 import './NotificationsPage.css';
 
 function groupByReadStatus(list) {
@@ -9,6 +9,9 @@ function groupByReadStatus(list) {
 }
 
 export default function NotificationsPage() {
+  const { notifications } = usePortalProfile();
+  const settingsPath = usePortalPath('/settings/notifications');
+  const billingPath = usePortalPath('/billing');
   const { unread, read } = groupByReadStatus(notifications);
   const hasAny = notifications.length > 0;
 
@@ -21,7 +24,7 @@ export default function NotificationsPage() {
             Review recent billing, payment, and service updates for your account.
           </p>
         </div>
-        <Link to="/settings/notifications" className="notifications-page-settings-link">
+        <Link to={settingsPath} className="notifications-page-settings-link">
           Notification settings
         </Link>
       </header>
@@ -32,7 +35,7 @@ export default function NotificationsPage() {
           <p className="notifications-page-empty-secondary">
             When there&apos;s activity on your account, it will show up here.
           </p>
-          <Link to="/billing" className="notifications-page-empty-cta">
+          <Link to={billingPath} className="notifications-page-empty-cta">
             Go to billing
           </Link>
         </div>
@@ -87,4 +90,3 @@ export default function NotificationsPage() {
     </div>
   );
 }
-

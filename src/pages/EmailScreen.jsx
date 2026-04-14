@@ -1,33 +1,42 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import {
-  dealer,
-  customer,
-  invoices,
-  inboxEmails,
-  formatCurrency,
-  formatDate,
-  getStatusLabel,
-  getStatusVariant,
-} from '../data/fakeData';
+import { usePortalProfile, usePortalPath } from '../context/PortalProfileContext';
 import './EmailScreen.css';
 
-// Show invoices sorted by due date (earliest first), then take first 5
-const emailInvoices = [...invoices]
-  .sort((a, b) => a.dueDate.localeCompare(b.dueDate))
-  .slice(0, 5);
-const totalOutstanding = emailInvoices.reduce((sum, inv) => sum + inv.amount, 0);
+const BODY_CLASS = 'email-screen-page';
 
 const today = new Date().toISOString().slice(0, 10);
 function isOverdue(dueDate) {
   return dueDate < today;
 }
 
-const BODY_CLASS = 'email-screen-page';
-const INBOX_COUNT = inboxEmails.filter((e) => !e.read).length;
-
 export default function EmailScreen() {
-  const [selectedEmailId, setSelectedEmailId] = useState('tesla-payment');
+  const {
+    profileId,
+    dealer,
+    customer,
+    invoices,
+    inboxEmails,
+    formatDate,
+    portalLogoSrc,
+  } = usePortalProfile();
+  const payPath = usePortalPath('/pay');
+  const autopayPath = usePortalPath('/settings/autopay');
+  const notifPath = usePortalPath('/settings/notifications');
+  const chatPath = usePortalPath('/chat');
+
+  const defaultPaymentEmailId = profileId === 'tesla' ? 'tesla-payment' : 'summit-payment';
+  const [selectedEmailId, setSelectedEmailId] = useState(defaultPaymentEmailId);
+
+  const emailInvoices = useMemo(
+    () => [...invoices].sort((a, b) => a.dueDate.localeCompare(b.dueDate)).slice(0, 5),
+    [invoices]
+  );
+  const totalOutstanding = useMemo(
+    () => emailInvoices.reduce((sum, inv) => sum + inv.amount, 0),
+    [emailInvoices]
+  );
+  const inboxUnreadCount = useMemo(() => inboxEmails.filter((e) => !e.read).length, [inboxEmails]);
 
   useEffect(() => {
     document.body.classList.add(BODY_CLASS);
@@ -35,7 +44,8 @@ export default function EmailScreen() {
   }, []);
 
   const selectedEmail = inboxEmails.find((e) => e.id === selectedEmailId);
-  const isPortalBillingEmail = selectedEmail?.bodyType === 'tesla-payment';
+  const isPortalBillingEmail =
+    selectedEmail?.bodyType === 'tesla-payment' || selectedEmail?.bodyType === 'summit-payment';
 
   return (
     <div className="email-inbox-app">
@@ -60,7 +70,7 @@ export default function EmailScreen() {
               </svg>
             </span>
             Inbox
-            {INBOX_COUNT > 0 && <span className="email-inbox-nav-count">{INBOX_COUNT}</span>}
+            {inboxUnreadCount > 0 && <span className="email-inbox-nav-count">{inboxUnreadCount}</span>}
           </a>
           <a href="#sent" className="email-inbox-nav-item">
             <span className="email-inbox-nav-icon" aria-hidden>
@@ -146,9 +156,17 @@ export default function EmailScreen() {
               </div>
             </div>
             <div className="email-inbox-pane-inner">
-{isPortalBillingEmail ? (
-              <TeslaBillingEmailBody />
-            ) : (
+              {isPortalBillingEmail ? (
+                <PortalBillingEmailBody
+                  portalLogoSrc={portalLogoSrc}
+                  emailInvoices={emailInvoices}
+                  totalOutstanding={totalOutstanding}
+                  payPath={payPath}
+                  autopayPath={autopayPath}
+                  notifPath={notifPath}
+                  chatPath={chatPath}
+                />
+              ) : (
                 <GenericEmailBody email={selectedEmail} />
               )}
             </div>
@@ -159,16 +177,22 @@ export default function EmailScreen() {
   );
 }
 
-function TeslaBillingEmailBody() {
+function PortalBillingEmailBody({
+  portalLogoSrc,
+  emailInvoices,
+  totalOutstanding,
+  payPath,
+  autopayPath,
+  notifPath,
+  chatPath,
+}) {
+  const { customer, dealer, formatCurrency, formatDate, getStatusLabel, getStatusVariant } = usePortalProfile();
+
   return (
     <div className="email-card">
       <div className="email-mockup">
         <div className="email-mockup-header">
-          <img
-            src="/branding/tesla-logo.png"
-            alt="Tesla"
-            className="email-mockup-logo"
-          />
+          <img src={portalLogoSrc} alt={dealer.name} className="email-mockup-logo" />
         </div>
         <div className="email-mockup-body">
           <p className="email-greeting">Hi {customer.name},</p>
@@ -197,21 +221,17 @@ function TeslaBillingEmailBody() {
                     <div className="email-invoice-item-left">
                       <div className="email-invoice-item-meta">
                         <span className="email-invoice-item-number">#{inv.number}</span>
-                        <span
-                          className={`email-status-tag email-status-tag--${getStatusVariant(inv.status)}`}
-                        >
+                        <span className={`email-status-tag email-status-tag--${getStatusVariant(inv.status)}`}>
                           {getStatusLabel(inv.status)}
                         </span>
                       </div>
                       <p className="email-invoice-item-description">{inv.description}</p>
-                      <Link to="/pay" className="email-view-invoice-link">
+                      <Link to={payPath} className="email-view-invoice-link">
                         View Invoice
                       </Link>
                     </div>
                     <div className="email-invoice-item-right">
-                      <span className="email-invoice-item-amount">
-                        {formatCurrency(inv.amount)}
-                      </span>
+                      <span className="email-invoice-item-amount">{formatCurrency(inv.amount)}</span>
                       <span
                         className={`email-invoice-item-due ${isOverdue(inv.dueDate) ? 'email-invoice-item-due--overdue' : ''}`}
                       >
@@ -237,21 +257,13 @@ function TeslaBillingEmailBody() {
               <div className="email-invoice-list-item email-invoice-total-row">
                 <div className="email-invoice-item-content">
                   <span className="email-invoice-total-label">Total outstanding</span>
-                  <span className="email-invoice-total-amount">
-                    {formatCurrency(totalOutstanding)}
-                  </span>
+                  <span className="email-invoice-total-amount">{formatCurrency(totalOutstanding)}</span>
                 </div>
               </div>
             </div>
           </div>
           <div className="email-cta-row">
-            <a
-              href="/pay"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="email-cta-primary"
-              aria-label="Pay Now"
-            >
+            <a href={payPath} target="_blank" rel="noopener noreferrer" className="email-cta-primary" aria-label="Pay Now">
               Pay Now
               <svg
                 className="email-cta-primary-icon email-cta-primary-icon-arrow"
@@ -265,7 +277,7 @@ function TeslaBillingEmailBody() {
               </svg>
             </a>
             <div className="email-cta-secondary-row">
-              <Link to="/settings/autopay" className="email-cta-secondary-link">
+              <Link to={autopayPath} className="email-cta-secondary-link">
                 <svg
                   className="email-cta-secondary-icon"
                   viewBox="0 0 24 24"
@@ -284,7 +296,7 @@ function TeslaBillingEmailBody() {
                 Set up AutoPay
               </Link>
               <span className="email-cta-divider" aria-hidden />
-              <Link to="/settings/notifications" className="email-cta-secondary-link">
+              <Link to={notifPath} className="email-cta-secondary-link">
                 <svg
                   className="email-cta-secondary-icon"
                   viewBox="0 0 24 24"
@@ -300,11 +312,9 @@ function TeslaBillingEmailBody() {
               </Link>
             </div>
             <div className="email-contact-block">
-              <p className="email-contact-intro">
-                If you have questions about your invoice, we're here to help.
-              </p>
+              <p className="email-contact-intro">If you have questions about your invoice, we&apos;re here to help.</p>
               <div className="email-signature-links">
-                <Link to="/chat" className="email-signature-link">
+                <Link to={chatPath} className="email-signature-link">
                   <span className="email-signature-link-icon" aria-hidden>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" /></svg>
                   </span>
@@ -326,9 +336,7 @@ function TeslaBillingEmailBody() {
               <p className="email-contact-detail">{dealer.billingPhone}</p>
             </div>
           </div>
-          <p className="email-footer-line">
-            You're receiving this because you have an active account with {dealer.name}.
-          </p>
+          <p className="email-footer-line">You&apos;re receiving this because you have an active account with {dealer.name}.</p>
         </div>
       </div>
     </div>
