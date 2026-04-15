@@ -1,0 +1,696 @@
+/* Admin Equipment — full-width table with slide-out drawer */
+
+.admin-equipment-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.admin-equipment-header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* KPI Grid */
+.admin-equipment-kpis {
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  margin-bottom: 20px;
+}
+
+.admin-equipment-kpi {
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  font-family: inherit;
+}
+
+.admin-equipment-kpi:hover {
+  border-color: var(--color-text-muted);
+}
+
+.admin-equipment-kpi--on {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 1px var(--color-accent-light);
+  background: rgba(245, 51, 63, 0.04);
+}
+
+.admin-equipment-kpi--static {
+  cursor: default;
+}
+
+.admin-equipment-kpi--static:hover {
+  border-color: var(--color-border);
+}
+
+.admin-equipment-kpi-online {
+  color: var(--color-success);
+}
+
+.admin-equipment-kpi-offline {
+  color: var(--color-text-muted);
+}
+
+.admin-equipment-kpi-toner {
+  color: #b45309;
+}
+
+.admin-equipment-kpi-meter {
+  color: var(--color-primary);
+}
+
+/* Inline filters in toolbar */
+.admin-equipment .admin-toolbar-inline-filters {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.admin-equipment .admin-toolbar-inline-select {
+  min-width: 140px;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-card);
+  font-size: 0.8125rem;
+  font-family: inherit;
+  color: var(--color-text);
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 32px;
+}
+
+.admin-equipment .admin-toolbar-inline-select:hover {
+  border-color: var(--color-text-muted);
+}
+
+.admin-equipment .admin-toolbar-inline-select:focus {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
+  border-color: var(--color-accent);
+}
+
+/* Thumbnails */
+.admin-equipment-th-thumb {
+  width: 56px;
+}
+
+.admin-equipment-td-thumb {
+  width: 56px;
+  padding-right: 0 !important;
+}
+
+.admin-equipment .equipment-thumb {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid var(--color-border-light);
+}
+
+.admin-equipment .equipment-thumb-icon {
+  width: 22px;
+  height: 22px;
+  opacity: 0.85;
+}
+
+.admin-equipment .equipment-thumb--canon {
+  background: linear-gradient(145deg, #bfdbfe 0%, #1e40af 100%);
+  color: white;
+}
+
+.admin-equipment .equipment-thumb--hp {
+  background: linear-gradient(145deg, #d1d5db 0%, #4b5563 100%);
+  color: white;
+}
+
+.admin-equipment .equipment-thumb--xerox {
+  color: white;
+  background: linear-gradient(145deg, #fca5a5 0%, #b91c1c 100%);
+}
+
+.admin-equipment .equipment-thumb--konica {
+  color: white;
+  background: linear-gradient(145deg, #a7f3d0 0%, #047857 100%);
+}
+
+.admin-equipment .equipment-thumb--ricoh {
+  color: white;
+  background: linear-gradient(145deg, #fde68a 0%, #b45309 100%);
+}
+
+.admin-equipment .equipment-thumb--sharp {
+  color: white;
+  background: linear-gradient(145deg, #c4b5fd 0%, #5b21b6 100%);
+}
+
+.admin-equipment .equipment-thumb--brother {
+  color: white;
+  background: linear-gradient(145deg, #93c5fd 0%, #1d4ed8 100%);
+}
+
+.admin-equipment .equipment-thumb--lexmark {
+  color: white;
+  background: linear-gradient(145deg, #fcd34d 0%, #b45309 100%);
+}
+
+.admin-equipment .equipment-thumb--photo {
+  background: #fff;
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border-light);
+  padding: 4px;
+  overflow: hidden;
+}
+
+.admin-equipment .equipment-thumb--photo .equipment-thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: calc(var(--radius-md) - 4px);
+}
+
+/* Drawer thumbnail (larger) */
+.admin-equipment-drawer-thumb.equipment-thumb {
+  width: 100%;
+  height: 140px;
+  margin-bottom: 20px;
+  border-radius: var(--radius-lg);
+}
+
+.admin-equipment-drawer-thumb.equipment-thumb .equipment-thumb-icon {
+  width: 48px;
+  height: 48px;
+  opacity: 0.95;
+}
+
+.admin-equipment-drawer-thumb.equipment-thumb--photo {
+  height: 160px;
+  padding: 8px;
+}
+
+.admin-equipment-drawer-thumb.equipment-thumb--photo .equipment-thumb-img {
+  border-radius: calc(var(--radius-lg) - 6px);
+}
+
+/* Table */
+.admin-equipment-table-wrap {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-card);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.admin-equipment-table-scroll {
+  overflow-x: auto;
+}
+
+.admin-equipment-table {
+  font-size: 0.8125rem;
+}
+
+.admin-equipment-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--color-bg-card);
+  box-shadow: 0 1px 0 var(--color-border-light);
+}
+
+.admin-equipment-table tbody tr {
+  cursor: pointer;
+}
+
+.admin-equipment-row:hover {
+  background: var(--color-primary-light);
+}
+
+.admin-equipment-device-name {
+  display: block;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.admin-equipment-loc {
+  max-width: 180px;
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+}
+
+/* Status chips */
+.admin-equipment-status {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.admin-equipment-status--online {
+  background: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+.admin-equipment-status--offline {
+  background: var(--color-border-light);
+  color: var(--color-text-muted);
+}
+
+/* Toner cell in table */
+.admin-equipment-toner-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8125rem;
+}
+
+.admin-equipment-toner-cell--good {
+  color: var(--color-text-muted);
+  font-weight: 400;
+}
+
+.admin-equipment-toner-cell--low {
+  color: #b45309;
+  font-weight: 600;
+}
+
+.admin-equipment-toner-cell--critical {
+  color: var(--color-danger);
+  font-weight: 600;
+}
+
+.admin-equipment-warn-icon {
+  flex-shrink: 0;
+}
+
+.admin-equipment-toner-cell--low .admin-equipment-warn-icon {
+  color: #b45309;
+}
+
+.admin-equipment-toner-cell--critical .admin-equipment-warn-icon {
+  color: var(--color-danger);
+}
+
+/* Meter column */
+.admin-equipment-meter {
+  font-size: 0.8125rem;
+  color: var(--color-text);
+}
+
+.admin-equipment-meter-due {
+  color: var(--color-danger);
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+
+.admin-equipment-empty {
+  padding: 24px;
+  text-align: center;
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+}
+
+/* Drawer backdrop */
+.admin-equipment-drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.4);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1000;
+  transition: opacity 0.2s ease;
+}
+
+.admin-equipment-drawer-backdrop--open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Drawer panel */
+.admin-equipment-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: min(520px, 90vw);
+  height: 100vh;
+  background: var(--color-bg);
+  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
+  z-index: 1001;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.25s ease;
+  border-left: 1px solid var(--color-border);
+}
+
+.admin-equipment-drawer--open {
+  transform: translateX(0);
+}
+
+.admin-equipment-drawer-header {
+  flex-shrink: 0;
+  padding: 20px 22px 16px;
+  border-bottom: 1px solid var(--color-border-light);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.admin-equipment-drawer-header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.admin-equipment-drawer-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.admin-equipment-drawer-kicker {
+  margin: 0 0 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-muted);
+}
+
+.admin-equipment-drawer-title {
+  margin: 0;
+  font-size: 1.125rem;
+  line-height: 1.35;
+  color: var(--color-text);
+  font-weight: 700;
+}
+
+.admin-equipment-drawer-customer {
+  margin: 8px 0 0;
+  font-size: 0.875rem;
+}
+
+.admin-equipment-drawer-customer a {
+  color: var(--color-text-secondary);
+  text-decoration: none;
+}
+
+.admin-equipment-drawer-customer a:hover {
+  color: var(--color-accent);
+  text-decoration: underline;
+}
+
+.admin-equipment-drawer-close {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: transparent;
+  border-radius: var(--radius-md);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.admin-equipment-drawer-close:hover {
+  background: var(--color-primary-light);
+  color: var(--color-text);
+}
+
+.admin-equipment-drawer-tabs {
+  padding: 0 16px;
+  margin-bottom: 0;
+  flex-wrap: wrap;
+  background: var(--color-bg);
+  border-bottom: 1px solid var(--color-border-light);
+  flex-shrink: 0;
+}
+
+.admin-equipment-drawer-body {
+  padding: 16px 22px 32px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* Toner badge in drawer header */
+.admin-equipment-toner-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.admin-equipment-toner-badge--low {
+  background: rgba(180, 83, 9, 0.12);
+  color: #b45309;
+}
+
+.admin-equipment-toner-badge--critical {
+  background: rgba(220, 38, 38, 0.1);
+  color: var(--color-danger);
+}
+
+/* Detail sections */
+.admin-equipment-detail-section .admin-section-title {
+  margin-top: 20px;
+}
+
+.admin-equipment-detail-section .admin-section-title:first-child {
+  margin-top: 0;
+}
+
+/* Definition list in detail */
+.admin-equipment-dl {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px 20px;
+  margin: 0;
+}
+
+.admin-equipment-dl > div {
+  margin: 0;
+}
+
+.admin-equipment-dl dt {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-muted);
+  margin: 0 0 4px;
+}
+
+.admin-equipment-dl dd {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--color-text);
+}
+
+.admin-equipment-cap {
+  text-transform: capitalize;
+}
+
+.admin-equipment-muted {
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+/* Toner bars in detail view */
+.admin-equipment-toner-block {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.admin-equipment-toner-row {
+  display: grid;
+  grid-template-columns: 60px 1fr 40px;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-equipment-toner-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.admin-equipment-toner-track {
+  height: 8px;
+  border-radius: 4px;
+  background: var(--color-border-light);
+  overflow: hidden;
+}
+
+.admin-equipment-toner-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.admin-equipment-toner-fill--black {
+  background: #374151;
+}
+
+.admin-equipment-toner-fill--cyan {
+  background: #06b6d4;
+}
+
+.admin-equipment-toner-fill--magenta {
+  background: #ec4899;
+}
+
+.admin-equipment-toner-fill--yellow {
+  background: #eab308;
+}
+
+.admin-equipment-toner-fill--low {
+  opacity: 0.85;
+}
+
+.admin-equipment-toner-pct {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  text-align: right;
+}
+
+.admin-equipment-toner-pct--low {
+  color: var(--color-danger);
+  font-weight: 600;
+}
+
+/* Meter due badge in detail */
+.admin-equipment-meter-due-badge {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: rgba(220, 38, 38, 0.1);
+  color: var(--color-danger);
+}
+
+/* Open service in detail */
+.admin-equipment-open-service {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  padding: 12px;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+}
+
+.admin-equipment-service-id {
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
+/* Service history list */
+.admin-equipment-service-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.admin-equipment-service-list li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--color-border-light);
+  font-size: 0.8125rem;
+}
+
+.admin-equipment-service-list li:last-child {
+  border-bottom: none;
+}
+
+.admin-equipment-service-date {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  min-width: 90px;
+}
+
+/* Activity timeline */
+.admin-equipment-timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.admin-equipment-timeline > li {
+  position: relative;
+  padding-left: 22px;
+  padding-bottom: 16px;
+  border-left: 2px solid var(--color-border);
+  margin-left: 6px;
+}
+
+.admin-equipment-timeline > li:last-child {
+  border-left-color: transparent;
+  padding-bottom: 0;
+}
+
+.admin-equipment-tl-dot {
+  position: absolute;
+  left: -7px;
+  top: 4px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  border: 2px solid var(--color-bg-card);
+}
+
+.admin-equipment-tl-dot--reporting {
+  background: var(--color-success);
+}
+
+.admin-equipment-tl-dot--meter {
+  background: var(--color-primary);
+}
+
+.admin-equipment-tl-dot--supplies {
+  background: #8b5cf6;
+}
+
+.admin-equipment-tl-dot--alert {
+  background: #f59e0b;
+}
+
+.admin-equipment-tl-dot--service {
+  background: var(--color-accent);
+}
+
+.admin-equipment-tl-time {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  margin-top: 2px;
+}

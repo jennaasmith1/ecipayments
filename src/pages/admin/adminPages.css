@@ -20,6 +20,16 @@
   margin: 0;
 }
 
+.admin-breadcrumb {
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+  margin: 0 0 12px;
+}
+
+.admin-breadcrumb a {
+  font-weight: 500;
+}
+
 .admin-card {
   background: var(--color-bg-card);
   border: 1px solid var(--color-border);
@@ -387,11 +397,47 @@
   font-size: 0.875rem;
 }
 
+.admin-kpi-section {
+  margin-bottom: 24px;
+}
+
 .admin-kpi-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 16px;
-  margin-bottom: 24px;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+  align-items: stretch;
+}
+
+.admin-kpi-grid--secondary {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--color-border-light);
+}
+
+.admin-kpi-expand-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 14px;
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-lg);
+  background: transparent;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  font-family: inherit;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.admin-kpi-expand-toggle:hover {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.admin-kpi-expand-toggle svg {
+  flex-shrink: 0;
 }
 
 .admin-kpi-card {

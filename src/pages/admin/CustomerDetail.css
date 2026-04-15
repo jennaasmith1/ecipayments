@@ -1,13 +1,3 @@
-.admin-breadcrumb {
-  font-size: 0.8125rem;
-  color: var(--color-text-secondary);
-  margin: 0 0 12px;
-}
-
-.admin-breadcrumb a {
-  font-weight: 500;
-}
-
 .admin-customer-header {
   display: flex;
   flex-wrap: wrap;

@@ -1,9 +1,7 @@
-import { useMemo, useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { formatCurrency } from '../../data/adminMockData';
-import { ADMIN_CUSTOMER_ROUTE_IDS } from '../../data/adminOrdersData';
 import {
-  AI_ORDER_INSIGHTS,
   ORDER_CUSTOMER_OPTIONS,
   ORDER_LOCATIONS,
   ORDER_STATUS_OPTIONS,
@@ -17,8 +15,6 @@ import {
   statusLabel,
   topCustomersByOrderCount,
 } from '../../data/adminOrdersData';
-import { globalServiceCalls, isOpenGlobalCall } from '../../data/adminGlobalServiceData';
-import AdminInsightsRail from '../../components/AdminInsightsRail';
 import './adminPages.css';
 import './AdminOrders.css';
 
@@ -52,44 +48,8 @@ function statusChipClass(key) {
   return 'admin-orders-chip--processing';
 }
 
-function lineStatusClass(ls) {
-  if (ls === 'backordered') return 'admin-orders-line-warn';
-  if (ls === 'delayed') return 'admin-orders-line-bad';
-  return 'admin-orders-line-ok';
-}
-
-function lineStatusText(ls) {
-  if (ls === 'backordered') return 'Backordered';
-  if (ls === 'delayed') return 'Delayed';
-  return 'OK';
-}
-
-function buildFulfillmentSteps(order) {
-  const k = order.statusKey;
-  const steps = [
-    { key: 'sub', label: 'Order submitted', done: true, current: false },
-    {
-      key: 'proc',
-      label: 'Processing',
-      done: ['processing', 'shipped', 'delivered', 'backordered', 'delayed'].includes(k),
-      current: false,
-    },
-    {
-      key: 'ship',
-      label: 'Shipped',
-      done: ['shipped', 'delivered'].includes(k),
-      current: false,
-    },
-    { key: 'del', label: 'Delivered', done: k === 'delivered', current: false },
-  ];
-  if (k === 'backordered' || k === 'delayed' || k === 'processing') steps[1].current = true;
-  else if (k === 'shipped') steps[2].current = true;
-  else if (k === 'delivered') steps[3].current = true;
-  return steps;
-}
-
 export default function AdminOrders() {
-  const [selectedId, setSelectedId] = useState(globalOrders[0]?.id ?? null);
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [customerId, setCustomerId] = useState('all');
   const [statusKey, setStatusKey] = useState('all');
@@ -98,9 +58,10 @@ export default function AdminOrders() {
   const [contract, setContract] = useState('all');
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
-  const [summaryPreset, setSummaryPreset] = useState(null);
+  const [summaryPreset, setSummaryPreset] = useState('open');
   const [sortKey, setSortKey] = useState('newest');
   const [filtersExpanded, setFiltersExpanded] = useState(false);
+  const [kpisExpanded, setKpisExpanded] = useState(false);
 
   const summary = useMemo(() => computeOrderSummary(globalOrders), []);
   const topByCustomer = useMemo(() => topCustomersByOrderCount(globalOrders), []);
@@ -161,27 +122,6 @@ export default function AdminOrders() {
     sortKey,
     topCustomerNames,
   ]);
-
-  const selected = useMemo(() => globalOrders.find((o) => o.id === selectedId) ?? null, [selectedId]);
-
-  const relatedOrders = useMemo(() => {
-    if (!selected) return [];
-    return globalOrders
-      .filter((o) => o.customerId === selected.customerId && o.id !== selected.id)
-      .sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate))
-      .slice(0, 5);
-  }, [selected]);
-
-  const openCallsForCustomer = useMemo(() => {
-    if (!selected) return [];
-    return globalServiceCalls.filter((c) => c.customerName === selected.customerName && isOpenGlobalCall(c)).slice(0, 4);
-  }, [selected]);
-
-  useEffect(() => {
-    if (selectedId && filtered.some((o) => o.id === selectedId)) return;
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- keep selection valid when filter results change
-    setSelectedId(filtered[0]?.id ?? null);
-  }, [filtered, selectedId]);
 
   function clearAllFilters() {
     setSearchQuery('');
@@ -253,7 +193,11 @@ export default function AdminOrders() {
       <header className="admin-page-header admin-orders-header">
         <div>
           <h1>Orders</h1>
-          <p className="admin-page-subtitle">View and track customer orders across all accounts.</p>
+          <p className="admin-page-subtitle">
+            {summaryPreset === 'open'
+              ? 'Showing open orders — click a metric or clear filters for all activity.'
+              : 'View and track customer orders across all accounts.'}
+          </p>
         </div>
         <div className="admin-orders-header-actions">
           <button type="button" className="admin-btn" disabled title="Demo only — not connected to ordering systems">
@@ -270,96 +214,111 @@ export default function AdminOrders() {
         </div>
       </header>
 
-      <AdminInsightsRail items={AI_ORDER_INSIGHTS} />
-
-      <div className="admin-kpi-grid admin-orders-kpis">
-        <button
-          type="button"
-          className={`admin-kpi-card admin-orders-kpi ${summaryPreset === 'open' ? 'admin-orders-kpi--on' : ''}`}
-          onClick={() => setSummaryPreset((p) => (p === 'open' ? null : 'open'))}
-        >
-          <p className="admin-kpi-label">Open orders</p>
-          <p className="admin-kpi-value">{summary.open}</p>
-          <p className="admin-kpi-meta">Not yet delivered</p>
-        </button>
-        <button
-          type="button"
-          className={`admin-kpi-card admin-orders-kpi ${summaryPreset === 'processing' ? 'admin-orders-kpi--on' : ''}`}
-          onClick={() => setSummaryPreset((p) => (p === 'processing' ? null : 'processing'))}
-        >
-          <p className="admin-kpi-label">Processing</p>
-          <p className="admin-kpi-value">{summary.processing}</p>
-          <p className="admin-kpi-meta">Preparing to ship</p>
-        </button>
-        <button
-          type="button"
-          className={`admin-kpi-card admin-orders-kpi ${summaryPreset === 'shipped' ? 'admin-orders-kpi--on' : ''}`}
-          onClick={() => setSummaryPreset((p) => (p === 'shipped' ? null : 'shipped'))}
-        >
-          <p className="admin-kpi-label">Shipped</p>
-          <p className="admin-kpi-value">{summary.shipped}</p>
-          <p className="admin-kpi-meta">In transit</p>
-        </button>
-        <button
-          type="button"
-          className={`admin-kpi-card admin-orders-kpi ${summaryPreset === 'delivered' ? 'admin-orders-kpi--on' : ''}`}
-          onClick={() => setSummaryPreset((p) => (p === 'delivered' ? null : 'delivered'))}
-        >
-          <p className="admin-kpi-label">Delivered</p>
-          <p className="admin-kpi-value">{summary.delivered}</p>
-          <p className="admin-kpi-meta">Completed</p>
-        </button>
-        <button
-          type="button"
-          className={`admin-kpi-card admin-orders-kpi ${summaryPreset === 'backordered' ? 'admin-orders-kpi--on' : ''}`}
-          onClick={() => setSummaryPreset((p) => (p === 'backordered' ? null : 'backordered'))}
-        >
-          <p className="admin-kpi-label">Backordered</p>
-          <p className="admin-kpi-value">{summary.backordered}</p>
-          <p className="admin-kpi-meta">Stock or allocation hold</p>
-        </button>
-        <button
-          type="button"
-          className={`admin-kpi-card admin-orders-kpi ${summaryPreset === 'delayed' ? 'admin-orders-kpi--on' : ''}`}
-          onClick={() => setSummaryPreset((p) => (p === 'delayed' ? null : 'delayed'))}
-        >
-          <p className="admin-kpi-label">Delayed</p>
-          <p className="admin-kpi-value">{summary.delayed}</p>
-          <p className="admin-kpi-meta">Later than expected</p>
-        </button>
-        <button
-          type="button"
-          className={`admin-kpi-card admin-orders-kpi ${summaryPreset === 'week' ? 'admin-orders-kpi--on' : ''}`}
-          onClick={() => setSummaryPreset((p) => (p === 'week' ? null : 'week'))}
-        >
-          <p className="admin-kpi-label">Orders this week</p>
-          <p className="admin-kpi-value">{summary.this_week}</p>
-          <p className="admin-kpi-meta">Last 7 days</p>
-        </button>
-        <button
-          type="button"
-          className={`admin-kpi-card admin-orders-kpi ${summaryPreset === 'high_value' ? 'admin-orders-kpi--on' : ''}`}
-          onClick={() => setSummaryPreset((p) => (p === 'high_value' ? null : 'high_value'))}
-        >
-          <p className="admin-kpi-label">High-value orders</p>
-          <p className="admin-kpi-value">{summary.high_value}</p>
-          <p className="admin-kpi-meta">$5,000+ (demo rule)</p>
-        </button>
-        <button
-          type="button"
-          className={`admin-kpi-card admin-orders-kpi admin-orders-kpi--wide ${summaryPreset === 'top_accounts' ? 'admin-orders-kpi--on' : ''}`}
-          onClick={() => setSummaryPreset((p) => (p === 'top_accounts' ? null : 'top_accounts'))}
-        >
-          <p className="admin-kpi-label">Customers with the most orders</p>
-          <p className="admin-orders-top-customers">
-            {topByCustomer.map((t) => (
-              <span key={t.name}>
-                {t.name} <strong>({t.count})</strong>
-              </span>
-            ))}
-          </p>
-          <p className="admin-kpi-meta">Click to filter to those accounts</p>
-        </button>
+      <div className="admin-kpi-section">
+        <div className="admin-kpi-grid admin-orders-kpis">
+          <button
+            type="button"
+            className={`admin-kpi-card admin-orders-kpi ${summaryPreset === 'open' ? 'admin-orders-kpi--on' : ''}`}
+            onClick={() => setSummaryPreset((p) => (p === 'open' ? null : 'open'))}
+          >
+            <p className="admin-kpi-label">Open orders</p>
+            <p className="admin-kpi-value">{summary.open}</p>
+            <p className="admin-kpi-meta">Not yet delivered</p>
+          </button>
+          <button
+            type="button"
+            className={`admin-kpi-card admin-orders-kpi ${summaryPreset === 'backordered' ? 'admin-orders-kpi--on' : ''}`}
+            onClick={() => setSummaryPreset((p) => (p === 'backordered' ? null : 'backordered'))}
+          >
+            <p className="admin-kpi-label">Backordered</p>
+            <p className="admin-kpi-value">{summary.backordered}</p>
+            <p className="admin-kpi-meta">Stock or allocation hold</p>
+          </button>
+          <button
+            type="button"
+            className={`admin-kpi-card admin-orders-kpi ${summaryPreset === 'delayed' ? 'admin-orders-kpi--on' : ''}`}
+            onClick={() => setSummaryPreset((p) => (p === 'delayed' ? null : 'delayed'))}
+          >
+            <p className="admin-kpi-label">Delayed</p>
+            <p className="admin-kpi-value">{summary.delayed}</p>
+            <p className="admin-kpi-meta">Later than expected</p>
+          </button>
+          <button
+            type="button"
+            className={`admin-kpi-card admin-orders-kpi ${summaryPreset === 'shipped' ? 'admin-orders-kpi--on' : ''}`}
+            onClick={() => setSummaryPreset((p) => (p === 'shipped' ? null : 'shipped'))}
+          >
+            <p className="admin-kpi-label">Shipped</p>
+            <p className="admin-kpi-value">{summary.shipped}</p>
+            <p className="admin-kpi-meta">In transit</p>
+          </button>
+          <button
+            type="button"
+            className="admin-kpi-expand-toggle"
+            onClick={() => setKpisExpanded((v) => !v)}
+            aria-expanded={kpisExpanded}
+          >
+            {kpisExpanded ? 'Fewer metrics' : 'More metrics'}
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d={kpisExpanded ? 'M18 15l-6-6-6 6' : 'M6 9l6 6 6-6'} />
+            </svg>
+          </button>
+        </div>
+        {kpisExpanded && (
+          <div className="admin-kpi-grid admin-orders-kpis admin-kpi-grid--secondary">
+            <button
+              type="button"
+              className={`admin-kpi-card admin-orders-kpi ${summaryPreset === 'processing' ? 'admin-orders-kpi--on' : ''}`}
+              onClick={() => setSummaryPreset((p) => (p === 'processing' ? null : 'processing'))}
+            >
+              <p className="admin-kpi-label">Processing</p>
+              <p className="admin-kpi-value">{summary.processing}</p>
+              <p className="admin-kpi-meta">Preparing to ship</p>
+            </button>
+            <button
+              type="button"
+              className={`admin-kpi-card admin-orders-kpi ${summaryPreset === 'delivered' ? 'admin-orders-kpi--on' : ''}`}
+              onClick={() => setSummaryPreset((p) => (p === 'delivered' ? null : 'delivered'))}
+            >
+              <p className="admin-kpi-label">Delivered</p>
+              <p className="admin-kpi-value">{summary.delivered}</p>
+              <p className="admin-kpi-meta">Completed</p>
+            </button>
+            <button
+              type="button"
+              className={`admin-kpi-card admin-orders-kpi ${summaryPreset === 'week' ? 'admin-orders-kpi--on' : ''}`}
+              onClick={() => setSummaryPreset((p) => (p === 'week' ? null : 'week'))}
+            >
+              <p className="admin-kpi-label">Orders this week</p>
+              <p className="admin-kpi-value">{summary.this_week}</p>
+              <p className="admin-kpi-meta">Last 7 days</p>
+            </button>
+            <button
+              type="button"
+              className={`admin-kpi-card admin-orders-kpi ${summaryPreset === 'high_value' ? 'admin-orders-kpi--on' : ''}`}
+              onClick={() => setSummaryPreset((p) => (p === 'high_value' ? null : 'high_value'))}
+            >
+              <p className="admin-kpi-label">High-value orders</p>
+              <p className="admin-kpi-value">{summary.high_value}</p>
+              <p className="admin-kpi-meta">$5,000+ (demo rule)</p>
+            </button>
+            <button
+              type="button"
+              className={`admin-kpi-card admin-orders-kpi admin-orders-kpi--wide ${summaryPreset === 'top_accounts' ? 'admin-orders-kpi--on' : ''}`}
+              onClick={() => setSummaryPreset((p) => (p === 'top_accounts' ? null : 'top_accounts'))}
+            >
+              <p className="admin-kpi-label">Customers with the most orders</p>
+              <p className="admin-orders-top-customers">
+                {topByCustomer.map((t) => (
+                  <span key={t.name}>
+                    {t.name} <strong>({t.count})</strong>
+                  </span>
+                ))}
+              </p>
+              <p className="admin-kpi-meta">Click to filter to those accounts</p>
+            </button>
+          </div>
+        )}
       </div>
 
       <section className="admin-toolbar" aria-label="Search and filters">
@@ -502,242 +461,62 @@ export default function AdminOrders() {
         )}
       </section>
 
-      <div className="admin-orders-split">
-        <div className="admin-orders-list-panel">
-          <div className="admin-table-wrap admin-orders-table-wrap">
-            <table className="admin-table admin-orders-table">
-              <thead>
-                <tr>
-                  <th>Order #</th>
-                  <th>Customer</th>
-                  <th>Type</th>
-                  <th>Items</th>
-                  <th>Status</th>
-                  <th>Order date</th>
-                  <th>Expected delivery</th>
-                  <th>Total</th>
-                  <th>Location</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map((row) => (
-                  <tr
-                    key={row.id}
-                    className={`${selectedId === row.id ? 'admin-orders-row--selected' : ''} ${
-                      row.statusKey === 'backordered' || row.statusKey === 'delayed' ? 'admin-orders-row--issue' : ''
-                    }`}
-                    onClick={() => setSelectedId(row.id)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        setSelectedId(row.id);
-                      }
-                    }}
-                    tabIndex={0}
-                    role="button"
-                    aria-selected={selectedId === row.id}
-                  >
-                    <td>
-                      <span className="admin-orders-num">{row.orderNumber}</span>
-                    </td>
-                    <td>
-                      <span className="admin-orders-customer">{row.customerName}</span>
-                    </td>
-                    <td>
-                      <span className="admin-chip admin-chip-neutral">{orderTypeLabel(row.orderType)}</span>
-                    </td>
-                    <td>
-                      <span className="admin-orders-items-cell">{row.itemsSummary}</span>
-                    </td>
-                    <td>
-                      <span className={`admin-orders-chip ${statusChipClass(row.statusKey)}`}>{statusLabel(row.statusKey)}</span>
-                    </td>
-                    <td>{formatDateShort(row.orderDate)}</td>
-                    <td>{formatDateShort(row.expectedDelivery)}</td>
-                    <td>{row.total > 0 ? formatCurrency(row.total) : '—'}</td>
-                    <td>
-                      <span className="admin-orders-loc">{row.location}</span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          {filtered.length === 0 && <p className="admin-orders-empty">No orders match these filters. Try clearing a filter or search.</p>}
-        </div>
-
-        <aside className="admin-orders-detail" aria-label="Order detail">
-          {selected ? (
-            <>
-              <div className="admin-orders-detail-head">
-                <div>
-                  <p className="admin-orders-detail-eyebrow">Order</p>
-                  <h2 className="admin-orders-detail-title">{selected.orderNumber}</h2>
-                  <p className="admin-orders-detail-customer">
-                    {ADMIN_CUSTOMER_ROUTE_IDS.has(selected.customerId) ? (
-                      <Link to={`/admin/customers/${selected.customerId}`} className="admin-table-link">
-                        {selected.customerName}
-                      </Link>
-                    ) : (
-                      selected.customerName
-                    )}
-                  </p>
-                </div>
-                <div>
-                  <span className={`admin-orders-chip ${statusChipClass(selected.statusKey)}`}>{statusLabel(selected.statusKey)}</span>
-                </div>
-              </div>
-
-              <div className="admin-orders-detail-body">
-                <div className="admin-orders-detail-section">
-                  <h3 className="admin-section-title">Overview</h3>
-                  <dl className="admin-orders-dl">
-                    <div>
-                      <dt>Order date</dt>
-                      <dd>{formatDateShort(selected.orderDate)}</dd>
-                    </div>
-                    <div>
-                      <dt>Expected delivery</dt>
-                      <dd>{formatDateShort(selected.expectedDelivery)}</dd>
-                    </div>
-                    <div>
-                      <dt>Location</dt>
-                      <dd>{selected.location}</dd>
-                    </div>
-                    <div>
-                      <dt>Order type</dt>
-                      <dd>{orderTypeLabel(selected.orderType)}</dd>
-                    </div>
-                    <div>
-                      <dt>Billing</dt>
-                      <dd>{selected.contractBilling === 'contract' ? 'Contract' : 'Non-contract'}</dd>
-                    </div>
-                    <div>
-                      <dt>Total</dt>
-                      <dd>{selected.total > 0 ? formatCurrency(selected.total) : '—'}</dd>
-                    </div>
-                  </dl>
-                </div>
-
-                <div className="admin-orders-detail-section">
-                  <h3 className="admin-section-title">Line items</h3>
-                  <table className="admin-orders-items-table">
-                    <thead>
-                      <tr>
-                        <th>Item</th>
-                        <th>Qty</th>
-                        <th>Equipment #</th>
-                        <th>Line status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {selected.items.map((line, idx) => (
-                        <tr key={`${line.name}-${idx}`}>
-                          <td>{line.name}</td>
-                          <td>{line.qty}</td>
-                          <td>{line.equipmentNumber ?? '—'}</td>
-                          <td className={lineStatusClass(line.lineStatus)}>{lineStatusText(line.lineStatus)}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-
-                <div className="admin-orders-detail-section">
-                  <h3 className="admin-section-title">Fulfillment</h3>
-                  <ul className="admin-orders-timeline">
-                    {buildFulfillmentSteps(selected).map((step) => (
-                      <li key={step.key}>
-                        <span
-                          className={`admin-orders-tl-dot ${step.done ? 'admin-orders-tl-dot--done' : ''} ${step.current ? 'admin-orders-tl-dot--current' : ''}`}
-                          aria-hidden
-                        />
-                        <div>
-                          <div className="admin-orders-tl-label">{step.label}</div>
-                          {step.current && <div className="admin-orders-tl-meta">Current stage (demo)</div>}
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                <div className="admin-orders-detail-section">
-                  <h3 className="admin-section-title">Shipping</h3>
-                  <dl className="admin-orders-dl">
-                    <div>
-                      <dt>Carrier</dt>
-                      <dd>{selected.carrier}</dd>
-                    </div>
-                    <div>
-                      <dt>Tracking</dt>
-                      <dd>{selected.trackingNumber && selected.trackingNumber !== '—' ? selected.trackingNumber : '— (prototype)'}</dd>
-                    </div>
-                    <div>
-                      <dt>Notes</dt>
-                      <dd>{selected.shipNote ?? '—'}</dd>
-                    </div>
-                  </dl>
-                </div>
-
-                <div className="admin-orders-detail-section">
-                  <h3 className="admin-section-title">Other recent orders</h3>
-                  {relatedOrders.length === 0 ? (
-                    <p className="admin-orders-muted">No other orders for this customer in the demo set.</p>
-                  ) : (
-                    <ul className="admin-orders-related-list">
-                      {relatedOrders.map((o) => (
-                        <li key={o.id}>
-                          <button type="button" onClick={() => setSelectedId(o.id)}>
-                            {o.orderNumber}
-                          </button>
-                          <span className="admin-orders-muted">{formatDateShort(o.orderDate)}</span>
-                          <span className={`admin-orders-chip ${statusChipClass(o.statusKey)}`}>{statusLabel(o.statusKey)}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-
-                <div className="admin-orders-detail-section">
-                  <h3 className="admin-section-title">Open service calls</h3>
-                  {openCallsForCustomer.length === 0 ? (
-                    <p className="admin-orders-muted">No open calls for this customer in demo service data.</p>
-                  ) : (
-                    <ul className="admin-orders-related-list">
-                      {openCallsForCustomer.map((c) => (
-                        <li key={c.id}>
-                          <Link to="/admin/service" className="admin-table-link">
-                            {c.callNumber}
-                          </Link>
-                          <span>{c.statusLabel}</span>
-                          <span className="admin-orders-muted">{c.issueSummary}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                  <p className="admin-orders-muted" style={{ marginTop: 8 }}>
-                    <Link to="/admin/service">Open Service</Link> for full ticket detail (prototype).
-                  </p>
-                </div>
-
-                <div className="admin-orders-detail-section">
-                  <p className="admin-orders-muted">
-                    Ordering and inventory changes belong in{' '}
-                    <a href="https://www.ecisolutions.com" target="_blank" rel="noreferrer">
-                      EvolutionX
-                    </a>
-                    . This view is read-only visibility for account teams.
-                  </p>
-                </div>
-              </div>
-            </>
-          ) : (
-            <div className="admin-orders-detail-empty">
-              <p>Select an order to view details.</p>
-            </div>
-          )}
-        </aside>
+      <div className="admin-table-wrap admin-orders-table-wrap">
+        <table className="admin-table admin-orders-table">
+          <thead>
+            <tr>
+              <th>Order #</th>
+              <th>Customer</th>
+              <th>Type</th>
+              <th>Items</th>
+              <th>Status</th>
+              <th>Order date</th>
+              <th>Expected delivery</th>
+              <th>Total</th>
+              <th>Location</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filtered.map((row) => (
+              <tr
+                key={row.id}
+                className={`admin-orders-row ${row.statusKey === 'backordered' || row.statusKey === 'delayed' ? 'admin-orders-row--issue' : ''}`}
+                onClick={() => navigate(`/admin/orders/${row.id}`)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    navigate(`/admin/orders/${row.id}`);
+                  }
+                }}
+                tabIndex={0}
+                role="button"
+                aria-label={`View order ${row.orderNumber}`}
+              >
+                <td>{row.orderNumber}</td>
+                <td>
+                  <span className="admin-orders-customer">{row.customerName}</span>
+                </td>
+                <td>
+                  <span className="admin-chip admin-chip-neutral">{orderTypeLabel(row.orderType)}</span>
+                </td>
+                <td>
+                  <span className="admin-orders-items-cell">{row.itemsSummary}</span>
+                </td>
+                <td>
+                  <span className={`admin-orders-chip ${statusChipClass(row.statusKey)}`}>{statusLabel(row.statusKey)}</span>
+                </td>
+                <td>{formatDateShort(row.orderDate)}</td>
+                <td>{formatDateShort(row.expectedDelivery)}</td>
+                <td>{row.total > 0 ? formatCurrency(row.total) : '—'}</td>
+                <td>
+                  <span className="admin-orders-loc">{row.location}</span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
+      {filtered.length === 0 && <p className="admin-orders-empty">No orders match these filters. Try clearing a filter or search.</p>}
     </div>
   );
 }

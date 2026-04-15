@@ -1,7 +1,7 @@
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   globalServiceCalls,
-  AI_SERVICE_INSIGHTS,
   GLOBAL_CUSTOMERS,
   GLOBAL_SERVICE_BRANCHES,
   GLOBAL_STATUS_OPTIONS,
@@ -12,7 +12,6 @@ import {
   isOpenGlobalCall,
   resolvedThisWeek,
 } from '../../data/adminGlobalServiceData';
-import AdminInsightsRail from '../../components/AdminInsightsRail';
 import './adminPages.css';
 import './AdminGlobalService.css';
 
@@ -27,16 +26,6 @@ const SORT_OPTIONS = [
 ];
 
 const priorityRank = { urgent: 0, high: 1, medium: 2, low: 3 };
-
-function formatDateTime(iso) {
-  if (!iso) return '—';
-  try {
-    const d = new Date(iso);
-    return d.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
-  } catch {
-    return iso;
-  }
-}
 
 function formatDateShort(iso) {
   if (!iso) return '—';
@@ -67,7 +56,7 @@ function priorityClass(p) {
 }
 
 export default function AdminGlobalService() {
-  const [selectedId, setSelectedId] = useState(globalServiceCalls[0]?.id ?? null);
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [customerId, setCustomerId] = useState('all');
   const [statusKey, setStatusKey] = useState('all');
@@ -80,10 +69,10 @@ export default function AdminGlobalService() {
   const [agingOnly, setAgingOnly] = useState(false);
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
-  const [summaryPreset, setSummaryPreset] = useState(null);
+  const [summaryPreset, setSummaryPreset] = useState('open');
   const [sortKey, setSortKey] = useState('newest');
-  const [detailTab, setDetailTab] = useState('overview');
   const [filtersExpanded, setFiltersExpanded] = useState(false);
+  const [kpisExpanded, setKpisExpanded] = useState(false);
 
   const summary = useMemo(() => computeSummaryCounts(globalServiceCalls), []);
   const topCustomers = useMemo(() => topCustomersByOpenCalls(globalServiceCalls), []);
@@ -179,22 +168,6 @@ export default function AdminGlobalService() {
     topCustomerNames,
   ]);
 
-  const selected = useMemo(
-    () => globalServiceCalls.find((c) => c.id === selectedId) ?? null,
-    [selectedId]
-  );
-
-  useEffect(() => {
-    if (selectedId && filtered.some((c) => c.id === selectedId)) return;
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- keep selection valid when filter results change
-    setSelectedId(filtered[0]?.id ?? null);
-  }, [filtered, selectedId]);
-
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- reset detail tab when switching rows
-    setDetailTab('overview');
-  }, [selectedId]);
-
   function clearAllFilters() {
     setSearchQuery('');
     setCustomerId('all');
@@ -267,7 +240,11 @@ export default function AdminGlobalService() {
       <header className="admin-page-header admin-global-service-header">
         <div>
           <h1>Service</h1>
-          <p className="admin-page-subtitle">Track service activity across your customer accounts.</p>
+          <p className="admin-page-subtitle">
+            {summaryPreset === 'open'
+              ? 'Showing open service calls — click a metric or clear filters for all activity.'
+              : 'Track service activity across your customer accounts.'}
+          </p>
         </div>
         <div className="admin-global-service-header-actions">
           <button type="button" className="admin-btn admin-btn-ghost" disabled title="Demo only">
@@ -279,78 +256,93 @@ export default function AdminGlobalService() {
         </div>
       </header>
 
-      <AdminInsightsRail items={AI_SERVICE_INSIGHTS} />
-
-      <div className="admin-kpi-grid admin-global-service-kpis">
-        <button
-          type="button"
-          className={`admin-kpi-card admin-global-service-kpi ${summaryPreset === 'open' ? 'admin-global-service-kpi--on' : ''}`}
-          onClick={() => setSummaryPreset((p) => (p === 'open' ? null : 'open'))}
-        >
-          <p className="admin-kpi-label">Open calls</p>
-          <p className="admin-kpi-value">{summary.open}</p>
-          <p className="admin-kpi-meta">Across all accounts</p>
-        </button>
-        <button
-          type="button"
-          className={`admin-kpi-card admin-global-service-kpi ${summaryPreset === 'pending_dispatch' ? 'admin-global-service-kpi--on' : ''}`}
-          onClick={() => setSummaryPreset((p) => (p === 'pending_dispatch' ? null : 'pending_dispatch'))}
-        >
-          <p className="admin-kpi-label">Pending dispatch</p>
-          <p className="admin-kpi-value">{summary.pending_dispatch}</p>
-          <p className="admin-kpi-meta">Awaiting assignment</p>
-        </button>
-        <button
-          type="button"
-          className={`admin-kpi-card admin-global-service-kpi ${summaryPreset === 'in_progress' ? 'admin-global-service-kpi--on' : ''}`}
-          onClick={() => setSummaryPreset((p) => (p === 'in_progress' ? null : 'in_progress'))}
-        >
-          <p className="admin-kpi-label">In progress</p>
-          <p className="admin-kpi-value">{summary.in_progress}</p>
-          <p className="admin-kpi-meta">Active work</p>
-        </button>
-        <button
-          type="button"
-          className={`admin-kpi-card admin-global-service-kpi ${summaryPreset === 'waiting_parts' ? 'admin-global-service-kpi--on' : ''}`}
-          onClick={() => setSummaryPreset((p) => (p === 'waiting_parts' ? null : 'waiting_parts'))}
-        >
-          <p className="admin-kpi-label">Waiting on parts</p>
-          <p className="admin-kpi-value">{summary.waiting_parts}</p>
-          <p className="admin-kpi-meta">Supply chain</p>
-        </button>
-        <button
-          type="button"
-          className={`admin-kpi-card admin-global-service-kpi ${summaryPreset === 'overdue_aging' ? 'admin-global-service-kpi--on' : ''}`}
-          onClick={() => setSummaryPreset((p) => (p === 'overdue_aging' ? null : 'overdue_aging'))}
-        >
-          <p className="admin-kpi-label">Overdue / aging</p>
-          <p className="admin-kpi-value">{summary.overdue_aging}</p>
-          <p className="admin-kpi-meta">SLA risk or aging open calls</p>
-        </button>
-        <button
-          type="button"
-          className={`admin-kpi-card admin-global-service-kpi ${summaryPreset === 'resolved_week' ? 'admin-global-service-kpi--on' : ''}`}
-          onClick={() => setSummaryPreset((p) => (p === 'resolved_week' ? null : 'resolved_week'))}
-        >
-          <p className="admin-kpi-label">Resolved this week</p>
-          <p className="admin-kpi-value">{summary.resolved_week}</p>
-          <p className="admin-kpi-meta">Recently completed</p>
-        </button>
-        <button
-          type="button"
-          className={`admin-kpi-card admin-global-service-kpi admin-global-service-kpi--wide ${summaryPreset === 'top_accounts' ? 'admin-global-service-kpi--on' : ''}`}
-          onClick={() => setSummaryPreset((p) => (p === 'top_accounts' ? null : 'top_accounts'))}
-        >
-          <p className="admin-kpi-label">Accounts with most open calls</p>
-          <p className="admin-global-service-top-customers">
-            {topCustomers.map((t) => (
-              <span key={t.name}>
-                {t.name} <strong>({t.count})</strong>
-              </span>
-            ))}
-          </p>
-          <p className="admin-kpi-meta">Click to filter to those accounts</p>
-        </button>
+      <div className="admin-kpi-section">
+        <div className="admin-kpi-grid admin-global-service-kpis">
+          <button
+            type="button"
+            className={`admin-kpi-card admin-global-service-kpi ${summaryPreset === 'open' ? 'admin-global-service-kpi--on' : ''}`}
+            onClick={() => setSummaryPreset((p) => (p === 'open' ? null : 'open'))}
+          >
+            <p className="admin-kpi-label">Open calls</p>
+            <p className="admin-kpi-value">{summary.open}</p>
+            <p className="admin-kpi-meta">Across all accounts</p>
+          </button>
+          <button
+            type="button"
+            className={`admin-kpi-card admin-global-service-kpi ${summaryPreset === 'pending_dispatch' ? 'admin-global-service-kpi--on' : ''}`}
+            onClick={() => setSummaryPreset((p) => (p === 'pending_dispatch' ? null : 'pending_dispatch'))}
+          >
+            <p className="admin-kpi-label">Pending dispatch</p>
+            <p className="admin-kpi-value">{summary.pending_dispatch}</p>
+            <p className="admin-kpi-meta">Awaiting assignment</p>
+          </button>
+          <button
+            type="button"
+            className={`admin-kpi-card admin-global-service-kpi ${summaryPreset === 'overdue_aging' ? 'admin-global-service-kpi--on' : ''}`}
+            onClick={() => setSummaryPreset((p) => (p === 'overdue_aging' ? null : 'overdue_aging'))}
+          >
+            <p className="admin-kpi-label">Overdue / aging</p>
+            <p className="admin-kpi-value">{summary.overdue_aging}</p>
+            <p className="admin-kpi-meta">SLA risk or aging open calls</p>
+          </button>
+          <button
+            type="button"
+            className="admin-kpi-expand-toggle"
+            onClick={() => setKpisExpanded((v) => !v)}
+            aria-expanded={kpisExpanded}
+          >
+            {kpisExpanded ? 'Fewer metrics' : 'More metrics'}
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d={kpisExpanded ? 'M18 15l-6-6-6 6' : 'M6 9l6 6 6-6'} />
+            </svg>
+          </button>
+        </div>
+        {kpisExpanded && (
+          <div className="admin-kpi-grid admin-global-service-kpis admin-kpi-grid--secondary">
+            <button
+              type="button"
+              className={`admin-kpi-card admin-global-service-kpi ${summaryPreset === 'in_progress' ? 'admin-global-service-kpi--on' : ''}`}
+              onClick={() => setSummaryPreset((p) => (p === 'in_progress' ? null : 'in_progress'))}
+            >
+              <p className="admin-kpi-label">In progress</p>
+              <p className="admin-kpi-value">{summary.in_progress}</p>
+              <p className="admin-kpi-meta">Active work</p>
+            </button>
+            <button
+              type="button"
+              className={`admin-kpi-card admin-global-service-kpi ${summaryPreset === 'waiting_parts' ? 'admin-global-service-kpi--on' : ''}`}
+              onClick={() => setSummaryPreset((p) => (p === 'waiting_parts' ? null : 'waiting_parts'))}
+            >
+              <p className="admin-kpi-label">Waiting on parts</p>
+              <p className="admin-kpi-value">{summary.waiting_parts}</p>
+              <p className="admin-kpi-meta">Supply chain</p>
+            </button>
+            <button
+              type="button"
+              className={`admin-kpi-card admin-global-service-kpi ${summaryPreset === 'resolved_week' ? 'admin-global-service-kpi--on' : ''}`}
+              onClick={() => setSummaryPreset((p) => (p === 'resolved_week' ? null : 'resolved_week'))}
+            >
+              <p className="admin-kpi-label">Resolved this week</p>
+              <p className="admin-kpi-value">{summary.resolved_week}</p>
+              <p className="admin-kpi-meta">Recently completed</p>
+            </button>
+            <button
+              type="button"
+              className={`admin-kpi-card admin-global-service-kpi admin-global-service-kpi--wide ${summaryPreset === 'top_accounts' ? 'admin-global-service-kpi--on' : ''}`}
+              onClick={() => setSummaryPreset((p) => (p === 'top_accounts' ? null : 'top_accounts'))}
+            >
+              <p className="admin-kpi-label">Accounts with most open calls</p>
+              <p className="admin-global-service-top-customers">
+                {topCustomers.map((t) => (
+                  <span key={t.name}>
+                    {t.name} <strong>({t.count})</strong>
+                  </span>
+                ))}
+              </p>
+              <p className="admin-kpi-meta">Click to filter to those accounts</p>
+            </button>
+          </div>
+        )}
       </div>
 
       <section className="admin-toolbar" aria-label="Search and filters">
@@ -530,269 +522,71 @@ export default function AdminGlobalService() {
         )}
       </section>
 
-      <div className="admin-global-service-split">
-        <div className="admin-global-service-list-panel">
-          <div className="admin-table-wrap admin-global-service-table-wrap">
-            <table className="admin-table admin-global-service-table">
-              <thead>
-                <tr>
-                  <th>Call #</th>
-                  <th>Customer</th>
-                  <th>Equipment</th>
-                  <th>Issue</th>
-                  <th>Status</th>
-                  <th>Priority</th>
-                  <th>Opened</th>
-                  <th>Updated</th>
-                  <th>Tech</th>
-                  <th>Location</th>
-                  <th>Billing</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map((row) => (
-                  <tr
-                    key={row.id}
-                    className={`${selectedId === row.id ? 'admin-global-service-row--selected' : ''} ${row.isOverdue ? 'admin-row-warn' : ''}`}
-                    onClick={() => setSelectedId(row.id)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        setSelectedId(row.id);
-                      }
-                    }}
-                    tabIndex={0}
-                    role="button"
-                    aria-selected={selectedId === row.id}
-                  >
-                    <td>
-                      <span className="admin-global-service-call-num">{row.callNumber}</span>
-                    </td>
-                    <td>
-                      <span className="admin-global-service-customer">{row.customerName}</span>
-                    </td>
-                    <td>
-                      <span className="admin-table-sub admin-global-service-equip">{row.equipmentName}</span>
-                      <span className="admin-table-sub">{row.equipmentNumber}</span>
-                    </td>
-                    <td className="admin-global-service-issue">{row.issueSummary}</td>
-                    <td>
-                      <span className={`admin-svc-chip ${statusChipClass(row.statusKey)}`}>{row.statusLabel}</span>
-                    </td>
-                    <td>
-                      <span className={`admin-svc-priority ${priorityClass(row.priority)}`}>{priorityLabel(row.priority)}</span>
-                    </td>
-                    <td>{formatDateShort(row.openedAt)}</td>
-                    <td>{formatDateShort(row.lastUpdated)}</td>
-                    <td>{row.assignedTech}</td>
-                    <td className="admin-global-service-loc">{row.location}</td>
-                    <td>
-                      <span className="admin-chip admin-chip-neutral admin-global-service-bill">{row.contractBilling.replace(/_/g, ' ')}</span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          {filtered.length === 0 && (
-            <p className="admin-global-service-empty">No calls match these filters. Try clearing a filter or search.</p>
-          )}
-        </div>
-
-        <aside className="admin-global-service-detail" aria-label="Service call detail">
-          {selected ? (
-            <>
-              <div className="admin-global-service-detail-head">
-                <div>
-                  <p className="admin-global-service-detail-eyebrow">Service call</p>
-                  <h2 className="admin-global-service-detail-title">{selected.callNumber}</h2>
-                  <p className="admin-global-service-detail-customer">{selected.customerName}</p>
-                </div>
-                <div className="admin-global-service-detail-badges">
-                  <span className={`admin-svc-chip ${statusChipClass(selected.statusKey)}`}>{selected.statusLabel}</span>
-                  <span className={`admin-svc-priority ${priorityClass(selected.priority)}`}>{priorityLabel(selected.priority)}</span>
-                </div>
-              </div>
-
-              <div className="admin-tab-row admin-global-service-detail-tabs" role="tablist">
-                {['overview', 'activity', 'equipment', 'customer', 'notes'].map((tab) => (
-                  <button
-                    key={tab}
-                    type="button"
-                    role="tab"
-                    aria-selected={detailTab === tab}
-                    className={`admin-tab ${detailTab === tab ? 'admin-tab-active' : ''}`}
-                    onClick={() => setDetailTab(tab)}
-                  >
-                    {tab === 'overview' && 'Overview'}
-                    {tab === 'activity' && 'Activity'}
-                    {tab === 'equipment' && 'Equipment'}
-                    {tab === 'customer' && 'Customer'}
-                    {tab === 'notes' && 'Notes & updates'}
-                  </button>
-                ))}
-              </div>
-
-              <div className="admin-global-service-detail-body">
-                {detailTab === 'overview' && (
-                  <div className="admin-global-service-detail-section">
-                    <h3 className="admin-section-title">Call overview</h3>
-                    <dl className="admin-global-service-dl">
-                      <div>
-                        <dt>Opened</dt>
-                        <dd>{formatDateTime(selected.openedAt)}</dd>
-                      </div>
-                      <div>
-                        <dt>Last updated</dt>
-                        <dd>{formatDateTime(selected.lastUpdated)}</dd>
-                      </div>
-                      <div>
-                        <dt>Assigned tech</dt>
-                        <dd>{selected.assignedTech}</dd>
-                      </div>
-                      <div>
-                        <dt>Call type</dt>
-                        <dd>{selected.callType}</dd>
-                      </div>
-                      <div>
-                        <dt>Branch</dt>
-                        <dd>{selected.branch}</dd>
-                      </div>
-                      <div>
-                        <dt>Billing</dt>
-                        <dd className="admin-global-service-cap">{selected.contractBilling.replace(/_/g, ' ')}</dd>
-                      </div>
-                    </dl>
-                    <h3 className="admin-section-title">Problem</h3>
-                    <p className="admin-global-service-prose">{selected.problemDescription}</p>
-                    <p className="admin-global-service-muted">
-                      <strong>Original request:</strong> {selected.issueSummary}
-                    </p>
-                  </div>
-                )}
-
-                {detailTab === 'activity' && (
-                  <div className="admin-global-service-detail-section">
-                    <h3 className="admin-section-title">Timeline</h3>
-                    <ul className="admin-global-service-timeline">
-                      {selected.timeline.map((ev, i) => (
-                        <li key={i}>
-                          <span className="admin-global-service-tl-dot" aria-hidden />
-                          <div>
-                            <strong>{ev.label}</strong>
-                            <span className="admin-global-service-tl-time">{formatDateTime(ev.at)}</span>
-                            {ev.detail && <p className="admin-global-service-tl-detail">{ev.detail}</p>}
-                          </div>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                {detailTab === 'equipment' && (
-                  <div className="admin-global-service-detail-section">
-                    <h3 className="admin-section-title">Equipment</h3>
-                    <dl className="admin-global-service-dl">
-                      <div>
-                        <dt>Device</dt>
-                        <dd>{selected.equipmentName}</dd>
-                      </div>
-                      <div>
-                        <dt>Equipment #</dt>
-                        <dd>{selected.equipmentNumber}</dd>
-                      </div>
-                      <div>
-                        <dt>Serial</dt>
-                        <dd>{selected.serialNumber}</dd>
-                      </div>
-                      <div>
-                        <dt>Location</dt>
-                        <dd>{selected.location}</dd>
-                      </div>
-                      <div>
-                        <dt>Type</dt>
-                        <dd>{selected.equipmentType}</dd>
-                      </div>
-                      <div>
-                        <dt>Contract on call</dt>
-                        <dd>{selected.contractBilling.replace(/_/g, ' ')}</dd>
-                      </div>
-                    </dl>
-                  </div>
-                )}
-
-                {detailTab === 'customer' && (
-                  <div className="admin-global-service-detail-section">
-                    <h3 className="admin-section-title">Account context</h3>
-                    <p className="admin-global-service-stat">
-                      Open calls for this customer: <strong>{selected.accountOpenCalls}</strong>
-                    </p>
-                    <h4 className="admin-global-service-subh">Recent service history</h4>
-                    <ul className="admin-global-service-history">
-                      {selected.recentHistory.length === 0 && <li className="admin-global-service-muted">No additional history in demo.</li>}
-                      {selected.recentHistory.map((h) => (
-                        <li key={h.id}>
-                          <span className="admin-global-service-hist-id">{h.id}</span>
-                          <span className="admin-global-service-hist-date">{formatDateShort(h.date)}</span>
-                          <span>{h.summary}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    <p className="admin-global-service-muted admin-global-service-future">
-                      Trends and renewal signals could appear here for account reviews (prototype).
-                    </p>
-                  </div>
-                )}
-
-                {detailTab === 'notes' && (
-                  <div className="admin-global-service-detail-section">
-                    <h3 className="admin-section-title">Internal notes</h3>
-                    <ul className="admin-global-service-notes">
-                      {selected.internalNotes.length === 0 && <li className="admin-global-service-muted">No internal notes yet (demo).</li>}
-                      {selected.internalNotes.map((n) => (
-                        <li key={n.id}>
-                          <span className="admin-global-service-note-meta">
-                            {formatDateTime(n.at)} · {n.author}
-                          </span>
-                          <p>{n.body}</p>
-                        </li>
-                      ))}
-                    </ul>
-                    <h3 className="admin-section-title">Customer-facing updates</h3>
-                    <p className="admin-global-service-muted admin-global-service-future">
-                      Lightweight visibility — not a live chat. Future: portal messages, SMS/email log, and optional AI summaries.
-                    </p>
-                    <ul className="admin-global-service-comm">
-                      {selected.customerUpdates.length === 0 && <li className="admin-global-service-muted">No customer-visible updates in demo.</li>}
-                      {selected.customerUpdates.map((u) => (
-                        <li key={u.id}>
-                          <span className="admin-global-service-comm-channel">{u.channel}</span>
-                          <span className="admin-global-service-note-meta">{formatDateTime(u.at)}</span>
-                          <p>{u.body}</p>
-                        </li>
-                      ))}
-                    </ul>
-                    <div className="admin-global-service-compose">
-                      <label htmlFor="admin-svc-note-placeholder">Add internal note (demo)</label>
-                      <textarea
-                        id="admin-svc-note-placeholder"
-                        className="admin-textarea"
-                        placeholder="Notes saved only in a full build — this is a static prototype."
-                        rows={3}
-                        readOnly
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
-            </>
-          ) : (
-            <div className="admin-global-service-detail-empty">
-              <p>Select a service call to view details.</p>
-            </div>
-          )}
-        </aside>
+      <div className="admin-global-service-table-wrap">
+        <table className="admin-table admin-global-service-table">
+          <thead>
+            <tr>
+              <th>Call #</th>
+              <th>Customer</th>
+              <th>Equipment</th>
+              <th>Issue</th>
+              <th>Status</th>
+              <th>Priority</th>
+              <th>Opened</th>
+              <th>Updated</th>
+              <th>Tech</th>
+              <th>Location</th>
+              <th>Billing</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filtered.map((row) => (
+              <tr
+                key={row.id}
+                className={`admin-global-service-row ${row.isOverdue ? 'admin-row-warn' : ''}`}
+                onClick={() => navigate(`/admin/service/${row.id}`)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    navigate(`/admin/service/${row.id}`);
+                  }
+                }}
+                tabIndex={0}
+                role="button"
+                aria-label={`View service call ${row.callNumber}`}
+              >
+                <td>
+                  <span className="admin-global-service-call-num">{row.callNumber}</span>
+                </td>
+                <td>
+                  <span className="admin-global-service-customer">{row.customerName}</span>
+                </td>
+                <td>
+                  <span className="admin-table-sub admin-global-service-equip">{row.equipmentName}</span>
+                  <span className="admin-table-sub">{row.equipmentNumber}</span>
+                </td>
+                <td className="admin-global-service-issue">{row.issueSummary}</td>
+                <td>
+                  <span className={`admin-svc-chip ${statusChipClass(row.statusKey)}`}>{row.statusLabel}</span>
+                </td>
+                <td>
+                  <span className={`admin-svc-priority ${priorityClass(row.priority)}`}>{priorityLabel(row.priority)}</span>
+                </td>
+                <td>{formatDateShort(row.openedAt)}</td>
+                <td>{formatDateShort(row.lastUpdated)}</td>
+                <td>{row.assignedTech}</td>
+                <td className="admin-global-service-loc">{row.location}</td>
+                <td>
+                  <span className="admin-chip admin-chip-neutral admin-global-service-bill">{row.contractBilling.replace(/_/g, ' ')}</span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
+      {filtered.length === 0 && (
+        <p className="admin-global-service-empty">No calls match these filters. Try clearing a filter or search.</p>
+      )}
     </div>
   );
 }

@@ -31,12 +31,16 @@ import CommunicationsSettings from './pages/admin/CommunicationsSettings';
 import AuditActivity from './pages/admin/AuditActivity';
 import IntelligenceHub from './pages/admin/IntelligenceHub';
 import AdminGlobalService from './pages/admin/AdminGlobalService';
+import AdminServiceDetail from './pages/admin/AdminServiceDetail';
 import AdminOrders from './pages/admin/AdminOrders';
+import AdminOrderDetail from './pages/admin/AdminOrderDetail';
 import AdminBilling from './pages/admin/AdminBilling';
+import AdminBillingDetail from './pages/admin/AdminBillingDetail';
+import AdminEquipment from './pages/admin/AdminEquipment';
 import './App.css';
 
-/** Shared customer portal pages (relative paths under each profile layout). */
-function PortalChildRoutes() {
+/** Shared portal route tree. Must be a fragment (not a <Component/>) — RR7 only allows Route | Fragment as route children. Call per parent so each branch gets its own elements. */
+function portalRoutesElements() {
   return (
     <>
       <Route index element={<HomeDashboard />} />
@@ -71,8 +75,12 @@ function App() {
           <Route path="customers" element={<CustomerList />} />
           <Route path="customers/:customerId" element={<CustomerDetail />} />
           <Route path="service" element={<AdminGlobalService />} />
+          <Route path="service/:callId" element={<AdminServiceDetail />} />
+          <Route path="equipment" element={<AdminEquipment />} />
           <Route path="orders" element={<AdminOrders />} />
+          <Route path="orders/:orderId" element={<AdminOrderDetail />} />
           <Route path="billing" element={<AdminBilling />} />
+          <Route path="billing/:invoiceId" element={<AdminBillingDetail />} />
           <Route path="users/internal" element={<InternalUsers />} />
           <Route path="users/portal" element={<PortalUsersPage />} />
           <Route path="users/roles" element={<RolesPermissions />} />
@@ -92,7 +100,7 @@ function App() {
             </PortalProfileProvider>
           }
         >
-          <PortalChildRoutes />
+          {portalRoutesElements()}
         </Route>
 
         <Route
@@ -103,7 +111,7 @@ function App() {
             </PortalProfileProvider>
           }
         >
-          <PortalChildRoutes />
+          {portalRoutesElements()}
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />

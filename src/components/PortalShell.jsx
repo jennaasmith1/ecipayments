@@ -96,6 +96,7 @@ function subLinkTo(toPortal, subPath) {
 
 function PortalShell() {
   const {
+    profileId,
     basePath,
     dealer,
     customer,
@@ -366,12 +367,14 @@ function PortalShell() {
             </ul>
           </div>
         </div>
-        <div className="portal-powered-by" aria-label="Platform provider">
-          <div className="portal-powered-by-inner">
-            <span className="portal-powered-by-text">Powered by</span>
-            <img src="/branding/ubeo-wordmark.png" alt="" className="portal-powered-by-logo" />
+        {profileId === 'tesla' && (
+          <div className="portal-powered-by" aria-label="Platform provider">
+            <div className="portal-powered-by-inner">
+              <span className="portal-powered-by-text">Powered by</span>
+              <img src="/branding/ubeo-wordmark.png" alt="" className="portal-powered-by-logo" />
+            </div>
           </div>
-        </div>
+        )}
         <div className="portal-sidebar-collapse-wrap">
           <button
             type="button"

@@ -1,4 +1,4 @@
-/* Admin Orders — global visibility (dealer) */
+/* Admin Orders — list view */
 
 .admin-orders-header {
   display: flex;
@@ -60,42 +60,8 @@
   color: var(--color-primary);
 }
 
-.admin-orders-split {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(340px, 42%);
-  gap: 0;
-  align-items: stretch;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  background: var(--color-bg-card);
-  box-shadow: var(--shadow-sm);
-  min-height: 520px;
-}
-
-@media (max-width: 1100px) {
-  .admin-orders-split {
-    grid-template-columns: 1fr;
-  }
-}
-
-.admin-orders-list-panel {
-  min-width: 0;
-  border-right: 1px solid var(--color-border);
-}
-
-@media (max-width: 1100px) {
-  .admin-orders-list-panel {
-    border-right: none;
-    border-bottom: 1px solid var(--color-border);
-  }
-}
-
 .admin-orders-table-wrap {
-  border: none;
-  border-radius: 0;
-  max-height: min(62vh, 640px);
-  overflow: auto;
+  border-radius: var(--radius-lg);
 }
 
 .admin-orders-table {
@@ -109,21 +75,41 @@
   box-shadow: 0 1px 0 var(--color-border-light);
 }
 
-.admin-orders-table tbody tr {
+.admin-orders-row {
   cursor: pointer;
+  transition: background 0.15s ease;
 }
 
-.admin-orders-row--selected {
-  background: rgba(245, 51, 63, 0.06) !important;
+.admin-orders-row:hover {
+  background: var(--color-primary-light);
+}
+
+.admin-orders-row:focus {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -2px;
 }
 
 .admin-orders-row--issue {
   background: rgba(244, 159, 0, 0.07) !important;
 }
 
+.admin-orders-row--issue:hover {
+  background: rgba(244, 159, 0, 0.12) !important;
+}
+
 .admin-orders-num {
   font-weight: 600;
   color: var(--color-primary);
+}
+
+.admin-orders-link {
+  font-weight: 600;
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+.admin-orders-link:hover {
+  text-decoration: underline;
 }
 
 .admin-orders-customer {
@@ -145,212 +131,6 @@
 
 .admin-orders-empty {
   padding: 24px;
-  text-align: center;
-  color: var(--color-text-secondary);
-  font-size: 0.875rem;
-}
-
-.admin-orders-detail {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  background: var(--color-bg);
-  max-height: min(90vh, 900px);
-}
-
-@media (max-width: 1100px) {
-  .admin-orders-detail {
-    max-height: none;
-  }
-}
-
-.admin-orders-detail-head {
-  padding: 20px 22px 12px;
-  border-bottom: 1px solid var(--color-border-light);
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 12px;
-  align-items: flex-start;
-}
-
-.admin-orders-detail-eyebrow {
-  font-size: 0.6875rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--color-text-muted);
-  margin: 0 0 4px;
-}
-
-.admin-orders-detail-title {
-  font-size: 1.25rem;
-  font-weight: 700;
-  margin: 0 0 4px;
-  color: var(--color-text);
-}
-
-.admin-orders-detail-customer {
-  margin: 0;
-  font-size: 0.9375rem;
-  color: var(--color-text-secondary);
-}
-
-.admin-orders-detail-body {
-  padding: 16px 22px 24px;
-  overflow-y: auto;
-  flex: 1;
-}
-
-.admin-orders-detail-section .admin-section-title {
-  margin-top: 16px;
-}
-
-.admin-orders-detail-section .admin-section-title:first-child {
-  margin-top: 0;
-}
-
-.admin-orders-dl {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 12px 20px;
-  margin: 0;
-}
-
-.admin-orders-dl div {
-  margin: 0;
-}
-
-.admin-orders-dl dt {
-  font-size: 0.6875rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--color-text-muted);
-  margin-bottom: 4px;
-}
-
-.admin-orders-dl dd {
-  margin: 0;
-  font-size: 0.875rem;
-  color: var(--color-text);
-}
-
-.admin-orders-items-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.8125rem;
-}
-
-.admin-orders-items-table th,
-.admin-orders-items-table td {
-  padding: 8px 10px;
-  text-align: left;
-  border-bottom: 1px solid var(--color-border-light);
-}
-
-.admin-orders-items-table th {
-  font-size: 0.6875rem;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--color-text-secondary);
-  background: var(--color-bg-card);
-}
-
-.admin-orders-timeline {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.admin-orders-timeline li {
-  display: grid;
-  grid-template-columns: 12px 1fr;
-  gap: 12px;
-  padding-bottom: 14px;
-  position: relative;
-}
-
-.admin-orders-timeline li::before {
-  content: '';
-  position: absolute;
-  left: 5px;
-  top: 10px;
-  bottom: 0;
-  width: 2px;
-  background: var(--color-border);
-}
-
-.admin-orders-timeline li:last-child::before {
-  display: none;
-}
-
-.admin-orders-tl-dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: var(--color-border);
-  margin-top: 4px;
-  flex-shrink: 0;
-}
-
-.admin-orders-tl-dot--done {
-  background: var(--color-success);
-}
-
-.admin-orders-tl-dot--current {
-  background: var(--color-accent);
-  box-shadow: 0 0 0 3px var(--color-accent-light);
-}
-
-.admin-orders-tl-label {
-  font-weight: 600;
-  font-size: 0.875rem;
-}
-
-.admin-orders-tl-meta {
-  font-size: 0.75rem;
-  color: var(--color-text-muted);
-}
-
-.admin-orders-related-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.admin-orders-related-list li {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 8px 12px;
-  padding: 8px 0;
-  border-bottom: 1px solid var(--color-border-light);
-  font-size: 0.8125rem;
-}
-
-.admin-orders-related-list button {
-  background: none;
-  border: none;
-  padding: 0;
-  font: inherit;
-  color: var(--color-accent);
-  cursor: pointer;
-  text-decoration: underline;
-  font-weight: 600;
-}
-
-.admin-orders-related-list li:last-child {
-  border-bottom: none;
-}
-
-.admin-orders-muted {
-  color: var(--color-text-muted);
-  font-size: 0.8125rem;
-}
-
-.admin-orders-detail-empty {
-  padding: 40px 24px;
   text-align: center;
   color: var(--color-text-secondary);
   font-size: 0.875rem;
@@ -389,18 +169,4 @@
 .admin-orders-chip--delayed {
   background: rgba(220, 53, 69, 0.12);
   color: var(--color-danger);
-}
-
-.admin-orders-line-ok {
-  color: var(--color-text-secondary);
-}
-
-.admin-orders-line-warn {
-  color: var(--color-warning);
-  font-weight: 600;
-}
-
-.admin-orders-line-bad {
-  color: var(--color-danger);
-  font-weight: 600;
 }

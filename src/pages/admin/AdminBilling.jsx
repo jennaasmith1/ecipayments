@@ -1,15 +1,12 @@
-import { useMemo, useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { formatCurrency } from '../../data/adminMockData';
-import { ADMIN_CUSTOMER_ROUTE_IDS } from '../../data/adminOrdersData';
 import {
-  AI_BILLING_INSIGHTS,
   BILLING_CUSTOMER_OPTIONS,
   BILLING_LOCATIONS,
   BILLING_REFERENCE,
   compareInvoiceStatus,
   computeBillingSummary,
-  customerOutstanding,
   globalInvoices,
   INVOICE_STATUS_OPTIONS,
   isDueSoon,
@@ -17,7 +14,6 @@ import {
   statusLabel,
   daysUntilDue,
 } from '../../data/adminBillingData';
-import AdminInsightsRail from '../../components/AdminInsightsRail';
 import './adminPages.css';
 import './AdminBilling.css';
 
@@ -67,7 +63,7 @@ function matchesDuePreset(inv, duePreset) {
 }
 
 export default function AdminBilling() {
-  const [selectedId, setSelectedId] = useState(globalInvoices[0]?.id ?? null);
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [customerId, setCustomerId] = useState('all');
   const [statusKey, setStatusKey] = useState('all');
@@ -75,9 +71,10 @@ export default function AdminBilling() {
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
   const [duePreset, setDuePreset] = useState('any');
-  const [summaryPreset, setSummaryPreset] = useState(null);
+  const [summaryPreset, setSummaryPreset] = useState('outstanding');
   const [sortKey, setSortKey] = useState('due_date');
   const [filtersExpanded, setFiltersExpanded] = useState(false);
+  const [kpisExpanded, setKpisExpanded] = useState(false);
 
   const summary = useMemo(() => computeBillingSummary(globalInvoices), []);
   const ref = BILLING_REFERENCE;
@@ -147,37 +144,6 @@ export default function AdminBilling() {
     ref,
   ]);
 
-  const selected = useMemo(() => globalInvoices.find((i) => i.id === selectedId) ?? null, [selectedId]);
-
-  const otherOpenForCustomer = useMemo(() => {
-    if (!selected) return [];
-    return globalInvoices
-      .filter((i) => i.customerId === selected.customerId && i.id !== selected.id && i.balance > 0)
-      .sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
-  }, [selected]);
-
-  const customerOpenTotal = useMemo(() => {
-    if (!selected) return 0;
-    return customerOutstanding(globalInvoices, selected.customerId);
-  }, [selected]);
-
-  const recentPaymentsForCustomer = useMemo(() => {
-    if (!selected) return [];
-    const rows = [];
-    for (const inv of globalInvoices.filter((i) => i.customerId === selected.customerId)) {
-      for (const p of inv.payments || []) {
-        rows.push({ ...p, invoiceNumber: inv.invoiceNumber, invoiceId: inv.id });
-      }
-    }
-    return rows.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 6);
-  }, [selected]);
-
-  useEffect(() => {
-    if (selectedId && filtered.some((i) => i.id === selectedId)) return;
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- keep selection valid when filter results change
-    setSelectedId(filtered[0]?.id ?? null);
-  }, [filtered, selectedId]);
-
   function clearAllFilters() {
     setSearchQuery('');
     setCustomerId('all');
@@ -240,7 +206,11 @@ export default function AdminBilling() {
       <header className="admin-page-header admin-billing-header">
         <div>
           <h1>Billing</h1>
-          <p className="admin-page-subtitle">View invoices and payments across all customer accounts</p>
+          <p className="admin-page-subtitle">
+            {summaryPreset === 'outstanding'
+              ? 'Showing outstanding balances — click a metric or clear filters for all invoices.'
+              : 'View invoices and payments across all customer accounts.'}
+          </p>
         </div>
         <div className="admin-billing-header-actions">
           <button type="button" className="admin-btn" disabled title="Demo only — not connected to billing systems">
@@ -249,63 +219,78 @@ export default function AdminBilling() {
         </div>
       </header>
 
-      <AdminInsightsRail items={AI_BILLING_INSIGHTS} />
-
-      <div className="admin-kpi-grid admin-billing-kpis">
-        <button
-          type="button"
-          className={`admin-kpi-card admin-billing-kpi ${summaryPreset === 'outstanding' ? 'admin-billing-kpi--on' : ''}`}
-          onClick={() => setSummaryPreset((p) => (p === 'outstanding' ? null : 'outstanding'))}
-        >
-          <p className="admin-kpi-label">Total outstanding</p>
-          <p className="admin-kpi-value">{formatCurrency(summary.total_outstanding)}</p>
-          <p className="admin-kpi-meta">Unpaid balances</p>
-        </button>
-        <button
-          type="button"
-          className={`admin-kpi-card admin-billing-kpi admin-billing-kpi--risk ${summaryPreset === 'overdue' ? 'admin-billing-kpi--on' : ''}`}
-          onClick={() => setSummaryPreset((p) => (p === 'overdue' ? null : 'overdue'))}
-        >
-          <p className="admin-kpi-label">Overdue amount</p>
-          <p className="admin-kpi-value">{formatCurrency(summary.overdue_amount)}</p>
-          <p className="admin-kpi-meta">Past due date</p>
-        </button>
-        <button
-          type="button"
-          className={`admin-kpi-card admin-billing-kpi ${summaryPreset === 'due_soon' ? 'admin-billing-kpi--on' : ''}`}
-          onClick={() => setSummaryPreset((p) => (p === 'due_soon' ? null : 'due_soon'))}
-        >
-          <p className="admin-kpi-label">Due soon</p>
-          <p className="admin-kpi-value">{summary.due_soon_count}</p>
-          <p className="admin-kpi-meta">Next 14 days · unpaid</p>
-        </button>
-        <button
-          type="button"
-          className={`admin-kpi-card admin-billing-kpi ${summaryPreset === 'paid_week' ? 'admin-billing-kpi--on' : ''}`}
-          onClick={() => setSummaryPreset((p) => (p === 'paid_week' ? null : 'paid_week'))}
-        >
-          <p className="admin-kpi-label">Paid this week</p>
-          <p className="admin-kpi-value">{formatCurrency(summary.paid_this_week)}</p>
-          <p className="admin-kpi-meta">Cash in (last 7 days)</p>
-        </button>
-        <button
-          type="button"
-          className={`admin-kpi-card admin-billing-kpi ${summaryPreset === 'paid_month' ? 'admin-billing-kpi--on' : ''}`}
-          onClick={() => setSummaryPreset((p) => (p === 'paid_month' ? null : 'paid_month'))}
-        >
-          <p className="admin-kpi-label">Paid this month</p>
-          <p className="admin-kpi-value">{formatCurrency(summary.paid_this_month)}</p>
-          <p className="admin-kpi-meta">Last 30 days</p>
-        </button>
-        <button
-          type="button"
-          className={`admin-kpi-card admin-billing-kpi ${summaryPreset === 'total_count' ? 'admin-billing-kpi--on' : ''}`}
-          onClick={() => setSummaryPreset((p) => (p === 'total_count' ? null : 'total_count'))}
-        >
-          <p className="admin-kpi-label">Total invoices</p>
-          <p className="admin-kpi-value">{summary.invoice_count}</p>
-          <p className="admin-kpi-meta">All accounts (demo)</p>
-        </button>
+      <div className="admin-kpi-section">
+        <div className="admin-kpi-grid admin-billing-kpis">
+          <button
+            type="button"
+            className={`admin-kpi-card admin-billing-kpi ${summaryPreset === 'outstanding' ? 'admin-billing-kpi--on' : ''}`}
+            onClick={() => setSummaryPreset((p) => (p === 'outstanding' ? null : 'outstanding'))}
+          >
+            <p className="admin-kpi-label">Total outstanding</p>
+            <p className="admin-kpi-value">{formatCurrency(summary.total_outstanding)}</p>
+            <p className="admin-kpi-meta">Unpaid balances</p>
+          </button>
+          <button
+            type="button"
+            className={`admin-kpi-card admin-billing-kpi admin-billing-kpi--risk ${summaryPreset === 'overdue' ? 'admin-billing-kpi--on' : ''}`}
+            onClick={() => setSummaryPreset((p) => (p === 'overdue' ? null : 'overdue'))}
+          >
+            <p className="admin-kpi-label">Overdue amount</p>
+            <p className="admin-kpi-value">{formatCurrency(summary.overdue_amount)}</p>
+            <p className="admin-kpi-meta">Past due date</p>
+          </button>
+          <button
+            type="button"
+            className={`admin-kpi-card admin-billing-kpi ${summaryPreset === 'due_soon' ? 'admin-billing-kpi--on' : ''}`}
+            onClick={() => setSummaryPreset((p) => (p === 'due_soon' ? null : 'due_soon'))}
+          >
+            <p className="admin-kpi-label">Due soon</p>
+            <p className="admin-kpi-value">{summary.due_soon_count}</p>
+            <p className="admin-kpi-meta">Next 14 days · unpaid</p>
+          </button>
+          <button
+            type="button"
+            className="admin-kpi-expand-toggle"
+            onClick={() => setKpisExpanded((v) => !v)}
+            aria-expanded={kpisExpanded}
+          >
+            {kpisExpanded ? 'Fewer metrics' : 'More metrics'}
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d={kpisExpanded ? 'M18 15l-6-6-6 6' : 'M6 9l6 6 6-6'} />
+            </svg>
+          </button>
+        </div>
+        {kpisExpanded && (
+          <div className="admin-kpi-grid admin-billing-kpis admin-kpi-grid--secondary">
+            <button
+              type="button"
+              className={`admin-kpi-card admin-billing-kpi ${summaryPreset === 'paid_week' ? 'admin-billing-kpi--on' : ''}`}
+              onClick={() => setSummaryPreset((p) => (p === 'paid_week' ? null : 'paid_week'))}
+            >
+              <p className="admin-kpi-label">Paid this week</p>
+              <p className="admin-kpi-value">{formatCurrency(summary.paid_this_week)}</p>
+              <p className="admin-kpi-meta">Cash in (last 7 days)</p>
+            </button>
+            <button
+              type="button"
+              className={`admin-kpi-card admin-billing-kpi ${summaryPreset === 'paid_month' ? 'admin-billing-kpi--on' : ''}`}
+              onClick={() => setSummaryPreset((p) => (p === 'paid_month' ? null : 'paid_month'))}
+            >
+              <p className="admin-kpi-label">Paid this month</p>
+              <p className="admin-kpi-value">{formatCurrency(summary.paid_this_month)}</p>
+              <p className="admin-kpi-meta">Last 30 days</p>
+            </button>
+            <button
+              type="button"
+              className={`admin-kpi-card admin-billing-kpi ${summaryPreset === 'total_count' ? 'admin-billing-kpi--on' : ''}`}
+              onClick={() => setSummaryPreset((p) => (p === 'total_count' ? null : 'total_count'))}
+            >
+              <p className="admin-kpi-label">Total invoices</p>
+              <p className="admin-kpi-value">{summary.invoice_count}</p>
+              <p className="admin-kpi-meta">All accounts (demo)</p>
+            </button>
+          </div>
+        )}
       </div>
 
       <section className="admin-toolbar" aria-label="Search and filters">
@@ -437,250 +422,63 @@ export default function AdminBilling() {
         )}
       </section>
 
-      <div className="admin-billing-split">
-        <div className="admin-billing-list-panel">
-          <div className="admin-table-wrap admin-billing-table-wrap">
-            <table className="admin-table admin-billing-table">
-              <thead>
-                <tr>
-                  <th>Invoice #</th>
-                  <th>Customer</th>
-                  <th>Invoice date</th>
-                  <th>Due date</th>
-                  <th>Amount</th>
-                  <th>Balance</th>
-                  <th>Status</th>
+      <div className="admin-billing-table-wrap">
+        <table className="admin-table admin-billing-table">
+          <thead>
+            <tr>
+              <th>Invoice #</th>
+              <th>Customer</th>
+              <th>Invoice date</th>
+              <th>Due date</th>
+              <th>Amount</th>
+              <th>Balance</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filtered.map((row) => {
+              const isOverdueRow = row.statusKey === 'overdue';
+              const isLarge = row.balance >= 4000;
+              return (
+                <tr
+                  key={row.id}
+                  className={`admin-billing-row ${isOverdueRow ? 'admin-billing-row--overdue' : ''} ${
+                    isLarge && row.balance > 0 ? 'admin-billing-row--large-balance' : ''
+                  }`}
+                  onClick={() => navigate(`/admin/billing/${row.id}`)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      navigate(`/admin/billing/${row.id}`);
+                    }
+                  }}
+                  tabIndex={0}
+                  role="button"
+                  aria-label={`View invoice ${row.invoiceNumber}`}
+                >
+                  <td>
+                    <span className="admin-billing-inv-num">{row.invoiceNumber}</span>
+                  </td>
+                  <td>
+                    <span className="admin-billing-customer">{row.customerName}</span>
+                    <span className="admin-billing-loc">{row.location}</span>
+                  </td>
+                  <td>{formatDateShort(row.invoiceDate)}</td>
+                  <td>{formatDateShort(row.dueDate)}</td>
+                  <td>{formatCurrency(row.total)}</td>
+                  <td className={`admin-billing-balance-cell ${row.balance <= 0 ? 'admin-billing-balance-cell--zero' : ''}`}>
+                    {row.balance <= 0 ? 'Paid' : formatCurrency(row.balance)}
+                  </td>
+                  <td>
+                    <span className={`admin-billing-status ${statusClass(row.statusKey)}`}>{statusLabel(row.statusKey)}</span>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {filtered.map((row) => {
-                  const isOverdueRow = row.statusKey === 'overdue';
-                  const isLarge = row.balance >= 4000;
-                  return (
-                    <tr
-                      key={row.id}
-                      className={`${selectedId === row.id ? 'admin-billing-row--selected' : ''} ${isOverdueRow ? 'admin-billing-row--overdue' : ''} ${
-                        isLarge && row.balance > 0 ? 'admin-billing-row--large-balance' : ''
-                      }`}
-                      onClick={() => setSelectedId(row.id)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.preventDefault();
-                          setSelectedId(row.id);
-                        }
-                      }}
-                      tabIndex={0}
-                      role="button"
-                      aria-selected={selectedId === row.id}
-                    >
-                      <td>
-                        <span className="admin-billing-inv-num">{row.invoiceNumber}</span>
-                      </td>
-                      <td>
-                        <span className="admin-billing-customer">{row.customerName}</span>
-                        <span className="admin-billing-loc">{row.location}</span>
-                      </td>
-                      <td>{formatDateShort(row.invoiceDate)}</td>
-                      <td>{formatDateShort(row.dueDate)}</td>
-                      <td>{formatCurrency(row.total)}</td>
-                      <td className={`admin-billing-balance-cell ${row.balance <= 0 ? 'admin-billing-balance-cell--zero' : ''}`}>
-                        {row.balance <= 0 ? 'Paid' : formatCurrency(row.balance)}
-                      </td>
-                      <td>
-                        <span className={`admin-billing-status ${statusClass(row.statusKey)}`}>{statusLabel(row.statusKey)}</span>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-          {filtered.length === 0 && <p className="admin-billing-empty">No invoices match these filters. Try clearing a filter or search.</p>}
-        </div>
-
-        <aside className="admin-billing-detail" aria-label="Invoice detail">
-          {selected ? (
-            <>
-              <div className="admin-billing-detail-head">
-                <div>
-                  <p className="admin-billing-detail-eyebrow">Invoice</p>
-                  <h2 className="admin-billing-detail-title">{selected.invoiceNumber}</h2>
-                  <p className="admin-billing-detail-customer">
-                    {ADMIN_CUSTOMER_ROUTE_IDS.has(selected.customerId) ? (
-                      <Link to={`/admin/customers/${selected.customerId}`} className="admin-table-link">
-                        {selected.customerName}
-                      </Link>
-                    ) : (
-                      selected.customerName
-                    )}
-                  </p>
-                </div>
-                <div>
-                  <span className={`admin-billing-status ${statusClass(selected.statusKey)}`}>{statusLabel(selected.statusKey)}</span>
-                </div>
-              </div>
-
-              <div className="admin-billing-detail-body">
-                <div className="admin-billing-detail-section">
-                  <h3 className="admin-section-title">Overview</h3>
-                  <dl className="admin-billing-dl">
-                    <div>
-                      <dt>Invoice date</dt>
-                      <dd>{formatDateShort(selected.invoiceDate)}</dd>
-                    </div>
-                    <div>
-                      <dt>Due date</dt>
-                      <dd>{formatDateShort(selected.dueDate)}</dd>
-                    </div>
-                    <div>
-                      <dt>PO number</dt>
-                      <dd>{selected.poNumber ?? '—'}</dd>
-                    </div>
-                    <div>
-                      <dt>Location</dt>
-                      <dd>{selected.location}</dd>
-                    </div>
-                  </dl>
-                </div>
-
-                <div className="admin-billing-detail-section">
-                  <h3 className="admin-section-title">Amounts</h3>
-                  <dl className="admin-billing-dl">
-                    <div>
-                      <dt>Invoice total</dt>
-                      <dd>{formatCurrency(selected.total)}</dd>
-                    </div>
-                    <div>
-                      <dt>Amount paid</dt>
-                      <dd>{formatCurrency(selected.amountPaid)}</dd>
-                    </div>
-                    <div>
-                      <dt>Remaining balance</dt>
-                      <dd>{selected.balance <= 0 ? <span className="admin-billing-muted">$0 — paid in full</span> : formatCurrency(selected.balance)}</dd>
-                    </div>
-                  </dl>
-                </div>
-
-                <div className="admin-billing-detail-section">
-                  <h3 className="admin-section-title">Line items</h3>
-                  <table className="admin-billing-items-table">
-                    <thead>
-                      <tr>
-                        <th>Description</th>
-                        <th>Qty</th>
-                        <th>Line total</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {selected.lineItems.map((line, idx) => (
-                        <tr key={`${line.description}-${idx}`}>
-                          <td>{line.description}</td>
-                          <td>{line.qty}</td>
-                          <td>{formatCurrency(line.lineTotal)}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-
-                <div className="admin-billing-detail-section">
-                  <h3 className="admin-section-title">Payment history</h3>
-                  {selected.payments.length === 0 ? (
-                    <p className="admin-billing-muted">No payments recorded on this invoice yet (prototype).</p>
-                  ) : (
-                    <ul className="admin-billing-pay-list">
-                      {selected.payments.map((p, idx) => (
-                        <li key={`${p.date}-${idx}`}>
-                          <strong>{formatDateShort(p.date)}</strong>
-                          <span>{formatCurrency(p.amount)}</span>
-                          <span className="admin-billing-muted">{p.method}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-
-                <div className="admin-billing-detail-section">
-                  <h3 className="admin-section-title">Customer context</h3>
-                  <div className="admin-billing-context-card">
-                    <p className="admin-billing-context-highlight">
-                      Total outstanding for {selected.customerName}: {formatCurrency(customerOpenTotal)}
-                    </p>
-                    <p className="admin-billing-context-muted">
-                      {otherOpenForCustomer.length === 0
-                        ? 'No other unpaid invoices for this customer in the demo set.'
-                        : `${otherOpenForCustomer.length} other unpaid invoice${otherOpenForCustomer.length !== 1 ? 's' : ''} on file.`}
-                    </p>
-                  </div>
-                  {otherOpenForCustomer.length > 0 && (
-                    <ul className="admin-billing-related-list">
-                      {otherOpenForCustomer.map((inv) => (
-                        <li key={inv.id}>
-                          <button type="button" onClick={() => setSelectedId(inv.id)}>
-                            {inv.invoiceNumber}
-                          </button>
-                          <span>Due {formatDateShort(inv.dueDate)}</span>
-                          <span>{formatCurrency(inv.balance)}</span>
-                          <span className={`admin-billing-status ${statusClass(inv.statusKey)}`}>{statusLabel(inv.statusKey)}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                  {recentPaymentsForCustomer.length > 0 && (
-                    <>
-                      <p className="admin-section-title" style={{ marginTop: 16 }}>
-                        Recent payment activity
-                      </p>
-                      <ul className="admin-billing-pay-list">
-                        {recentPaymentsForCustomer.map((p, idx) => (
-                          <li key={`${p.invoiceId}-${p.date}-${idx}`}>
-                            <span>{formatDateShort(p.date)}</span>
-                            <span>{formatCurrency(p.amount)}</span>
-                            <span className="admin-billing-muted">
-                              {p.method} · {p.invoiceNumber}
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
-                    </>
-                  )}
-                  {selected.paymentHabitNote === 'late' && (
-                    <p className="admin-billing-muted" style={{ marginTop: 10 }}>
-                      Demo note: payments from this account are often a few days after the due date — useful context for follow-ups.
-                    </p>
-                  )}
-                </div>
-
-                <div className="admin-billing-detail-section">
-                  <h3 className="admin-section-title">Actions</h3>
-                  <div className="admin-billing-actions">
-                    <button type="button" className="admin-btn" disabled title="Demo only">
-                      Download invoice
-                    </button>
-                    <button type="button" className="admin-btn" disabled title="Demo only">
-                      Send to customer
-                    </button>
-                    <button type="button" className="admin-btn admin-btn-primary" disabled title="Demo only">
-                      Record payment
-                    </button>
-                  </div>
-                </div>
-
-                <div className="admin-billing-detail-section">
-                  <p className="admin-billing-framing">
-                    This view helps your team answer billing questions and prepare for calls. It does not replace your accounting system. For journal entries,
-                    GL detail, and full reconciliation, use e-automate.
-                  </p>
-                </div>
-              </div>
-            </>
-          ) : (
-            <div className="admin-billing-detail-empty">
-              <p>Select an invoice to view details.</p>
-            </div>
-          )}
-        </aside>
+              );
+            })}
+          </tbody>
+        </table>
       </div>
+      {filtered.length === 0 && <p className="admin-billing-empty">No invoices match these filters. Try clearing a filter or search.</p>}
     </div>
   );
 }

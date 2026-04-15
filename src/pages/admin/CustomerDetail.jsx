@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect } from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import { Link, useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   getAdminCustomer,
   ADMIN_PREVIEW_STORAGE_KEY,
@@ -8,14 +8,17 @@ import {
   flattenLocationsForCustomer,
   locationNameById,
 } from '../../data/adminMockData';
+import { globalOrders, orderTypeLabel, statusLabel } from '../../data/adminOrdersData';
 import * as summitFake from '../../data/summitFakeData';
 import * as teslaFake from '../../data/teslaFakeData';
 import { TESLA_PORTAL_BASE } from '../../context/PortalProfileContext';
 import './adminPages.css';
 import './CustomerDetail.css';
+import './AdminOrders.css';
 
 const TABS = [
   { id: 'overview', label: 'Overview' },
+  { id: 'orders', label: 'Orders' },
   { id: 'users', label: 'Contacts' },
   { id: 'invoices', label: 'Invoices' },
   { id: 'service', label: 'Service' },
@@ -38,12 +41,23 @@ function sharedPortalDataForCustomer(c) {
   return profile === 'tesla' ? teslaFake : summitFake;
 }
 
+function statusChipClass(key) {
+  if (key === 'processing') return 'admin-orders-chip--processing';
+  if (key === 'shipped') return 'admin-orders-chip--shipped';
+  if (key === 'delivered') return 'admin-orders-chip--delivered';
+  if (key === 'backordered') return 'admin-orders-chip--backordered';
+  if (key === 'delayed') return 'admin-orders-chip--delayed';
+  return 'admin-orders-chip--processing';
+}
+
 export default function CustomerDetail() {
   const { customerId } = useParams();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const c = getAdminCustomer(customerId);
 
-  const [tab, setTab] = useState('overview');
+  const initialTab = searchParams.get('tab') || 'overview';
+  const [tab, setTab] = useState(initialTab);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [toast, setToast] = useState(null);
   const [activeLocationId, setActiveLocationId] = useState('');
@@ -55,6 +69,13 @@ export default function CustomerDetail() {
     const t = setTimeout(() => setToast(null), 2200);
     return () => clearTimeout(t);
   }, [toast]);
+
+  useEffect(() => {
+    const tabParam = searchParams.get('tab');
+    if (tabParam && TABS.some((t) => t.id === tabParam)) {
+      setTab(tabParam);
+    }
+  }, [searchParams]);
 
   const invList = useMemo(() => {
     if (!c) return [];
@@ -78,6 +99,13 @@ export default function CustomerDetail() {
       { id: 'm1', name: 'Canon imageRUNNER ADVANCE', model: '4525', serialNumber: 'CN-MOCK-1', location: 'HQ', status: 'active' },
     ];
   }, [c]);
+
+  const ordersList = useMemo(() => {
+    if (!c) return [];
+    return globalOrders
+      .filter((o) => o.customerId === customerId)
+      .sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
+  }, [c, customerId]);
 
   const latestInvoiceId = useMemo(() => {
     if (!invList.length) return null;
@@ -244,6 +272,51 @@ export default function CustomerDetail() {
               ))}
             </ul>
           </section>
+        </div>
+      )}
+
+      {tab === 'orders' && (
+        <div className="admin-table-wrap">
+          {ordersList.length === 0 ? (
+            <p className="admin-empty-state">No orders for this customer.</p>
+          ) : (
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>Order #</th>
+                  <th>Type</th>
+                  <th>Items</th>
+                  <th>Status</th>
+                  <th>Order date</th>
+                  <th>Expected delivery</th>
+                  <th className="admin-col-num">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                {ordersList.map((o) => (
+                  <tr key={o.id}>
+                    <td>
+                      <Link to={`/admin/orders/${o.id}`} className="admin-table-link">
+                        <strong>{o.orderNumber}</strong>
+                      </Link>
+                    </td>
+                    <td>
+                      <span className="admin-chip admin-chip-neutral">{orderTypeLabel(o.orderType)}</span>
+                    </td>
+                    <td className="admin-orders-items-cell">{o.itemsSummary}</td>
+                    <td>
+                      <span className={`admin-orders-chip ${statusChipClass(o.statusKey)}`}>
+                        {statusLabel(o.statusKey)}
+                      </span>
+                    </td>
+                    <td>{formatDate(o.orderDate)}</td>
+                    <td>{formatDate(o.expectedDelivery)}</td>
+                    <td className="admin-col-num">{o.total > 0 ? formatCurrency(o.total) : '—'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       )}
 

@@ -22,6 +22,11 @@ const navSections = [
     icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9v2m0 0v2m0-2h6m-6 0H9',
   },
   {
+    label: 'Equipment',
+    path: '/admin/equipment',
+    icon: 'M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z',
+  },
+  {
     label: 'Orders',
     path: '/admin/orders',
     icon: 'M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z',
@@ -223,17 +228,6 @@ export default function AdminShell() {
                 <path d="M6 9l6 6 6-6" />
               </svg>
             </div>
-            {!sidebarCollapsed && (
-              <div className="admin-account-employer">
-                <img
-                  src={adminUser.employerLogoSrc}
-                  alt=""
-                  className="admin-account-employer-logo"
-                  aria-hidden
-                />
-                <span className="admin-account-employer-name">{adminUser.employerName}</span>
-              </div>
-            )}
           </button>
           <div className={`admin-account-dropdown ${accountDropdownOpen ? 'admin-account-dropdown-open' : ''}`}>
             <ul className="admin-account-links">
