@@ -1,0 +1,278 @@
+/* Admin Account / Profile page — mirrors portal NotificationSettings card pattern */
+
+.aa-account {
+  max-width: 720px;
+}
+
+/* ── Card shell (matches .settings-card) ── */
+
+.aa-card {
+  background: var(--color-bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-border);
+  margin-bottom: 24px;
+  overflow: hidden;
+}
+
+.aa-card-title {
+  font-size: 1rem;
+  padding: 20px 24px;
+  margin: 0;
+  border-bottom: 1px solid var(--color-border-light);
+  background: var(--color-bg);
+}
+
+.aa-card-body {
+  padding: 24px;
+}
+
+.aa-card-actions {
+  padding-top: 20px;
+  margin-top: 20px;
+  border-top: 1px solid var(--color-border-light);
+  display: flex;
+  gap: 10px;
+}
+
+/* ── Profile section ── */
+
+.aa-profile-top {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+}
+
+.aa-avatar-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.aa-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  font-size: 1.25rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0.02em;
+}
+
+.aa-avatar-btn {
+  font-size: 0.75rem !important;
+  padding: 5px 10px !important;
+  white-space: nowrap;
+}
+
+.aa-profile-fields {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.aa-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.aa-field label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.aa-field .admin-input,
+.aa-field .admin-select {
+  max-width: none;
+}
+
+.aa-field-row--half {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.aa-field-hint {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+}
+
+.aa-field-static {
+  font-size: 0.9375rem;
+  color: var(--color-text);
+  padding: 10px 0 0;
+}
+
+@media (max-width: 560px) {
+  .aa-profile-top {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .aa-avatar-area {
+    flex-direction: row;
+    gap: 14px;
+  }
+  .aa-field-row--half {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Security section ── */
+
+.aa-security-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--color-border-light);
+  flex-wrap: wrap;
+}
+
+.aa-security-row:first-child {
+  padding-top: 0;
+}
+
+.aa-security-row--sessions {
+  border-bottom: none;
+  padding-bottom: 8px;
+}
+
+.aa-security-label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.aa-security-label strong {
+  font-size: 0.9375rem;
+  color: var(--color-text);
+}
+
+.aa-security-label span {
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+}
+
+.aa-btn-danger-outline {
+  color: var(--color-danger) !important;
+  border-color: var(--color-danger) !important;
+}
+
+.aa-btn-danger-outline:hover {
+  background: var(--color-danger-bg) !important;
+}
+
+.aa-sessions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.aa-session-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--color-border-light);
+  gap: 12px;
+}
+
+.aa-session-row:last-child {
+  border-bottom: none;
+}
+
+.aa-session-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.aa-session-device {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.aa-session-badge {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--color-success);
+  background: var(--color-success-bg);
+  padding: 2px 7px;
+  border-radius: 999px;
+}
+
+.aa-session-meta {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+}
+
+.aa-session-revoke {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  white-space: nowrap;
+}
+
+.aa-session-revoke:hover {
+  color: var(--color-danger);
+}
+
+/* ── Notification link row ── */
+
+.aa-link-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.aa-link-row .admin-btn {
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+/* ── Preferences ── */
+
+.aa-pref-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.aa-pref-grid .admin-select {
+  max-width: none;
+}
+
+@media (max-width: 560px) {
+  .aa-pref-grid {
+    grid-template-columns: 1fr;
+  }
+}

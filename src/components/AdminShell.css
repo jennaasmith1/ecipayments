@@ -47,15 +47,12 @@
 }
 
 .admin-sidebar-collapsed .admin-account-trigger {
+  justify-content: center;
   align-items: center;
 }
 
 .admin-sidebar-collapsed .admin-account-employer {
   display: none;
-}
-
-.admin-sidebar-collapsed .admin-account-trigger-row {
-  justify-content: center;
 }
 
 .admin-sidebar-collapsed .admin-account-chevron {
@@ -197,19 +194,16 @@
   position: absolute;
   bottom: calc(100% + 4px);
   left: 0;
-  width: 320px;
-  min-width: 0;
-  max-width: 100%;
+  width: 360px;
   max-height: 0;
   overflow: hidden;
   background: var(--color-bg-card);
-  border-radius: var(--radius-md) var(--radius-md) 0 0;
-  border: 1px solid transparent;
-  border-bottom: none;
+  border-radius: var(--radius-md);
+  border: 0 solid transparent;
   z-index: 100;
   display: flex;
   flex-direction: column;
-  transition: max-height 0.25s ease;
+  transition: max-height 0.25s ease, border-width 0s 0.25s;
   overflow-wrap: break-word;
   word-wrap: break-word;
   box-sizing: border-box;
@@ -217,9 +211,10 @@
 
 .admin-sidebar-notification-dropdown-open {
   max-height: 420px;
-  border-color: var(--color-border-light);
+  border: 1px solid var(--color-border-light);
   box-shadow: var(--shadow-sm);
   overflow-x: hidden;
+  transition: max-height 0.25s ease, border-width 0s 0s;
 }
 
 @keyframes portalDropdownIn {
@@ -320,9 +315,43 @@
   background: var(--color-bg);
 }
 
-.admin-sidebar-notification-dropdown-footer a {
+.admin-sidebar-notification-dropdown-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.admin-notification-footer-main {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  background: var(--color-primary);
+  color: #fff;
   font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.admin-notification-footer-main:hover {
+  background: var(--color-primary-hover);
+}
+
+.admin-notification-footer-secondary {
+  font-size: 0.8125rem;
   font-weight: 500;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.admin-notification-footer-secondary:hover {
+  color: var(--color-accent);
 }
 
 .admin-sidebar-logo {
@@ -431,10 +460,10 @@
 
 .admin-account-trigger {
   display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 10px;
+  align-items: center;
+  gap: 8px;
   width: 100%;
+  min-width: 0;
   padding: 8px 10px;
   background: none;
   border: none;
@@ -444,13 +473,6 @@
   transition: background var(--transition);
   color: inherit;
   font-family: inherit;
-}
-
-.admin-account-trigger-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  width: 100%;
 }
 
 .admin-account-trigger:hover {

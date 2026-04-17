@@ -65,11 +65,10 @@ const navSections = [
 ];
 
 const accountLinks = [
+  { label: 'My profile', path: '/profile' },
   { label: 'Company details', path: '/account' },
-  { label: 'Saved payment methods', path: '/account#payment-methods' },
   { label: 'Notification settings', path: '/settings/notifications' },
-  { label: 'User preferences', path: '/account#preferences' },
-  { label: 'Platform admin', path: '/admin' },
+  { label: 'Dealer admin', path: '/admin' },
 ];
 
 /** Whether the current URL belongs to this sidebar section (for active styling + which submenu stays open). */

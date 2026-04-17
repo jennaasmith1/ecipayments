@@ -17,12 +17,12 @@ import AutoPaySetup from './pages/AutoPaySetup';
 import NotificationsPage from './pages/NotificationsPage';
 import NotificationSettings from './pages/NotificationSettings';
 import Account from './pages/Account';
+import Profile from './pages/Profile';
 import Chat from './pages/Chat';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import CustomerList from './pages/admin/CustomerList';
 import CustomerDetail from './pages/admin/CustomerDetail';
 import InternalUsers from './pages/admin/InternalUsers';
-import PortalUsersPage from './pages/admin/PortalUsersPage';
 import RolesPermissions from './pages/admin/RolesPermissions';
 import BrandingPortal from './pages/admin/BrandingPortal';
 import ServiceRequestSettings from './pages/admin/ServiceRequestSettings';
@@ -37,6 +37,9 @@ import AdminOrderDetail from './pages/admin/AdminOrderDetail';
 import AdminBilling from './pages/admin/AdminBilling';
 import AdminBillingDetail from './pages/admin/AdminBillingDetail';
 import AdminEquipment from './pages/admin/AdminEquipment';
+import AdminAccount from './pages/admin/AdminAccount';
+import AdminNotificationsPage from './pages/admin/AdminNotificationsPage';
+import AdminNotificationSettings from './pages/admin/AdminNotificationSettings';
 import './App.css';
 
 /** Shared portal route tree. Must be a fragment (not a <Component/>) — RR7 only allows Route | Fragment as route children. Call per parent so each branch gets its own elements. */
@@ -56,6 +59,7 @@ function portalRoutesElements() {
       <Route path="pay" element={<PaymentLanding />} />
       <Route path="pay/success" element={<PaymentSuccess />} />
       <Route path="account" element={<Account />} />
+      <Route path="profile" element={<Profile />} />
       <Route path="chat" element={<Chat />} />
       <Route path="settings/autopay" element={<AutoPaySetup />} />
       <Route path="settings/notifications" element={<NotificationSettings />} />
@@ -82,7 +86,6 @@ function App() {
           <Route path="billing" element={<AdminBilling />} />
           <Route path="billing/:invoiceId" element={<AdminBillingDetail />} />
           <Route path="users/internal" element={<InternalUsers />} />
-          <Route path="users/portal" element={<PortalUsersPage />} />
           <Route path="users/roles" element={<RolesPermissions />} />
           <Route path="portal/branding" element={<BrandingPortal />} />
           <Route path="portal/service-requests" element={<ServiceRequestSettings />} />
@@ -90,6 +93,9 @@ function App() {
           <Route path="portal/communications" element={<CommunicationsSettings />} />
           <Route path="audit" element={<AuditActivity />} />
           <Route path="intelligence-hub" element={<IntelligenceHub />} />
+          <Route path="account" element={<AdminAccount />} />
+          <Route path="notifications" element={<AdminNotificationsPage />} />
+          <Route path="settings/notifications" element={<AdminNotificationSettings />} />
         </Route>
 
         <Route

@@ -6,11 +6,95 @@ export const ADMIN_PREVIEW_STORAGE_KEY = 'ubeo_admin_portal_preview';
 
 export const adminUser = {
   name: 'Jordan Kim',
+  firstName: 'Jordan',
+  lastName: 'Kim',
   role: 'Account manager',
   email: 'j.kim@ubeo.com',
+  phone: '(555) 412-8800',
+  timezone: 'America/Chicago',
   employerName: 'Ubeo',
   employerLogoSrc: '/branding/ubeo-wordmark.png',
+  mfaEnabled: true,
+  mfaMethod: 'Authenticator app',
+  lastPasswordChange: 'Feb 12, 2026',
+  defaultLandingPage: 'dashboard',
+  tableDensity: 'comfortable',
 };
+
+export const adminUserSessions = [
+  { id: 'ses-1', device: 'Chrome on macOS', location: 'Dallas, TX', lastActive: 'Active now', current: true },
+  { id: 'ses-2', device: 'Safari on iPhone', location: 'Dallas, TX', lastActive: '2 hr ago', current: false },
+  { id: 'ses-3', device: 'Firefox on Windows', location: 'Austin, TX', lastActive: 'Mar 28, 2026', current: false },
+];
+
+export const adminNotificationCategories = [
+  {
+    id: 'service',
+    label: 'Service',
+    items: [
+      { id: 'new_request', label: 'New service request', desc: 'When a customer submits a service request' },
+      { id: 'escalation', label: 'Ticket escalation', desc: 'When a ticket is escalated to your queue' },
+      { id: 'sla_breach', label: 'SLA breach approaching', desc: 'When an SLA deadline is within 2 hours' },
+      { id: 'tech_assigned', label: 'Technician assigned', desc: 'When a tech is dispatched to your accounts' },
+    ],
+  },
+  {
+    id: 'billing',
+    label: 'Billing & AR',
+    items: [
+      { id: 'payment_received', label: 'Payment received', desc: 'When a customer payment is posted' },
+      { id: 'invoice_overdue', label: 'Invoice past due', desc: 'When an invoice passes its due date' },
+      { id: 'payment_failed', label: 'Failed payment', desc: 'When a payment attempt is declined' },
+      { id: 'ar_threshold', label: 'AR threshold alert', desc: 'When an account exceeds AR limits' },
+    ],
+  },
+  {
+    id: 'portal',
+    label: 'Portal Activity',
+    items: [
+      { id: 'new_signup', label: 'New customer signup', desc: 'When a new portal user is created' },
+      { id: 'invite_accepted', label: 'Invitation accepted', desc: 'When a customer accepts a portal invite' },
+      { id: 'unusual_login', label: 'Unusual login activity', desc: 'Logins from new devices or locations' },
+    ],
+  },
+  {
+    id: 'equipment',
+    label: 'Equipment',
+    items: [
+      { id: 'meter_alert', label: 'Meter alert', desc: 'Abnormal meter readings or missed submissions' },
+      { id: 'device_offline', label: 'Device offline', desc: 'When a connected device loses connectivity' },
+      { id: 'contract_renewal', label: 'Contract renewal', desc: 'Upcoming lease or contract expirations' },
+    ],
+  },
+  {
+    id: 'orders',
+    label: 'Orders & Supplies',
+    items: [
+      { id: 'order_placed', label: 'New order placed', desc: 'When a customer places a supply order' },
+      { id: 'order_issue', label: 'Order issue', desc: 'Backorders, delays, or fulfillment problems' },
+    ],
+  },
+  {
+    id: 'internal',
+    label: 'Internal',
+    items: [
+      { id: 'team_change', label: 'Team member change', desc: 'When employees are added or removed' },
+      { id: 'role_change', label: 'Role change', desc: 'When roles or permissions are updated' },
+      { id: 'approval_request', label: 'Approval requested', desc: 'When an action needs your sign-off' },
+    ],
+  },
+];
+
+export const adminNotifications = [
+  { id: 'an-1', title: 'SLA Breach Warning', message: 'Ticket ST-9012 for Brightstone Law Group is within 2 hours of SLA breach.', time: '12 min ago', read: false },
+  { id: 'an-2', title: 'Payment Received', message: 'Hartwell Medical Group posted $4,280.00 via ACH •••• 3392.', time: '1 hr ago', read: false },
+  { id: 'an-3', title: 'New Service Request', message: 'Tesla submitted a new service request for Fremont – Legal & Compliance.', time: '2 hr ago', read: false },
+  { id: 'an-4', title: 'Invoice Past Due', message: 'Meridian Legal Services — Invoice #INV-2026-088712 is 14 days overdue ($2,310.00).', time: 'Yesterday', read: true },
+  { id: 'an-5', title: 'Portal Invitation Accepted', message: 'Taylor Nguyen accepted the portal invite and logged in for the first time.', time: 'Yesterday', read: true },
+  { id: 'an-6', title: 'Device Offline', message: 'Canon C5540 at Blue Peak Manufacturing – Plant 2 has been offline for 24 hours.', time: 'Apr 15', read: true },
+  { id: 'an-7', title: 'Contract Renewal Approaching', message: 'Northwind Logistics lease agreement expires in 30 days — requires review.', time: 'Apr 14', read: true },
+  { id: 'an-8', title: 'Approval Requested', message: 'Morgan Patel requested sign-off on a $12,400 supply order for Redwood Medical.', time: 'Apr 13', read: true },
+];
 
 export const dashboardKpis = [
   { id: 'open-service', label: 'Open service calls', value: '24', meta: 'Across all accounts', variant: 'default' },
@@ -52,11 +136,14 @@ export const chartSeriesWeekly = [
 ];
 
 export const internalUsers = [
-  { id: 'iu-1', name: 'Jordan Kim', role: 'Sales rep', territory: 'Metro North', lastActive: 'Active now' },
-  { id: 'iu-2', name: 'Alex Rivera', role: 'Billing', territory: 'National', lastActive: '12 min ago' },
-  { id: 'iu-3', name: 'Morgan Patel', role: 'Admin', territory: 'National', lastActive: '1 hr ago' },
-  { id: 'iu-4', name: 'Casey Wu', role: 'Sales', territory: 'West', lastActive: 'Yesterday' },
-  { id: 'iu-5', name: 'Riley Brooks', role: 'Support', territory: 'South', lastActive: 'Mar 8, 2026' },
+  { id: 'iu-1', name: 'Jordan Kim', email: 'jordan.kim@ubeo.com', role: 'Sales rep', territory: 'Metro North', status: 'active', lastActive: 'Active now', dateAdded: 'Sep 15, 2025', mfaEnabled: true },
+  { id: 'iu-2', name: 'Alex Rivera', email: 'alex.rivera@ubeo.com', role: 'Billing', territory: 'National', status: 'active', lastActive: '12 min ago', dateAdded: 'Jun 3, 2025', mfaEnabled: true },
+  { id: 'iu-3', name: 'Morgan Patel', email: 'morgan.patel@ubeo.com', role: 'Admin', territory: 'National', status: 'active', lastActive: '1 hr ago', dateAdded: 'Jan 10, 2025', mfaEnabled: true },
+  { id: 'iu-4', name: 'Casey Wu', email: 'casey.wu@ubeo.com', role: 'Sales', territory: 'West', status: 'active', lastActive: 'Yesterday', dateAdded: 'Nov 22, 2025', mfaEnabled: false },
+  { id: 'iu-5', name: 'Riley Brooks', email: 'riley.brooks@ubeo.com', role: 'Support', territory: 'South', status: 'active', lastActive: 'Mar 8, 2026', dateAdded: 'Aug 1, 2025', mfaEnabled: true },
+  { id: 'iu-6', name: 'Taylor Nguyen', email: 'taylor.nguyen@ubeo.com', role: 'Service Manager', territory: 'Metro South', status: 'invited', lastActive: '—', dateAdded: 'Apr 14, 2026', mfaEnabled: false },
+  { id: 'iu-7', name: 'Sam Okafor', email: 'sam.okafor@ubeo.com', role: 'Sales', territory: 'East', status: 'invited', lastActive: '—', dateAdded: 'Apr 10, 2026', mfaEnabled: false },
+  { id: 'iu-8', name: 'Jamie Lawson', email: 'jamie.lawson@ubeo.com', role: 'Read-only', territory: 'National', status: 'deactivated', lastActive: 'Feb 2, 2026', dateAdded: 'Mar 18, 2025', mfaEnabled: false },
 ];
 
 export const rolesCatalog = [
@@ -88,13 +175,6 @@ export const rolePermissionsSeed = {
   'role-sales': ['customers.view', 'billing.view'],
   'role-readonly': ['customers.view', 'billing.view', 'audit.view'],
 };
-
-export const globalPortalUsers = [
-  { id: 'gpu-1', name: 'Sarah Chen', email: 'sarah.chen@brightstonelaw.com', account: 'Brightstone Law Group', duplicate: false },
-  { id: 'gpu-2', name: 'Priya Nair', email: 'hartwell@shared-mail.net', account: 'Hartwell Medical Group', duplicate: true },
-  { id: 'gpu-3', name: 'David Okonkwo', email: 'hartwell@shared-mail.net', account: 'Hartwell – North Clinic', duplicate: true },
-  { id: 'gpu-4', name: 'Elena Vasquez', email: 'e.vasquez@meridianlegal.com', account: 'Meridian Legal Services', duplicate: false },
-];
 
 export const auditEvents = [
   { id: 'ae-1', time: '2026-03-10 09:42', actor: 'Jordan Kim', type: 'Impersonation', detail: 'View as Brightstone Law Group', account: 'BSG-2847' },

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
-import { adminUser } from '../data/adminMockData';
+import { adminUser, adminNotifications } from '../data/adminMockData';
 import './AdminShell.css';
 import './adminEciTheme.css';
 
@@ -42,7 +42,6 @@ const navSections = [
     icon: 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z',
     sub: [
       { label: 'Internal users', path: '/admin/users/internal' },
-      { label: 'Portal users', path: '/admin/users/portal' },
       { label: 'Roles & permissions', path: '/admin/users/roles' },
     ],
   },
@@ -74,7 +73,9 @@ export default function AdminShell() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [expandedSection, setExpandedSection] = useState(null);
   const [accountDropdownOpen, setAccountDropdownOpen] = useState(false);
+  const [notificationOpen, setNotificationOpen] = useState(false);
   const location = useLocation();
+  const unreadCount = adminNotifications.filter((n) => !n.read).length;
 
   const isActiveSection = (path) => {
     if (path === '/admin') return location.pathname === '/admin' || location.pathname === '/admin/';
@@ -195,6 +196,71 @@ export default function AdminShell() {
             </div>
           ))}
         </nav>
+        <div className="admin-sidebar-notifications">
+          <button
+            type="button"
+            className={`admin-notifications-trigger ${notificationOpen ? 'admin-notifications-trigger-open' : ''}`}
+            onClick={() => setNotificationOpen((o) => !o)}
+            aria-expanded={notificationOpen}
+            aria-label={notificationOpen ? 'Close notifications' : 'Open notifications'}
+          >
+            <span className="admin-notifications-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+              </svg>
+              {unreadCount > 0 && <span className="admin-notifications-badge">{unreadCount}</span>}
+            </span>
+            {!sidebarCollapsed && <span className="admin-notifications-label">Notifications</span>}
+            {!sidebarCollapsed && (
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                className={`admin-notifications-chevron ${notificationOpen ? 'admin-notifications-chevron-open' : ''}`}
+              >
+                <path d="M6 9l6 6 6-6" />
+              </svg>
+            )}
+          </button>
+          {notificationOpen && (
+            <div className="admin-sidebar-notification-backdrop" aria-hidden onClick={() => setNotificationOpen(false)} />
+          )}
+          <div className={`admin-sidebar-notification-dropdown ${notificationOpen ? 'admin-sidebar-notification-dropdown-open' : ''}`}>
+            <div className="admin-sidebar-notification-dropdown-header">Notifications</div>
+            <div className="admin-sidebar-notification-list">
+              {adminNotifications.map((n) => (
+                <button
+                  key={n.id}
+                  type="button"
+                  className={`admin-sidebar-notification-item ${!n.read ? 'admin-sidebar-notification-item-unread' : ''}`}
+                  onClick={() => setNotificationOpen(false)}
+                >
+                  <div className="admin-sidebar-notification-item-title">{n.title}</div>
+                  <div className="admin-sidebar-notification-item-message">{n.message}</div>
+                  <div className="admin-sidebar-notification-item-time">{n.time}</div>
+                </button>
+              ))}
+            </div>
+            <div className="admin-sidebar-notification-dropdown-footer">
+              <Link
+                to="/admin/notifications"
+                className="admin-notification-footer-main"
+                onClick={() => { setNotificationOpen(false); setMobileMenuOpen(false); }}
+              >
+                See all notifications
+              </Link>
+              <Link
+                to="/admin/settings/notifications"
+                className="admin-notification-footer-secondary"
+                onClick={() => { setNotificationOpen(false); setMobileMenuOpen(false); }}
+              >
+                Settings
+              </Link>
+            </div>
+          </div>
+        </div>
         <div className="admin-sidebar-account">
           <button
             type="button"
@@ -203,34 +269,42 @@ export default function AdminShell() {
             aria-expanded={accountDropdownOpen}
             aria-label={accountDropdownOpen ? 'Close account menu' : 'Open account menu'}
           >
-            <div className="admin-account-trigger-row">
-              <div className="admin-account-avatar">
-                {adminUser.name
-                  .split(' ')
-                  .map((w) => w[0])
-                  .join('')
-                  .slice(0, 2)}
-              </div>
-              {!sidebarCollapsed && (
-                <div className="admin-account-labels">
-                  <span className="admin-account-name">{adminUser.name}</span>
-                  <span className="admin-account-role">{adminUser.role}</span>
-                  <span className="admin-account-subtitle">{adminUser.email}</span>
-                </div>
-              )}
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                className={`admin-account-chevron ${accountDropdownOpen ? 'admin-account-chevron-open' : ''}`}
-              >
-                <path d="M6 9l6 6 6-6" />
-              </svg>
+            <div className="admin-account-avatar">
+              {adminUser.name
+                .split(' ')
+                .map((w) => w[0])
+                .join('')
+                .slice(0, 2)}
             </div>
+            {!sidebarCollapsed && (
+              <div className="admin-account-labels">
+                <span className="admin-account-name">{adminUser.name}</span>
+                <span className="admin-account-role">{adminUser.role}</span>
+                <span className="admin-account-subtitle">{adminUser.email}</span>
+              </div>
+            )}
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              className={`admin-account-chevron ${accountDropdownOpen ? 'admin-account-chevron-open' : ''}`}
+            >
+              <path d="M6 9l6 6 6-6" />
+            </svg>
           </button>
           <div className={`admin-account-dropdown ${accountDropdownOpen ? 'admin-account-dropdown-open' : ''}`}>
             <ul className="admin-account-links">
+              <li>
+                <Link to="/admin/account" className="admin-account-link" onClick={() => { setAccountDropdownOpen(false); setMobileMenuOpen(false); }}>
+                  My profile
+                </Link>
+              </li>
+              <li>
+                <Link to="/admin/settings/notifications" className="admin-account-link" onClick={() => { setAccountDropdownOpen(false); setMobileMenuOpen(false); }}>
+                  Notification settings
+                </Link>
+              </li>
               <li>
                 <Link to="/" className="admin-account-link" onClick={() => { setAccountDropdownOpen(false); setMobileMenuOpen(false); }}>
                   Open customer portal

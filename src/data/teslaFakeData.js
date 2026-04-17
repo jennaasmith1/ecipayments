@@ -26,6 +26,22 @@ export const customer = {
   phone: '(555) 555-0123',
 };
 
+export const user = {
+  firstName: 'Sarah',
+  lastName: 'Chen',
+  email: 'sarah.chen@tesla.com',
+  phone: '(555) 555-0123',
+  jobTitle: 'Fleet Operations Manager',
+  role: 'Account Administrator',
+  avatarUrl: null,
+  twoFactorEnabled: false,
+  emailVerified: true,
+  lastLogin: '2026-04-17T09:32:00Z',
+  memberSince: '2024-06-15',
+  timezone: 'America/Los_Angeles',
+  language: 'English (US)',
+};
+
 export const inboxEmails = [
   {
     id: 'tesla-payment',

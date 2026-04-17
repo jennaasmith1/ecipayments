@@ -1,0 +1,76 @@
+/* Admin Notification Settings — reuses portal .settings-card + .notification-table from NotificationSettings.css */
+
+.admin-notif-settings {
+  max-width: 720px;
+}
+
+.admin-notif-settings h1 {
+  font-size: 1.5rem;
+  margin-bottom: 8px;
+}
+
+.admin-notif-settings .subtitle {
+  color: var(--color-text-secondary);
+  font-size: 0.9375rem;
+  margin-bottom: 28px;
+}
+
+/* Delivery preference card internals */
+.ans-digest-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 24px;
+  flex-wrap: wrap;
+}
+
+.ans-digest-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ans-digest-info strong {
+  font-size: 0.9375rem;
+  color: var(--color-text);
+}
+
+.ans-digest-info span {
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+}
+
+.ans-digest-options {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.ans-digest-option {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.875rem;
+  color: var(--color-text);
+  cursor: pointer;
+  font-weight: 400;
+}
+
+.ans-digest-option input[type="radio"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--color-accent);
+}
+
+/* Sticky save bar */
+.ans-save-bar {
+  position: sticky;
+  bottom: 0;
+  background: var(--color-bg);
+  padding: 16px 0;
+  border-top: 1px solid var(--color-border-light);
+  display: flex;
+  gap: 10px;
+  z-index: 10;
+}

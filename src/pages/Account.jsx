@@ -11,9 +11,9 @@ export default function Account() {
   return (
     <div className="account-page">
       <header className="account-header">
-        <h1>Account</h1>
+        <h1>Company details</h1>
         <p className="account-subtitle">
-          Company details, payment methods, and preferences.
+          Company information, payment methods, and preferences.
         </p>
       </header>
 
