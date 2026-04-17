@@ -273,6 +273,51 @@ export const recentActivity = [
   { id: 'act-5', type: 'payment', title: 'AutoPay processed', detail: '$1,240.00 – Invoice #84215', time: 'Mar 5, 2026', link: '/payments' },
 ];
 
+export const customerRoles = [
+  { id: 'admin', name: 'Admin', description: 'Full access, manage team and billing' },
+  { id: 'member', name: 'Member', description: 'View and take actions (service, orders, payments)' },
+  { id: 'viewer', name: 'Viewer', description: 'Read-only access to portal data' },
+];
+
+export const teamMembers = [
+  {
+    id: 'tm-1',
+    firstName: 'Sarah',
+    lastName: 'Chen',
+    email: 'sarah.chen@brightstonelaw.com',
+    jobTitle: 'Office Manager',
+    role: 'admin',
+    status: 'active',
+    lastActive: '2026-04-17T09:32:00Z',
+    dateAdded: '2024-06-15',
+    isSelf: true,
+  },
+  {
+    id: 'tm-2',
+    firstName: 'Michael',
+    lastName: 'Torres',
+    email: 'm.torres@brightstonelaw.com',
+    jobTitle: 'Senior Associate',
+    role: 'member',
+    status: 'active',
+    lastActive: '2026-04-16T14:20:00Z',
+    dateAdded: '2024-08-22',
+    isSelf: false,
+  },
+  {
+    id: 'tm-3',
+    firstName: 'Jennifer',
+    lastName: 'Park',
+    email: 'j.park@brightstonelaw.com',
+    jobTitle: 'Paralegal',
+    role: 'viewer',
+    status: 'invited',
+    lastActive: null,
+    dateAdded: '2026-04-10',
+    isSelf: false,
+  },
+];
+
 export const portalThemeClass = 'portal-theme-summit';
 export const portalLogoSrc = '/summit-logo.png';
 export const portalDocumentTitle = 'Brightstone Law — Service portal';

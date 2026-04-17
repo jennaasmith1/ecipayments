@@ -18,6 +18,7 @@ import NotificationsPage from './pages/NotificationsPage';
 import NotificationSettings from './pages/NotificationSettings';
 import Account from './pages/Account';
 import Profile from './pages/Profile';
+import Team from './pages/Team';
 import Chat from './pages/Chat';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import CustomerList from './pages/admin/CustomerList';
@@ -60,6 +61,7 @@ function portalRoutesElements() {
       <Route path="pay/success" element={<PaymentSuccess />} />
       <Route path="account" element={<Account />} />
       <Route path="profile" element={<Profile />} />
+      <Route path="team" element={<Team />} />
       <Route path="chat" element={<Chat />} />
       <Route path="settings/autopay" element={<AutoPaySetup />} />
       <Route path="settings/notifications" element={<NotificationSettings />} />

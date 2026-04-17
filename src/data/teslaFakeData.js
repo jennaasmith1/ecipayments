@@ -280,6 +280,63 @@ export const recentActivity = [
   { id: 'act-5', type: 'payment', title: 'AutoPay processed', detail: '$1,240.00 – Invoice #84215', time: 'Mar 5, 2026', link: '/payments' },
 ];
 
+export const customerRoles = [
+  { id: 'admin', name: 'Admin', description: 'Full access, manage team and billing' },
+  { id: 'member', name: 'Member', description: 'View and take actions (service, orders, payments)' },
+  { id: 'viewer', name: 'Viewer', description: 'Read-only access to portal data' },
+];
+
+export const teamMembers = [
+  {
+    id: 'tm-1',
+    firstName: 'Sarah',
+    lastName: 'Chen',
+    email: 'sarah.chen@tesla.com',
+    jobTitle: 'Fleet Operations Manager',
+    role: 'admin',
+    status: 'active',
+    lastActive: '2026-04-17T09:32:00Z',
+    dateAdded: '2024-06-15',
+    isSelf: true,
+  },
+  {
+    id: 'tm-2',
+    firstName: 'Marcus',
+    lastName: 'Rivera',
+    email: 'm.rivera@tesla.com',
+    jobTitle: 'Fleet Coordinator',
+    role: 'member',
+    status: 'active',
+    lastActive: '2026-04-15T11:05:00Z',
+    dateAdded: '2024-09-03',
+    isSelf: false,
+  },
+  {
+    id: 'tm-3',
+    firstName: 'Aisha',
+    lastName: 'Patel',
+    email: 'a.patel@tesla.com',
+    jobTitle: 'Finance Analyst',
+    role: 'member',
+    status: 'active',
+    lastActive: '2026-04-16T16:45:00Z',
+    dateAdded: '2025-01-12',
+    isSelf: false,
+  },
+  {
+    id: 'tm-4',
+    firstName: 'David',
+    lastName: 'Kim',
+    email: 'd.kim@tesla.com',
+    jobTitle: 'Facilities Manager',
+    role: 'viewer',
+    status: 'invited',
+    lastActive: null,
+    dateAdded: '2026-04-10',
+    isSelf: false,
+  },
+];
+
 export const portalThemeClass = 'portal-theme-tesla';
 export const portalLogoSrc = '/branding/tesla-logo.png';
 export const portalDocumentTitle = 'Tesla — Service portal';

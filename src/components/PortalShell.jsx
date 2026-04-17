@@ -67,6 +67,7 @@ const navSections = [
 const accountLinks = [
   { label: 'My profile', path: '/profile' },
   { label: 'Company details', path: '/account' },
+  { label: 'Team', path: '/team' },
   { label: 'Notification settings', path: '/settings/notifications' },
   { label: 'Dealer admin', path: '/admin' },
 ];
