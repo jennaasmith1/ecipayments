@@ -108,7 +108,7 @@ export default function AdminShell() {
       >
         <div className="admin-sidebar-header">
           <Link to="/admin" className="admin-sidebar-logo" onClick={() => setMobileMenuOpen(false)}>
-            <img src="/eci-customer-hub.svg" alt="ECI Customer Hub" className="admin-sidebar-logo-img admin-sidebar-logo-img-eci" />
+            <img src="/eci-dealer-admin.svg" alt="ECI Dealer Admin" className="admin-sidebar-logo-img admin-sidebar-logo-img-eci" />
           </Link>
           <div className="admin-sidebar-header-actions">
             <button
